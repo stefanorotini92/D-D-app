@@ -1,15 +1,21 @@
 const express = require("express");
+const path = require("path");
 const app = express();
+
 app.use(express.json());
 
-let characters = []; // Lista dei personaggi
+// Serve il frontend
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
 
-// Endpoint per vedere tutti i personaggi
+// Lista dei personaggi
+let characters = [];
 app.get("/characters", (req, res) => {
   res.json(characters);
 });
 
-// Endpoint per creare un nuovo personaggio
+// Crea un nuovo personaggio
 app.post("/characters", (req, res) => {
   const character = req.body;
   characters.push(character);
