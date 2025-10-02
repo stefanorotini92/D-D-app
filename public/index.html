@@ -619,6 +619,109 @@ async function loadCharacters(){
     list.appendChild(renderCharacterListItem(ch));
   });
 }
+  /***********************
+ * PARTE 4 – TIRI SALVEZZA & ABILITÀ
+ ***********************/
+
+// elenco abilità con caratteristica associata
+const skills = {
+  "Acrobazia": "des",
+  "Addestrare Animali": "wis",
+  "Arcano": "int",
+  "Atletica": "str",
+  "Furtività": "dex",
+  "Indagare": "int",
+  "Intimidire": "cha",
+  "Intrattenere": "cha",
+  "Intuizione": "wis",
+  "Medicina": "wis",
+  "Natura": "int",
+  "Percezione": "wis",
+  "Persuasione": "cha",
+  "Rapidità di Mano": "dex",
+  "Religione": "int",
+  "Sopravvivenza": "wis",
+  "Storia": "int",
+};
+
+// caratteristiche principali per tiri salvezza
+const savingThrows = ["str", "dex", "con", "int", "wis", "cha"];
+
+// funzione per creare la sezione TS e Abilità nel form
+function renderSavingThrowsAndSkills() {
+  const container = document.createElement("div");
+  container.classList.add("extra-section");
+
+  let html = "<h3>Tiri Salvezza</h3>";
+  savingThrows.forEach(stat => {
+    html += `
+      <label>
+        <input type="checkbox" class="save-prof" data-stat="${stat}">
+        Competenza in ${stat.toUpperCase()}
+      </label><br>
+    `;
+  });
+
+  html += "<h3>Abilità</h3>";
+  for (let skill in skills) {
+    html += `
+      <label>
+        <input type="checkbox" class="skill-prof" data-skill="${skill}">
+        Competenza in ${skill} (${skills[skill].toUpperCase()})
+      </label><br>
+    `;
+  }
+
+  container.innerHTML = html;
+  document.querySelector("#character-form").appendChild(container);
+}
+
+// calcola modificatore caratteristica
+function getModifier(score) {
+  return Math.floor((score - 10) / 2);
+}
+
+// calcola bonus competenza (per ora fisso a +2 a livello 1)
+function getProficiencyBonus() {
+  return 2;
+}
+
+// aggiorna anteprima con TS e Abilità
+function updateSavesAndSkillsPreview(charData) {
+  const saveProfs = document.querySelectorAll(".save-prof");
+  const skillProfs = document.querySelectorAll(".skill-prof");
+
+  let savesHTML = "<h4>Tiri Salvezza</h4><ul>";
+  savingThrows.forEach(stat => {
+    const base = getModifier(parseInt(charData[stat] || 10));
+    const prof = Array.from(saveProfs).find(cb => cb.dataset.stat === stat && cb.checked);
+    const total = base + (prof ? getProficiencyBonus() : 0);
+    savesHTML += `<li>${stat.toUpperCase()}: ${total >= 0 ? "+" : ""}${total}</li>`;
+  });
+  savesHTML += "</ul>";
+
+  let skillsHTML = "<h4>Abilità</h4><ul>";
+  for (let skill in skills) {
+    const base = getModifier(parseInt(charData[skills[skill]] || 10));
+    const prof = Array.from(skillProfs).find(cb => cb.dataset.skill === skill && cb.checked);
+    const total = base + (prof ? getProficiencyBonus() : 0);
+    skillsHTML += `<li>${skill}: ${total >= 0 ? "+" : ""}${total}</li>`;
+  }
+  skillsHTML += "</ul>";
+
+  document.querySelector("#preview").innerHTML += savesHTML + skillsHTML;
+}
+
+// integrazione con anteprima esistente
+const oldUpdatePreview = updatePreview;
+updatePreview = function() {
+  oldUpdatePreview();
+  const formData = Object.fromEntries(new FormData(document.querySelector("#character-form")));
+  updateSavesAndSkillsPreview(formData);
+};
+
+// inizializza subito la sezione TS e Abilità
+renderSavingThrowsAndSkills();
 </script>
 </body>
 </html>
