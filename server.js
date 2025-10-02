@@ -1,64 +1,83 @@
 const express = require("express");
 const path = require("path");
-const { Pool } = require("pg"); // Importa PostgreSQL
+const { Pool } = require("pg");
 
 const app = express();
-app.use(express.json());
-app.use(express.static(path.join(__dirname, "public"))); // Serve file statici dalla cartella "public"
+const PORT = process.env.PORT || 3000;
 
-// Configura il database PostgreSQL
+// Middleware per leggere JSON
+app.use(express.json());
+
+// Servire i file statici dalla cartella public
+app.use(express.static(path.join(__dirname, "public")));
+
+// Connessione al database PostgreSQL
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 
-// Creazione automatica della tabella characters
+// Creazione tabella se non esiste
 (async () => {
   try {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS characters (
         id SERIAL PRIMARY KEY,
-        name VARCHAR(50),
-        race VARCHAR(50),
-        class VARCHAR(50)
-      )
+        name TEXT NOT NULL,
+        race TEXT NOT NULL,
+        class TEXT NOT NULL
+      );
     `);
-    console.log("Tabella characters creata!");
+    console.log("✅ Tabella 'characters' pronta!");
   } catch (err) {
-    console.error("Errore nella creazione della tabella:", err);
+    console.error("❌ Errore creazione tabella:", err);
   }
 })();
 
-// Endpoint per ottenere tutti i personaggi
+// --- ENDPOINTS ---
+
+// GET: Lista personaggi
 app.get("/characters", async (req, res) => {
   try {
-    const result = await pool.query("SELECT * FROM characters");
+    const result = await pool.query("SELECT * FROM characters ORDER BY id ASC");
     res.json(result.rows);
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Errore nel recupero dei personaggi");
+    console.error("❌ Errore nel recupero personaggi:", err);
+    res.status(500).send("Errore caricamento personaggi");
   }
 });
 
-// Endpoint per creare un nuovo personaggio
+// POST: Creare nuovo personaggio
 app.post("/characters", async (req, res) => {
-  console.log("📥 Ricevuto personaggio dal frontend:", req.body); // <-- LOG 1
-
+  console.log("📥 Ricevuto personaggio:", req.body);
   const { name, race, class: className } = req.body;
   try {
     const result = await pool.query(
       "INSERT INTO characters(name, race, class) VALUES($1, $2, $3) RETURNING *",
       [name, race, className]
     );
-
-    console.log("✅ Personaggio salvato nel DB:", result.rows[0]); // <-- LOG 2
+    console.log("✅ Personaggio salvato:", result.rows[0]);
     res.json(result.rows[0]);
   } catch (err) {
-    console.error("❌ Errore nella creazione del personaggio:", err); // <-- LOG 3
-    res.status(500).send("Errore nella creazione del personaggio");
+    console.error("❌ Errore salvataggio:", err);
+    res.status(500).send("Errore creazione personaggio");
+  }
+});
+
+// DELETE: Eliminare personaggio
+app.delete("/characters/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    await pool.query("DELETE FROM characters WHERE id = $1", [id]);
+    console.log(`🗑️ Personaggio eliminato ID: ${id}`);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("❌ Errore eliminazione:", err);
+    res.status(500).send("Errore eliminazione personaggio");
   }
 });
 
 // Avvio server
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Server attivo su porta ${port}`));
+app.listen(PORT, () => {
+  console.log(`🚀 Server avviato su http://localhost:${PORT}`);
+});
