@@ -1,48 +1,123 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
-  <title>DND App</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D&D App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e1e2f;
+      color: #f0f0f0;
+      padding: 20px;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      max-width: 300px;
+      margin: 20px auto;
+      padding: 15px;
+      background: #2a2a3d;
+      border-radius: 8px;
+    }
+    input {
+      margin: 8px 0;
+      padding: 8px;
+      border: none;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px;
+      background: #5c6bc0;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #3949ab;
+    }
+    #charactersList {
+      margin-top: 20px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .character {
+      background: #2a2a3d;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 4px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Personaggi</h1>
-  <ul id="character-list"></ul>
+  <h1>D&D Adventure App</h1>
 
-  <h2>Crea personaggio</h2>
-  <input id="name" placeholder="Nome">
-  <input id="race" placeholder="Razza">
-  <input id="class" placeholder="Classe">
-  <button onclick="createCharacter()">Crea</button>
+  <form id="characterForm">
+    <input type="text" id="name" placeholder="Nome" required>
+    <input type="text" id="race" placeholder="Razza" required>
+    <input type="text" id="class" placeholder="Classe" required>
+    <button type="submit">Crea</button>
+  </form>
+
+  <h2>Personaggi</h2>
+  <div id="charactersList"></div>
 
   <script>
-    const baseUrl = 'https://TUO-NOME-PROGETTO.onrender.com'; // sostituisci con URL Render
+    const form = document.getElementById('characterForm');
+    const charactersList = document.getElementById('charactersList');
 
     async function loadCharacters() {
-      const res = await fetch(`${baseUrl}/characters`);
-      const characters = await res.json();
-      const list = document.getElementById('character-list');
-      list.innerHTML = '';
-      characters.forEach(c => {
-        const li = document.createElement('li');
-        li.textContent = `${c.name} - ${c.race} - ${c.class}`;
-        list.appendChild(li);
-      });
+      try {
+        const res = await fetch('/characters');
+        if (!res.ok) throw new Error(`Server error: ${res.status}`);
+        const characters = await res.json();
+        charactersList.innerHTML = '';
+        characters.forEach(c => {
+          const div = document.createElement('div');
+          div.className = 'character';
+          div.textContent = `${c.name} - ${c.race} - ${c.class}`;
+          charactersList.appendChild(div);
+        });
+        console.log("✅ Personaggi caricati:", characters);
+      } catch (err) {
+        console.error("❌ Errore nel caricamento personaggi:", err);
+      }
     }
 
-    async function createCharacter() {
+    // Carica i personaggi quando parte la pagina
+    loadCharacters();
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
       const name = document.getElementById('name').value;
       const race = document.getElementById('race').value;
       const className = document.getElementById('class').value;
 
-      await fetch(`${baseUrl}/characters`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({name, race, class: className})
-      });
+      console.log("📤 Invio nuovo personaggio:", { name, race, class: className });
 
-      loadCharacters();
-    }
+      try {
+        const res = await fetch('/characters', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, race, class: className })
+        });
 
-    loadCharacters();
+        if (!res.ok) throw new Error(`Server error: ${res.status}`);
+
+        const savedChar = await res.json();
+        console.log("✅ Personaggio salvato dal server:", savedChar);
+
+        form.reset();
+        loadCharacters();
+      } catch (err) {
+        console.error("❌ Errore nell'invio personaggio:", err);
+      }
+    });
   </script>
 </body>
 </html>
