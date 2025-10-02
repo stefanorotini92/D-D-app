@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Creazione Personaggio D&D 5e</title>
+  <title>Creazione Personaggio D&D 5e Wizard</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 15px; background: #f4f4f4; }
     h1, h2 { text-align: center; }
@@ -21,13 +21,12 @@
 </head>
 <body>
   <h1>Creazione Personaggio D&D 5e</h1>
+  <input type="hidden" id="char_id">
 
-  <div class="section">
-    <h2>Form Personaggio</h2>
-    <input type="hidden" id="char_id">
-
+  <!-- Step 1 -->
+  <div class="section step" id="step1">
+    <h2>Step 1: Razza, Classe, Background</h2>
     <label>Nome<input type="text" id="name" required></label>
-
     <label>Classe
       <select id="class">
         <option value="">Seleziona una classe</option>
@@ -46,7 +45,6 @@
       </select>
       <small>La classe determina le abilità principali e i dadi vita.</small>
     </label>
-
     <label>Razza
       <select id="race">
         <option value="">Seleziona una razza</option>
@@ -61,7 +59,6 @@
       </select>
       <small>La razza influenza abilità e tratti speciali.</small>
     </label>
-
     <label>Allineamento
       <select id="alignment">
         <option value="">Seleziona allineamento</option>
@@ -77,7 +74,6 @@
       </select>
       <small>L’allineamento descrive l’etica e il comportamento del personaggio.</small>
     </label>
-
     <label>Background
       <select id="background">
         <option value="">Seleziona background</option>
@@ -91,30 +87,40 @@
       </select>
       <small>Il background offre competenze e tratti aggiuntivi.</small>
     </label>
-
     <label>Livello<input type="number" id="level" value="1" min="1"><small>Il livello determina potere e PF.</small></label>
-    <label>Giocatore<input type="text" id="player_name"><small>Nome del giocatore che controlla il PG.</small></label>
-    <label>Punti esperienza<input type="number" id="xp" value="0"><small>Punti esperienza accumulati.</small></label>
+    <button type="button" id="next1">Avanti</button>
+  </div>
 
-    <h2>Caratteristiche</h2>
+  <!-- Step 2 -->
+  <div class="section step" id="step2" style="display:none;">
+    <h2>Step 2: Caratteristiche</h2>
     <label>Forza<input type="number" id="strength" value="10"><small>Influenza attacchi corpo a corpo e capacità di sollevamento.</small></label>
     <label>Destrezza<input type="number" id="dexterity" value="10"><small>Influenza iniziativa, acrobazia e tiri per schivare.</small></label>
     <label>Costituzione<input type="number" id="constitution" value="10"><small>Determina PF e resistenze.</small></label>
     <label>Intelligenza<input type="number" id="intelligence" value="10"><small>Influenza abilità di conoscenza e magia.</small></label>
     <label>Saggezza<input type="number" id="wisdom" value="10"><small>Influenza percezione, sopravvivenza e abilità divine.</small></label>
     <label>Carisma<input type="number" id="charisma" value="10"><small>Influenza incantesimi e abilità sociali.</small></label>
+    <button type="button" id="prev2">Indietro</button>
+    <button type="button" id="next2">Avanti</button>
+  </div>
 
-    <h2>Combattimento</h2>
+  <!-- Step 3 -->
+  <div class="section step" id="step3" style="display:none;">
+    <h2>Step 3: Combattimento</h2>
     <label>Punti ferita massimi<input type="number" id="max_hp" value="10"><small>PF massimi del personaggio.</small></label>
     <label>Punti ferita attuali<input type="number" id="current_hp" value="10"><small>PF attuali.</small></label>
     <label>Classe armatura<input type="number" id="armor_class" value="10"><small>Difesa dagli attacchi.</small></label>
     <label>Iniziativa<input type="number" id="initiative" value="0"><small>Influenza ordine dei turni.</small></label>
     <label>Velocità<input type="number" id="speed" value="30"><small>Velocità di movimento in piedi per round.</small></label>
     <label>Dadi vita<input type="text" id="hit_dice" value="1d10"><small>Tipo di dado vita della classe.</small></label>
-    <label>Tiri salvezza successi<input type="number" id="death_saves_success" value="0"></label>
-    <label>Tiri salvezza fallimenti<input type="number" id="death_saves_failure" value="0"></label>
-
-    <h2>Note e background</h2>
+    <button type="button" id="prev3">Indietro</button>
+    <button type="button" id="next3">Avanti</button>
+  </div>
+    <!-- Step 4 -->
+  <div class="section step" id="step4" style="display:none;">
+    <h2>Step 4: Note, Equipaggiamento e Storia</h2>
+    <label>Giocatore<input type="text" id="player_name"><small>Nome del giocatore che controlla il PG.</small></label>
+    <label>Punti esperienza<input type="number" id="xp" value="0"><small>Punti esperienza accumulati.</small></label>
     <label>Equipaggiamento<textarea id="equipment"></textarea></label>
     <label>Tratti della personalità<textarea id="personality_traits"></textarea></label>
     <label>Ideali<textarea id="ideals"></textarea></label>
@@ -122,22 +128,40 @@
     <label>Difetti<textarea id="flaws"></textarea></label>
     <label>Aspetto fisico<textarea id="appearance"></textarea></label>
     <label>Storia<textarea id="backstory"></textarea></label>
-
-    <button id="createBtn">Salva Personaggio</button>
-    <button id="randomBtn">Crea Random PG</button>
+    <button type="button" id="prev4">Indietro</button>
+    <button type="button" id="createWizardBtn">Salva Personaggio</button>
   </div>
 
+  <!-- Lista PG -->
   <div class="section">
     <h2>Lista Personaggi</h2>
     <div id="pgList" class="pg-list"></div>
   </div>
-    <script>
-    const createBtn = document.getElementById("createBtn");
-    const randomBtn = document.getElementById("randomBtn");
-    const pgList = document.getElementById("pgList");
 
-    // Legge i dati dal form
-    function getCharacterData() {
+  <script>
+    const steps = ["step1","step2","step3","step4"];
+    let currentStep = 0;
+
+    function showStep(index){
+      steps.forEach((id,i)=>{
+        document.getElementById(id).style.display = (i===index)?"block":"none";
+      });
+    }
+
+    // Navigazione avanti
+    document.getElementById("next1").addEventListener("click", ()=>{ currentStep=1; showStep(currentStep); });
+    document.getElementById("next2").addEventListener("click", ()=>{ currentStep=2; showStep(currentStep); });
+    document.getElementById("next3").addEventListener("click", ()=>{ currentStep=3; showStep(currentStep); });
+
+    // Navigazione indietro
+    document.getElementById("prev2").addEventListener("click", ()=>{ currentStep=0; showStep(currentStep); });
+    document.getElementById("prev3").addEventListener("click", ()=>{ currentStep=1; showStep(currentStep); });
+    document.getElementById("prev4").addEventListener("click", ()=>{ currentStep=2; showStep(currentStep); });
+
+    showStep(currentStep);
+
+    // Funzione per leggere dati dal form
+    function getCharacterData(){
       return {
         name: document.getElementById("name").value,
         class: document.getElementById("class").value,
@@ -171,73 +195,73 @@
       };
     }
 
-    // Carica tutti i PG dal server
-    async function fetchCharacters() {
-      try {
+    // Funzione per caricare lista PG
+    async function fetchCharacters(){
+      try{
         const res = await fetch("/characters");
         const data = await res.json();
-        pgList.innerHTML = "";
-        data.forEach(pg => {
-          const div = document.createElement("div");
-          div.className = "pg-item";
-          div.innerHTML = `
+        const pgList = document.getElementById("pgList");
+        pgList.innerHTML="";
+        data.forEach(pg=>{
+          const div=document.createElement("div");
+          div.className="pg-item";
+          div.innerHTML=`
             <strong>${pg.name}</strong> - ${pg.class} Lvl ${pg.level} (${pg.race})<br>
             <button class="edit">Modifica</button>
             <button class="delete">Elimina</button>
-            <pre>${JSON.stringify(pg, null, 2)}</pre>
+            <pre>${JSON.stringify(pg,null,2)}</pre>
           `;
-          // Modifica
-          div.querySelector(".edit").addEventListener("click", () => {
-            for (const key in pg) {
-              const el = document.getElementById(key);
-              if (el) el.value = pg[key];
+          div.querySelector(".edit").addEventListener("click", ()=>{
+            for(const key in pg){
+              const el=document.getElementById(key);
+              if(el) el.value=pg[key];
             }
-            document.getElementById("char_id").value = pg.id;
+            document.getElementById("char_id").value=pg.id;
+            currentStep=0; showStep(currentStep);
           });
-          // Elimina
-          div.querySelector(".delete").addEventListener("click", async () => {
-            await fetch(`/characters/${pg.id}`, { method: "DELETE" });
+          div.querySelector(".delete").addEventListener("click", async ()=>{
+            await fetch(`/characters/${pg.id}`,{ method:"DELETE" });
             fetchCharacters();
           });
           pgList.appendChild(div);
         });
-      } catch (err) {
-        console.error(err);
-      }
+      }catch(err){ console.error(err); }
     }
 
-    // Salva o aggiorna PG
-    createBtn.addEventListener("click", async () => {
+    // Salvataggio PG
+    document.getElementById("createWizardBtn").addEventListener("click", async ()=>{
       const char = getCharacterData();
       const charId = document.getElementById("char_id").value;
-      if (charId) {
-        await fetch(`/characters/${charId}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(char)
+      if(charId){
+        await fetch(`/characters/${charId}`,{
+          method:"PUT",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify(char)
         });
       } else {
-        await fetch("/characters", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(char)
+        await fetch("/characters",{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify(char)
         });
       }
-      document.getElementById("char_id").value = "";
+      alert("Personaggio creato!");
+      document.getElementById("char_id").value="";
       fetchCharacters();
+      currentStep=0; showStep(currentStep);
     });
 
-    // Genera PG random
-    randomBtn.addEventListener("click", async () => {
+    // Generazione random
+    document.getElementById("randomBtn")?.addEventListener("click", async ()=>{
       const res = await fetch("/characters/random");
       const data = await res.json();
-      for (const key in data) {
-        const el = document.getElementById(key);
-        if (el) el.value = data[key];
+      for(const key in data){
+        const el=document.getElementById(key);
+        if(el) el.value=data[key];
       }
     });
 
-    // Carica i PG all’avvio
+    // Carica lista PG all'avvio
     fetchCharacters();
   </script>
 </body>
