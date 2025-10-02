@@ -7,7 +7,7 @@
   <style>
     body { font-family: 'Cinzel', serif; background: #f4f1ea; margin:0; padding:0; color:#222; }
     h1 { font-family: 'Uncial Antiqua', cursive; text-align:center; margin:20px; font-size:2.2em; }
-    .container { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; padding: 20px; max-width: 1200px; margin: auto; }
+    .container { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; padding: 20px; max-width: 1400px; margin: auto; }
     .box { background:#fff; border:2px solid #000; border-radius:8px; padding:15px; margin-bottom:20px; }
     .box h2 { font-size:1.3em; border-bottom:2px solid #000; padding-bottom:5px; margin-bottom:10px; }
     label { display:block; margin-top:8px; font-weight:bold; }
@@ -32,7 +32,11 @@
     <div>
       <div class="box">
         <h2>Dati Base</h2>
-        <label>Nome<input type="text" id="name"><small>Il nome del personaggio.</small></label>
+        <label>Nome
+          <input type="text" id="name">
+          <small>Il nome del personaggio.</small>
+        </label>
+
         <label>Classe
           <select id="class">
             <option value="">Seleziona</option>
@@ -41,8 +45,9 @@
             <option>Druido</option><option>Paladino</option><option>Monaco</option>
             <option>Ranger</option><option>Stregone</option><option>Warlock</option>
           </select>
-          <small>La classe definisce abilità e dadi vita.</small>
+          <small>La classe definisce abilità, dadi vita e progressione.</small>
         </label>
+
         <label>Razza
           <select id="race">
             <option value="">Seleziona</option>
@@ -50,9 +55,19 @@
             <option>Halfling</option><option>Gnomo</option><option>Tiefling</option>
             <option>Dragonide</option><option>Mezzorco</option>
           </select>
-          <small>La razza influisce su caratteristiche e tratti.</small>
+          <small>La razza influisce su tratti, bonus e capacità.</small>
         </label>
-        <label>Background<input type="text" id="background"><small>Il passato del PG, utile per competenze extra.</small></label>
+
+        <label>Sottorazza
+          <input type="text" id="subrace">
+          <small>Opzionale (es. Elfo dei Boschi, Nano delle Colline).</small>
+        </label>
+
+        <label>Background
+          <input type="text" id="background">
+          <small>Il passato del PG, fornisce competenze extra.</small>
+        </label>
+
         <label>Allineamento
           <select id="alignment">
             <option value="">Seleziona</option>
@@ -60,34 +75,231 @@
             <option>Legale Neutrale</option><option>Neutrale</option><option>Caotico Neutrale</option>
             <option>Legale Malvagio</option><option>Neutrale Malvagio</option><option>Caotico Malvagio</option>
           </select>
-          <small>Indica etica e comportamento.</small>
+          <small>Etica e comportamento del personaggio.</small>
         </label>
-        <label>Livello<input type="number" id="level" value="1" min="1"><small>Determina potere, competenze e PF.</small></label>
+
+        <label>Livello
+          <input type="number" id="level" value="1" min="1" max="20">
+          <small>Determina potere, competenze e capacità.</small>
+        </label>
+
+        <label>Punti Esperienza
+          <input type="number" id="xp" value="0" min="0">
+          <small>Serve per avanzare di livello.</small>
+        </label>
       </div>
 
       <div class="box">
         <h2>Caratteristiche</h2>
         <div class="stats">
-          <div class="stat"><label>Forza</label><input type="number" id="strength" value="10"><small>Attacchi corpo a corpo, peso trasportabile.</small></div>
-          <div class="stat"><label>Destrezza</label><input type="number" id="dexterity" value="10"><small>Iniziativa, acrobazie, furtività.</small></div>
-          <div class="stat"><label>Costituzione</label><input type="number" id="constitution" value="10"><small>Resistenza e punti ferita.</small></div>
-          <div class="stat"><label>Intelligenza</label><input type="number" id="intelligence" value="10"><small>Magia arcana e conoscenze.</small></div>
-          <div class="stat"><label>Saggezza</label><input type="number" id="wisdom" value="10"><small>Percezione, intuizione, magia divina.</small></div>
-          <div class="stat"><label>Carisma</label><input type="number" id="charisma" value="10"><small>Incantesimi e abilità sociali.</small></div>
+          <div class="stat">
+            <label>Forza</label>
+            <input type="number" id="strength" value="10">
+            <small>Attacchi corpo a corpo, peso trasportabile.</small>
+          </div>
+          <div class="stat">
+            <label>Destrezza</label>
+            <input type="number" id="dexterity" value="10">
+            <small>CA, iniziativa, furtività.</small>
+          </div>
+          <div class="stat">
+            <label>Costituzione</label>
+            <input type="number" id="constitution" value="10">
+            <small>Punti ferita e resistenza fisica.</small>
+          </div>
+          <div class="stat">
+            <label>Intelligenza</label>
+            <input type="number" id="intelligence" value="10">
+            <small>Conoscenze, magia arcana.</small>
+          </div>
+          <div class="stat">
+            <label>Saggezza</label>
+            <input type="number" id="wisdom" value="10">
+            <small>Percezione, intuizione, magia divina.</small>
+          </div>
+          <div class="stat">
+            <label>Carisma</label>
+            <input type="number" id="charisma" value="10">
+            <small>Abilità sociali e incantesimi di fascino.</small>
+          </div>
         </div>
       </div>
-    </div>
+            <div class="box">
+        <h2>Tiri Salvezza</h2>
+        <label><input type="checkbox" id="save_str"> Forza</label>
+        <small>Difesa contro prove fisiche di forza.</small>
+
+        <label><input type="checkbox" id="save_dex"> Destrezza</label>
+        <small>Resistenza ad attacchi ad area o trappole.</small>
+
+        <label><input type="checkbox" id="save_con"> Costituzione</label>
+        <small>Resistenza a malattie, veleni e fatica.</small>
+
+        <label><input type="checkbox" id="save_int"> Intelligenza</label>
+        <small>Difesa contro illusioni e magie mentali.</small>
+
+        <label><input type="checkbox" id="save_wis"> Saggezza</label>
+        <small>Difesa contro charme, paura e percezioni mentali.</small>
+
+        <label><input type="checkbox" id="save_cha"> Carisma</label>
+        <small>Resistenza a magie di fascino o influenza.</small>
+      </div>
+
+      <div class="box">
+        <h2>Abilità</h2>
+        <label><input type="checkbox" id="acrobatics"> Acrobazia (Des)</label>
+        <small>Capacità di equilibrio e manovre agili.</small>
+
+        <label><input type="checkbox" id="animal"> Addestrare Animali (Sag)</label>
+        <small>Gestire e controllare animali.</small>
+
+        <label><input type="checkbox" id="arcana"> Arcano (Int)</label>
+        <small>Conoscenze magiche e incantamenti.</small>
+
+        <label><input type="checkbox" id="athletics"> Atletica (For)</label>
+        <small>Salti, arrampicate e nuoto.</small>
+
+        <label><input type="checkbox" id="deception"> Inganno (Car)</label>
+        <small>Mentire e convincere con false parole.</small>
+
+        <label><input type="checkbox" id="history"> Storia (Int)</label>
+        <small>Conoscenza di eventi passati e culture.</small>
+
+        <label><input type="checkbox" id="insight"> Intuizione (Sag)</label>
+        <small>Capire le intenzioni altrui.</small>
+
+        <label><input type="checkbox" id="intimidation"> Intimidire (Car)</label>
+        <small>Impaurire o minacciare gli altri.</small>
+
+        <label><input type="checkbox" id="investigation"> Investigare (Int)</label>
+        <small>Trovare indizi e fare deduzioni.</small>
+
+        <label><input type="checkbox" id="medicine"> Medicina (Sag)</label>
+        <small>Stabilizzare feriti e riconoscere malattie.</small>
+
+        <label><input type="checkbox" id="nature"> Natura (Int)</label>
+        <small>Conoscenza di piante, animali e ambienti naturali.</small>
+
+        <label><input type="checkbox" id="perception"> Percezione (Sag)</label>
+        <small>Notare dettagli, ascoltare rumori, avvistare nemici.</small>
+
+        <label><input type="checkbox" id="performance"> Intrattenere (Car)</label>
+        <small>Suonare, recitare, esibirsi.</small>
+
+        <label><input type="checkbox" id="persuasion"> Persuasione (Car)</label>
+        <small>Convincere con parole e diplomazia.</small>
+
+        <label><input type="checkbox" id="religion"> Religione (Int)</label>
+        <small>Conoscenze divine, culti e riti.</small>
+
+        <label><input type="checkbox" id="sleight"> Rapidità di Mano (Des)</label>
+        <small>Furti, borseggi e manipolazioni sottili.</small>
+
+        <label><input type="checkbox" id="stealth"> Furtività (Des)</label>
+        <small>Muoversi senza farsi notare.</small>
+
+        <label><input type="checkbox" id="survival"> Sopravvivenza (Sag)</label>
+        <small>Seguire tracce, orientarsi, vivere in natura.</small>
+      </div>
+
+    </div> <!-- fine colonna sinistra -->
 
     <!-- Colonna destra -->
     <div>
       <div class="box">
         <h2>Combattimento</h2>
-        <label>Punti Ferita Massimi<input type="number" id="max_hp" value="10"><small>Il totale dei PF del personaggio.</small></label>
-        <label>Punti Ferita Attuali<input type="number" id="current_hp" value="10"><small>I PF rimanenti dopo i danni.</small></label>
-        <label>Classe Armatura<input type="number" id="armor_class" value="10"><small>Quanto è difficile colpire il PG.</small></label>
-        <label>Iniziativa<input type="number" id="initiative" value="0"><small>Modificatore ai tiri di iniziativa.</small></label>
-        <label>Velocità<input type="number" id="speed" value="9"><small>Metri che puoi muoverti a turno.</small></label>
-        <label>Dado Vita<input type="text" id="hit_dice" value="1d8"><small>Usato per recuperare PF durante i riposi.</small></label>
+        <label>Punti Ferita Massimi
+          <input type="number" id="max_hp" value="10">
+          <small>Il totale dei PF del personaggio.</small>
+        </label>
+
+        <label>Punti Ferita Attuali
+          <input type="number" id="current_hp" value="10">
+          <small>I PF rimasti dopo i danni.</small>
+        </label>
+
+        <label>Classe Armatura
+          <input type="number" id="armor_class" value="10">
+          <small>Quanto è difficile colpire il PG.</small>
+        </label>
+
+        <label>Iniziativa
+          <input type="number" id="initiative" value="0">
+          <small>Modificatore ai tiri di iniziativa.</small>
+        </label>
+
+        <label>Velocità
+          <input type="number" id="speed" value="9">
+          <small>Metri percorribili in un turno.</small>
+        </label>
+
+        <label>Dado Vita
+          <input type="text" id="hit_dice" value="1d8">
+          <small>Usato per recuperare PF nei riposi.</small>
+        </label>
+
+        <label>Punti Ispirazione
+          <input type="number" id="inspiration" value="0">
+          <small>Punti bonus dati dal DM per interpretazione.</small>
+        </label>
+
+        <label>Bonus Competenza
+          <input type="number" id="proficiency_bonus" value="2">
+          <small>Aggiunto a tiri salvezza, abilità e attacchi competenti.</small>
+        </label>
+      </div>
+            <div class="box">
+        <h2>Attacchi e Incantesimi</h2>
+        <label>Attacchi
+          <textarea id="attacks" rows="4"></textarea>
+          <small>Inserisci armi, bonus al tiro per colpire e danni (es: Spada Lunga +5, 1d8+3).</small>
+        </label>
+
+        <label>Incantesimi Conosciuti
+          <textarea id="spells" rows="4"></textarea>
+          <small>Lista di incantesimi preparati o conosciuti.</small>
+        </label>
+
+        <label>Slot Incantesimo
+          <input type="text" id="spell_slots" placeholder="Esempio: 4/2/0/0/0">
+          <small>Numero di slot disponibili per livello di incantesimo.</small>
+        </label>
+      </div>
+
+      <div class="box">
+        <h2>Equipaggiamento</h2>
+        <label>Inventario
+          <textarea id="equipment" rows="4"></textarea>
+          <small>Armi, armature, oggetti magici e altri beni.</small>
+        </label>
+
+        <label>Oro
+          <input type="number" id="gold" value="0">
+          <small>Quantità di monete d’oro disponibili.</small>
+        </label>
+      </div>
+
+      <div class="box">
+        <h2>Tratti e Background</h2>
+        <label>Tratti della Personalità
+          <textarea id="traits" rows="3"></textarea>
+          <small>Comportamenti tipici del PG.</small>
+        </label>
+
+        <label>Ideali
+          <textarea id="ideals" rows="3"></textarea>
+          <small>Principi guida del personaggio.</small>
+        </label>
+
+        <label>Legami
+          <textarea id="bonds" rows="3"></textarea>
+          <small>Relazioni o vincoli forti che motivano il PG.</small>
+        </label>
+
+        <label>Difetti
+          <textarea id="flaws" rows="3"></textarea>
+          <small>Punti deboli caratteriali o morali.</small>
+        </label>
       </div>
 
       <div class="box">
@@ -96,90 +308,144 @@
       </div>
 
       <div class="box">
-        <button class="btn" onclick="saveCharacter()">Salva</button>
-        <button class="btn" onclick="randomCharacter()">Genera Casuale</button>
+        <button class="btn" onclick="saveCharacter()">💾 Salva</button>
+        <button class="btn" onclick="randomCharacter()">🎲 Genera Casuale</button>
       </div>
 
       <div class="box">
         <h2>Personaggi Salvati</h2>
         <div class="pg-list" id="pgList"></div>
       </div>
-    </div>
-  </div>
+    </div> <!-- fine colonna destra -->
+  </div> <!-- fine container -->
+    <script>
+    // === Funzione per aggiornare l’anteprima ===
+    function updatePreview() {
+      const name = document.getElementById("name").value;
+      const race = document.getElementById("race").value;
+      const charClass = document.getElementById("class").value;
+      const level = document.getElementById("level").value;
+      const background = document.getElementById("background").value;
 
-  <script>
-    function getCharacterData(){
-      return {
+      const str = document.getElementById("str").value;
+      const dex = document.getElementById("dex").value;
+      const con = document.getElementById("con").value;
+      const int = document.getElementById("int").value;
+      const wis = document.getElementById("wis").value;
+      const cha = document.getElementById("cha").value;
+
+      document.getElementById("preview").innerHTML = `
+        <h3>${name || "Senza nome"} (Lv.${level} ${race} ${charClass})</h3>
+        <p><b>Background:</b> ${background}</p>
+        <p><b>For:</b> ${str}, <b>Des:</b> ${dex}, <b>Cos:</b> ${con},
+        <b>Int:</b> ${int}, <b>Sag:</b> ${wis}, <b>Car:</b> ${cha}</p>
+      `;
+    }
+
+    // Aggiorna l’anteprima quando i campi cambiano
+    document.querySelectorAll("input, select, textarea")
+      .forEach(el => el.addEventListener("input", updatePreview));
+
+    // === Salvataggio PG ===
+    async function saveCharacter() {
+      const character = {
         name: document.getElementById("name").value,
-        class: document.getElementById("class").value,
         race: document.getElementById("race").value,
+        class: document.getElementById("class").value,
+        level: document.getElementById("level").value,
         background: document.getElementById("background").value,
-        alignment: document.getElementById("alignment").value,
-        level: parseInt(document.getElementById("level").value),
-        strength: parseInt(document.getElementById("strength").value),
-        dexterity: parseInt(document.getElementById("dexterity").value),
-        constitution: parseInt(document.getElementById("constitution").value),
-        intelligence: parseInt(document.getElementById("intelligence").value),
-        wisdom: parseInt(document.getElementById("wisdom").value),
-        charisma: parseInt(document.getElementById("charisma").value),
-        max_hp: parseInt(document.getElementById("max_hp").value),
-        current_hp: parseInt(document.getElementById("current_hp").value),
-        armor_class: parseInt(document.getElementById("armor_class").value),
-        initiative: parseInt(document.getElementById("initiative").value),
-        speed: parseInt(document.getElementById("speed").value),
-        hit_dice: document.getElementById("hit_dice").value
+        str: document.getElementById("str").value,
+        dex: document.getElementById("dex").value,
+        con: document.getElementById("con").value,
+        int: document.getElementById("int").value,
+        wis: document.getElementById("wis").value,
+        cha: document.getElementById("cha").value,
+        hp: document.getElementById("hp").value,
+        ac: document.getElementById("ac").value,
+        initiative: document.getElementById("initiative").value,
+        speed: document.getElementById("speed").value,
+        attacks: document.getElementById("attacks").value,
+        spells: document.getElementById("spells").value,
+        spell_slots: document.getElementById("spell_slots").value,
+        equipment: document.getElementById("equipment").value,
+        gold: document.getElementById("gold").value,
+        traits: document.getElementById("traits").value,
+        ideals: document.getElementById("ideals").value,
+        bonds: document.getElementById("bonds").value,
+        flaws: document.getElementById("flaws").value
       };
-    }
 
-    async function saveCharacter(){
-      const char = getCharacterData();
-      await fetch("/characters", {
+      const res = await fetch("/characters", {
         method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify(char)
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(character)
       });
-      fetchCharacters();
+
+      if (res.ok) {
+        loadCharacters();
+        alert("Personaggio salvato!");
+      } else {
+        alert("Errore nel salvataggio.");
+      }
     }
 
-    async function fetchCharacters(){
+    // === Caricamento PG salvati ===
+    async function loadCharacters() {
       const res = await fetch("/characters");
-      const chars = await res.json();
       const list = document.getElementById("pgList");
       list.innerHTML = "";
-      chars.forEach(c=>{
-        const div = document.createElement("div");
-        div.className = "pg-item";
-        div.innerHTML = `<strong>${c.name}</strong> (Lv ${c.level} ${c.race} ${c.class})`;
-      });
+
+      if (res.ok) {
+        const chars = await res.json();
+        chars.forEach(c => {
+          const div = document.createElement("div");
+          div.classList.add("pg-card");
+          div.innerHTML = `
+            <b>${c.name}</b> (Lv.${c.level} ${c.race} ${c.class})
+            <br><button class="btn" onclick="deleteCharacter(${c.id})">❌ Elimina</button>
+          `;
+          list.appendChild(div);
+        });
+      }
     }
 
-    async function randomCharacter(){
-      const res = await fetch("/characters/random");
-      const char = await res.json();
-      Object.keys(char).forEach(k=>{
-        if(document.getElementById(k)){
-          document.getElementById(k).value = char[k];
-        }
-      });
+    // === Eliminazione PG ===
+    async function deleteCharacter(id) {
+      const res = await fetch("/characters/" + id, { method: "DELETE" });
+      if (res.ok) {
+        loadCharacters();
+      }
+    }
+
+    // === Generazione casuale PG ===
+    function randomStat() {
+      let rolls = [];
+      for (let i = 0; i < 4; i++) rolls.push(Math.floor(Math.random() * 6) + 1);
+      rolls.sort((a, b) => b - a);
+      return rolls[0] + rolls[1] + rolls[2]; // somma i migliori 3
+    }
+
+    function randomCharacter() {
+      const races = ["Umano", "Elfo", "Nano", "Halfling", "Tiefling", "Draconide", "Mezzorco", "Gnomo"];
+      const classes = ["Guerriero", "Mago", "Ladro", "Chierico", "Barbaro", "Bardo", "Druido", "Paladino", "Ranger", "Stregone", "Warlock", "Monaco"];
+
+      document.getElementById("name").value = "PG Casuale";
+      document.getElementById("race").value = races[Math.floor(Math.random() * races.length)];
+      document.getElementById("class").value = classes[Math.floor(Math.random() * classes.length)];
+      document.getElementById("level").value = 1;
+
+      document.getElementById("str").value = randomStat();
+      document.getElementById("dex").value = randomStat();
+      document.getElementById("con").value = randomStat();
+      document.getElementById("int").value = randomStat();
+      document.getElementById("wis").value = randomStat();
+      document.getElementById("cha").value = randomStat();
+
       updatePreview();
     }
 
-    function updatePreview(){
-      const char = getCharacterData();
-      char.str_mod = Math.floor((char.strength-10)/2);
-      char.dex_mod = Math.floor((char.dexterity-10)/2);
-      char.con_mod = Math.floor((char.constitution-10)/2);
-      char.int_mod = Math.floor((char.intelligence-10)/2);
-      char.wis_mod = Math.floor((char.wisdom-10)/2);
-      char.cha_mod = Math.floor((char.charisma-10)/2);
-      document.getElementById("preview").innerHTML = `<pre>${JSON.stringify(char,null,2)}</pre>`;
-    }
-
-    document.querySelectorAll("input,select").forEach(el=>{
-      el.addEventListener("input", updatePreview);
-    });
-
-    fetchCharacters();
+    // Carica i PG salvati all’avvio
+    window.onload = loadCharacters;
   </script>
 </body>
 </html>
