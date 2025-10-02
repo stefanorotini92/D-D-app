@@ -51,6 +51,20 @@
       padding: 10px;
       margin: 5px 0;
       border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .delete-btn {
+      background: #e53935;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .delete-btn:hover {
+      background: #b71c1c;
     }
   </style>
 </head>
@@ -81,11 +95,28 @@
           const div = document.createElement('div');
           div.className = 'character';
           div.textContent = `${c.name} - ${c.race} - ${c.class}`;
+
+          // Bottone elimina
+          const delBtn = document.createElement('button');
+          delBtn.textContent = "❌";
+          delBtn.className = "delete-btn";
+          delBtn.onclick = async () => {
+            try {
+              const res = await fetch(`/characters/${c.id}`, { method: 'DELETE' });
+              if (!res.ok) throw new Error("Errore eliminazione");
+              console.log(`🗑️ Eliminato personaggio con ID ${c.id}`);
+              loadCharacters();
+            } catch (err) {
+              console.error("❌ Errore eliminazione:", err);
+            }
+          };
+
+          div.appendChild(delBtn);
           charactersList.appendChild(div);
         });
         console.log("✅ Personaggi caricati:", characters);
       } catch (err) {
-        console.error("❌ Errore nel caricamento personaggi:", err);
+        console.error("❌ Errore caricamento personaggi:", err);
       }
     }
 
@@ -110,12 +141,12 @@
         if (!res.ok) throw new Error(`Server error: ${res.status}`);
 
         const savedChar = await res.json();
-        console.log("✅ Personaggio salvato dal server:", savedChar);
+        console.log("✅ Personaggio salvato:", savedChar);
 
         form.reset();
         loadCharacters();
       } catch (err) {
-        console.error("❌ Errore nell'invio personaggio:", err);
+        console.error("❌ Errore creazione:", err);
       }
     });
   </script>
