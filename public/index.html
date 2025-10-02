@@ -2,178 +2,120 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Creazione Personaggio D&D 5e Wizard</title>
+  <title>Scheda Personaggio D&D 5e</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Uncial+Antiqua&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Arial, sans-serif; padding: 15px; background: #f4f4f4; }
-    h1, h2 { text-align: center; }
-    .section { background: #fff; padding: 15px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-    label { display: block; margin-top: 10px; font-weight: bold; }
-    input, select, textarea { width: 100%; padding: 6px; margin-top: 2px; border-radius: 4px; border: 1px solid #ccc; }
-    button { margin-top: 12px; padding: 10px 15px; border: none; border-radius: 5px; background-color: #007bff; color: #fff; cursor: pointer; }
-    button:hover { background-color: #0056b3; }
-    .pg-list { margin-top: 15px; }
-    .pg-item { border: 1px solid #ccc; border-radius: 5px; padding: 10px; margin-bottom: 10px; background: #fafafa; }
-    .pg-item button { margin-right: 5px; background-color: #dc3545; }
-    .pg-item button.edit { background-color: #28a745; }
-    pre { background: #eee; padding: 10px; border-radius: 5px; overflow-x: auto; }
-    small { display: block; font-weight: normal; color: #555; margin-top: 2px; }
+    body { font-family: 'Cinzel', serif; background: #f4f1ea; margin:0; padding:0; color:#222; }
+    h1 { font-family: 'Uncial Antiqua', cursive; text-align:center; margin:20px; font-size:2.2em; }
+    .container { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; padding: 20px; max-width: 1200px; margin: auto; }
+    .box { background:#fff; border:2px solid #000; border-radius:8px; padding:15px; margin-bottom:20px; }
+    .box h2 { font-size:1.3em; border-bottom:2px solid #000; padding-bottom:5px; margin-bottom:10px; }
+    label { display:block; margin-top:8px; font-weight:bold; }
+    input, select, textarea { width:100%; padding:5px; margin-top:3px; border:1px solid #333; border-radius:4px; font-family:inherit; font-size:0.9em; }
+    small { display:block; font-weight:normal; color:#555; font-size:0.8em; margin-top:2px; }
+    .stats { display:grid; grid-template-columns: repeat(3,1fr); gap:10px; }
+    .stat { border:1px solid #000; border-radius:6px; text-align:center; padding:10px; background:#fdfbf7; }
+    .stat label { margin:0; font-size:0.9em; }
+    .stat input { width:60px; text-align:center; font-size:1.2em; }
+    .btn { display:inline-block; margin:10px 5px 0 0; padding:10px 15px; background:#222; color:#fff; border:none; border-radius:5px; cursor:pointer; font-family:inherit; }
+    .btn:hover { background:#555; }
+    .pg-list { margin-top:20px; }
+    .pg-item { border:1px solid #000; border-radius:6px; background:#fafafa; padding:10px; margin-bottom:10px; }
+    pre { background:#eee; border:1px solid #ccc; border-radius:6px; padding:10px; max-height:300px; overflow-y:auto; }
   </style>
 </head>
 <body>
-  <h1>Creazione Personaggio D&D 5e</h1>
-  <input type="hidden" id="char_id">
+  <h1>Scheda Personaggio D&D 5e</h1>
+  <div class="container">
 
-  <!-- Step 1 -->
-  <div class="section step" id="step1">
-    <h2>Step 1: Razza, Classe, Background</h2>
-    <label>Nome<input type="text" id="name" required></label>
-    <label>Classe
-      <select id="class">
-        <option value="">Seleziona una classe</option>
-        <option value="Guerriero">Guerriero</option>
-        <option value="Mago">Mago</option>
-        <option value="Ladro">Ladro</option>
-        <option value="Chierico">Chierico</option>
-        <option value="Bardo">Bardo</option>
-        <option value="Paladino">Paladino</option>
-        <option value="Ranger">Ranger</option>
-        <option value="Warlock">Warlock</option>
-        <option value="Druido">Druido</option>
-        <option value="Stregone">Stregone</option>
-        <option value="Monaco">Monaco</option>
-        <option value="Barbaro">Barbaro</option>
-      </select>
-      <small>La classe determina le abilità principali e i dadi vita.</small>
-    </label>
-    <label>Razza
-      <select id="race">
-        <option value="">Seleziona una razza</option>
-        <option value="Umano">Umano</option>
-        <option value="Elfo">Elfo</option>
-        <option value="Nano">Nano</option>
-        <option value="Halfling">Halfling</option>
-        <option value="Tiefling">Tiefling</option>
-        <option value="Mezzorco">Mezzorco</option>
-        <option value="Dragonide">Dragonide</option>
-        <option value="Gnomo">Gnomo</option>
-      </select>
-      <small>La razza influenza abilità e tratti speciali.</small>
-    </label>
-    <label>Allineamento
-      <select id="alignment">
-        <option value="">Seleziona allineamento</option>
-        <option value="LB">Legale Buono</option>
-        <option value="NB">Neutrale Buono</option>
-        <option value="CB">Caotico Buono</option>
-        <option value="LN">Legale Neutrale</option>
-        <option value="NN">Neutrale Puro</option>
-        <option value="CN">Caotico Neutrale</option>
-        <option value="LM">Legale Malvagio</option>
-        <option value="NM">Neutrale Malvagio</option>
-        <option value="CM">Caotico Malvagio</option>
-      </select>
-      <small>L’allineamento descrive l’etica e il comportamento del personaggio.</small>
-    </label>
-    <label>Background
-      <select id="background">
-        <option value="">Seleziona background</option>
-        <option value="Eroe della città">Eroe della città</option>
-        <option value="Criminale">Criminale</option>
-        <option value="Saggio">Saggio</option>
-        <option value="Eremita">Eremita</option>
-        <option value="Mercante">Mercante</option>
-        <option value="Soldato">Soldato</option>
-        <option value="Artigiano">Artigiano</option>
-      </select>
-      <small>Il background offre competenze e tratti aggiuntivi.</small>
-    </label>
-    <label>Livello<input type="number" id="level" value="1" min="1"><small>Il livello determina potere e PF.</small></label>
-    <button type="button" id="next1">Avanti</button>
-  </div>
+    <!-- Colonna sinistra -->
+    <div>
+      <div class="box">
+        <h2>Dati Base</h2>
+        <label>Nome<input type="text" id="name"><small>Il nome del personaggio.</small></label>
+        <label>Classe
+          <select id="class">
+            <option value="">Seleziona</option>
+            <option>Guerriero</option><option>Mago</option><option>Ladro</option>
+            <option>Chierico</option><option>Barbaro</option><option>Bardo</option>
+            <option>Druido</option><option>Paladino</option><option>Monaco</option>
+            <option>Ranger</option><option>Stregone</option><option>Warlock</option>
+          </select>
+          <small>La classe definisce abilità e dadi vita.</small>
+        </label>
+        <label>Razza
+          <select id="race">
+            <option value="">Seleziona</option>
+            <option>Umano</option><option>Elfo</option><option>Nano</option>
+            <option>Halfling</option><option>Gnomo</option><option>Tiefling</option>
+            <option>Dragonide</option><option>Mezzorco</option>
+          </select>
+          <small>La razza influisce su caratteristiche e tratti.</small>
+        </label>
+        <label>Background<input type="text" id="background"><small>Il passato del PG, utile per competenze extra.</small></label>
+        <label>Allineamento
+          <select id="alignment">
+            <option value="">Seleziona</option>
+            <option>Legale Buono</option><option>Neutrale Buono</option><option>Caotico Buono</option>
+            <option>Legale Neutrale</option><option>Neutrale</option><option>Caotico Neutrale</option>
+            <option>Legale Malvagio</option><option>Neutrale Malvagio</option><option>Caotico Malvagio</option>
+          </select>
+          <small>Indica etica e comportamento.</small>
+        </label>
+        <label>Livello<input type="number" id="level" value="1" min="1"><small>Determina potere, competenze e PF.</small></label>
+      </div>
 
-  <!-- Step 2 -->
-  <div class="section step" id="step2" style="display:none;">
-    <h2>Step 2: Caratteristiche</h2>
-    <label>Forza<input type="number" id="strength" value="10"><small>Influenza attacchi corpo a corpo e capacità di sollevamento.</small></label>
-    <label>Destrezza<input type="number" id="dexterity" value="10"><small>Influenza iniziativa, acrobazia e tiri per schivare.</small></label>
-    <label>Costituzione<input type="number" id="constitution" value="10"><small>Determina PF e resistenze.</small></label>
-    <label>Intelligenza<input type="number" id="intelligence" value="10"><small>Influenza abilità di conoscenza e magia.</small></label>
-    <label>Saggezza<input type="number" id="wisdom" value="10"><small>Influenza percezione, sopravvivenza e abilità divine.</small></label>
-    <label>Carisma<input type="number" id="charisma" value="10"><small>Influenza incantesimi e abilità sociali.</small></label>
-    <button type="button" id="prev2">Indietro</button>
-    <button type="button" id="next2">Avanti</button>
-  </div>
-    <!-- Step 3 -->
-  <div class="section step" id="step3" style="display:none;">
-    <h2>Step 3: Combattimento</h2>
-    <label>Punti ferita massimi<input type="number" id="max_hp" value="10" readonly></label>
-    <label>Punti ferita attuali<input type="number" id="current_hp" value="10"></label>
-    <label>Classe armatura<input type="number" id="armor_class" value="10"></label>
-    <label>Iniziativa<input type="number" id="initiative" value="0" readonly></label>
-    <label>Velocità<input type="number" id="speed" value="30"></label>
-    <label>Dadi vita<input type="text" id="hit_dice" value="1d10"></label>
-    <button type="button" id="prev3">Indietro</button>
-    <button type="button" id="next3">Avanti</button>
-  </div>
+      <div class="box">
+        <h2>Caratteristiche</h2>
+        <div class="stats">
+          <div class="stat"><label>Forza</label><input type="number" id="strength" value="10"><small>Attacchi corpo a corpo, peso trasportabile.</small></div>
+          <div class="stat"><label>Destrezza</label><input type="number" id="dexterity" value="10"><small>Iniziativa, acrobazie, furtività.</small></div>
+          <div class="stat"><label>Costituzione</label><input type="number" id="constitution" value="10"><small>Resistenza e punti ferita.</small></div>
+          <div class="stat"><label>Intelligenza</label><input type="number" id="intelligence" value="10"><small>Magia arcana e conoscenze.</small></div>
+          <div class="stat"><label>Saggezza</label><input type="number" id="wisdom" value="10"><small>Percezione, intuizione, magia divina.</small></div>
+          <div class="stat"><label>Carisma</label><input type="number" id="charisma" value="10"><small>Incantesimi e abilità sociali.</small></div>
+        </div>
+      </div>
+    </div>
 
-  <!-- Step 4 -->
-  <div class="section step" id="step4" style="display:none;">
-    <h2>Step 4: Note, Equipaggiamento e Storia</h2>
-    <label>Giocatore<input type="text" id="player_name"></label>
-    <label>Punti esperienza<input type="number" id="xp" value="0"></label>
-    <label>Equipaggiamento<textarea id="equipment"></textarea></label>
-    <label>Tratti della personalità<textarea id="personality_traits"></textarea></label>
-    <label>Ideali<textarea id="ideals"></textarea></label>
-    <label>Legami<textarea id="bonds"></textarea></label>
-    <label>Difetti<textarea id="flaws"></textarea></label>
-    <label>Aspetto fisico<textarea id="appearance"></textarea></label>
-    <label>Storia<textarea id="backstory"></textarea></label>
-    <button type="button" id="prev4">Indietro</button>
-    <button type="button" id="createWizardBtn">Salva Personaggio</button>
-  </div>
+    <!-- Colonna destra -->
+    <div>
+      <div class="box">
+        <h2>Combattimento</h2>
+        <label>Punti Ferita Massimi<input type="number" id="max_hp" value="10"><small>Il totale dei PF del personaggio.</small></label>
+        <label>Punti Ferita Attuali<input type="number" id="current_hp" value="10"><small>I PF rimanenti dopo i danni.</small></label>
+        <label>Classe Armatura<input type="number" id="armor_class" value="10"><small>Quanto è difficile colpire il PG.</small></label>
+        <label>Iniziativa<input type="number" id="initiative" value="0"><small>Modificatore ai tiri di iniziativa.</small></label>
+        <label>Velocità<input type="number" id="speed" value="9"><small>Metri che puoi muoverti a turno.</small></label>
+        <label>Dado Vita<input type="text" id="hit_dice" value="1d8"><small>Usato per recuperare PF durante i riposi.</small></label>
+      </div>
 
-  <!-- Anteprima scheda -->
-  <div class="section">
-    <h2>Anteprima Personaggio</h2>
-    <div id="preview"></div>
-  </div>
+      <div class="box">
+        <h2>Anteprima Scheda</h2>
+        <div id="preview"><em>Compila i campi per vedere l’anteprima</em></div>
+      </div>
 
-  <!-- Lista PG -->
-  <div class="section">
-    <h2>Lista Personaggi</h2>
-    <div id="pgList" class="pg-list"></div>
-  </div>
+      <div class="box">
+        <button class="btn" onclick="saveCharacter()">Salva</button>
+        <button class="btn" onclick="randomCharacter()">Genera Casuale</button>
+      </div>
 
-  <button type="button" id="randomBtn">Genera PG Random</button>
+      <div class="box">
+        <h2>Personaggi Salvati</h2>
+        <div class="pg-list" id="pgList"></div>
+      </div>
+    </div>
+  </div>
 
   <script>
-    // Wizard multi-step
-    const steps = ["step1","step2","step3","step4"];
-    let currentStep = 0;
-    function showStep(index){
-      steps.forEach((id,i)=>{
-        document.getElementById(id).style.display = (i===index)?"block":"none";
-      });
-    }
-    document.getElementById("next1").addEventListener("click", ()=>{ currentStep=1; showStep(currentStep); });
-    document.getElementById("next2").addEventListener("click", ()=>{ currentStep=2; showStep(currentStep); });
-    document.getElementById("next3").addEventListener("click", ()=>{ currentStep=3; showStep(currentStep); });
-    document.getElementById("prev2").addEventListener("click", ()=>{ currentStep=0; showStep(currentStep); });
-    document.getElementById("prev3").addEventListener("click", ()=>{ currentStep=1; showStep(currentStep); });
-    document.getElementById("prev4").addEventListener("click", ()=>{ currentStep=2; showStep(currentStep); });
-    showStep(currentStep);
-
-    // Funzione dati PG
     function getCharacterData(){
       return {
         name: document.getElementById("name").value,
         class: document.getElementById("class").value,
         race: document.getElementById("race").value,
-        alignment: document.getElementById("alignment").value,
         background: document.getElementById("background").value,
+        alignment: document.getElementById("alignment").value,
         level: parseInt(document.getElementById("level").value),
-        player_name: document.getElementById("player_name").value,
-        xp: parseInt(document.getElementById("xp").value),
         strength: parseInt(document.getElementById("strength").value),
         dexterity: parseInt(document.getElementById("dexterity").value),
         constitution: parseInt(document.getElementById("constitution").value),
@@ -185,121 +127,58 @@
         armor_class: parseInt(document.getElementById("armor_class").value),
         initiative: parseInt(document.getElementById("initiative").value),
         speed: parseInt(document.getElementById("speed").value),
-        hit_dice: document.getElementById("hit_dice").value,
-        death_saves_success: parseInt(document.getElementById("death_saves_success")?.value || 0),
-        death_saves_failure: parseInt(document.getElementById("death_saves_failure")?.value || 0),
-        equipment: document.getElementById("equipment").value,
-        personality_traits: document.getElementById("personality_traits").value,
-        ideals: document.getElementById("ideals").value,
-        bonds: document.getElementById("bonds").value,
-        flaws: document.getElementById("flaws").value,
-        appearance: document.getElementById("appearance").value,
-        backstory: document.getElementById("backstory").value
+        hit_dice: document.getElementById("hit_dice").value
       };
     }
 
-    // Calcoli automatici
-    function calculateModifiers(){
-      const mod = (stat) => Math.floor((stat-10)/2);
-      const strength = parseInt(document.getElementById("strength").value);
-      const dex = parseInt(document.getElementById("dexterity").value);
-      const con = parseInt(document.getElementById("constitution").value);
+    async function saveCharacter(){
+      const char = getCharacterData();
+      await fetch("/characters", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(char)
+      });
+      fetchCharacters();
+    }
 
-      // PF massimi e iniziativa
-      const level = parseInt(document.getElementById("level").value);
-      const hit_dice = parseInt(document.getElementById("hit_dice").value.split('d')[1] || 10);
-      document.getElementById("max_hp").value = hit_dice + mod(con); // livello 1 semplificato
-      document.getElementById("current_hp").value = hit_dice + mod(con);
-      document.getElementById("initiative").value = mod(dex);
+    async function fetchCharacters(){
+      const res = await fetch("/characters");
+      const chars = await res.json();
+      const list = document.getElementById("pgList");
+      list.innerHTML = "";
+      chars.forEach(c=>{
+        const div = document.createElement("div");
+        div.className = "pg-item";
+        div.innerHTML = `<strong>${c.name}</strong> (Lv ${c.level} ${c.race} ${c.class})`;
+      });
+    }
 
+    async function randomCharacter(){
+      const res = await fetch("/characters/random");
+      const char = await res.json();
+      Object.keys(char).forEach(k=>{
+        if(document.getElementById(k)){
+          document.getElementById(k).value = char[k];
+        }
+      });
       updatePreview();
     }
 
-    ["strength","dexterity","constitution","level","hit_dice"].forEach(id=>{
-      document.getElementById(id).addEventListener("change", calculateModifiers);
-    });
-
-    // Anteprima scheda
     function updatePreview(){
       const char = getCharacterData();
+      char.str_mod = Math.floor((char.strength-10)/2);
+      char.dex_mod = Math.floor((char.dexterity-10)/2);
+      char.con_mod = Math.floor((char.constitution-10)/2);
+      char.int_mod = Math.floor((char.intelligence-10)/2);
+      char.wis_mod = Math.floor((char.wisdom-10)/2);
+      char.cha_mod = Math.floor((char.charisma-10)/2);
       document.getElementById("preview").innerHTML = `<pre>${JSON.stringify(char,null,2)}</pre>`;
     }
-    document.querySelectorAll("input,select,textarea").forEach(el=>{
+
+    document.querySelectorAll("input,select").forEach(el=>{
       el.addEventListener("input", updatePreview);
     });
 
-    // Salvataggio PG
-    document.getElementById("createWizardBtn").addEventListener("click", async ()=>{
-      const char = getCharacterData();
-      const charId = document.getElementById("char_id").value;
-      if(charId){
-        await fetch(`/characters/${charId}`,{
-          method:"PUT",
-          headers:{"Content-Type":"application/json"},
-          body:JSON.stringify(char)
-        });
-      } else {
-        await fetch("/characters",{
-          method:"POST",
-          headers:{"Content-Type":"application/json"},
-          body:JSON.stringify(char)
-        });
-      }
-      alert("Personaggio creato!");
-      document.getElementById("char_id").value="";
-      fetchCharacters();
-      currentStep=0; showStep(currentStep);
-    });
-
-    // Lista PG
-    async function fetchCharacters(){
-      try{
-        const res = await fetch("/characters");
-        const data = await res.json();
-        const pgList = document.getElementById("pgList");
-        pgList.innerHTML="";
-        data.forEach(pg=>{
-          const div=document.createElement("div");
-          div.className="pg-item";
-          div.innerHTML=`
-            <strong>${pg.name}</strong> - ${pg.class} Lvl ${pg.level} (${pg.race})<br>
-            <button class="edit">Modifica</button>
-            <button class="delete">Elimina</button>
-            <pre>${JSON.stringify(pg,null,2)}</pre>
-          `;
-          div.querySelector(".edit").addEventListener("click", ()=>{
-            for(const key in pg){
-              const el=document.getElementById(key);
-              if(el) el.value=pg[key];
-            }
-            document.getElementById("char_id").value=pg.id;
-            currentStep=0; showStep(currentStep);
-            calculateModifiers();
-          });
-          div.querySelector(".delete").addEventListener("click", async ()=>{
-            await fetch(`/characters/${pg.id}`,{ method:"DELETE" });
-            fetchCharacters();
-          });
-          pgList.appendChild(div);
-        });
-      }catch(err){ console.error(err); }
-    }
-
-    // Creazione random intelligente
-    function randomInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
-    function randomCharacter(){
-      const classes = ["Guerriero","Mago","Ladro","Chierico"];
-      const races = ["Umano","Elfo","Nano","Halfling"];
-      document.getElementById("class").value = classes[randomInt(0,classes.length-1)];
-      document.getElementById("race").value = races[randomInt(0,races.length-1)];
-      ["strength","dexterity","constitution","intelligence","wisdom","charisma"].forEach(id=>{
-        document.getElementById(id).value = randomInt(8,18);
-      });
-      calculateModifiers();
-    }
-    document.getElementById("randomBtn").addEventListener("click", randomCharacter);
-
-    // Carica PG all'avvio
     fetchCharacters();
   </script>
 </body>
