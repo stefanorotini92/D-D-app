@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Gestione Personaggi D&D 5e</title>
+  <title>Creazione Personaggio D&D 5e</title>
   <style>
     body { font-family: Arial, sans-serif; padding: 15px; background: #f4f4f4; }
     h1, h2 { text-align: center; }
@@ -16,38 +16,101 @@
     .pg-item button { margin-right: 5px; background-color: #dc3545; }
     .pg-item button.edit { background-color: #28a745; }
     pre { background: #eee; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    small { display: block; font-weight: normal; color: #555; margin-top: 2px; }
   </style>
 </head>
 <body>
-  <h1>Gestione Personaggi D&D 5e</h1>
+  <h1>Creazione Personaggio D&D 5e</h1>
 
   <div class="section">
     <h2>Form Personaggio</h2>
     <input type="hidden" id="char_id">
+
     <label>Nome<input type="text" id="name" required></label>
-    <label>Classe<input type="text" id="class" required></label>
-    <label>Livello<input type="number" id="level" value="1" min="1"></label>
-    <label>Background<textarea id="background"></textarea></label>
-    <label>Giocatore<input type="text" id="player_name"></label>
-    <label>Razza<input type="text" id="race"></label>
-    <label>Allineamento<input type="text" id="alignment"></label>
-    <label>Punti esperienza<input type="number" id="xp" value="0"></label>
+
+    <label>Classe
+      <select id="class">
+        <option value="">Seleziona una classe</option>
+        <option value="Guerriero">Guerriero</option>
+        <option value="Mago">Mago</option>
+        <option value="Ladro">Ladro</option>
+        <option value="Chierico">Chierico</option>
+        <option value="Bardo">Bardo</option>
+        <option value="Paladino">Paladino</option>
+        <option value="Ranger">Ranger</option>
+        <option value="Warlock">Warlock</option>
+        <option value="Druido">Druido</option>
+        <option value="Stregone">Stregone</option>
+        <option value="Monaco">Monaco</option>
+        <option value="Barbaro">Barbaro</option>
+      </select>
+      <small>La classe determina le abilità principali e i dadi vita.</small>
+    </label>
+
+    <label>Razza
+      <select id="race">
+        <option value="">Seleziona una razza</option>
+        <option value="Umano">Umano</option>
+        <option value="Elfo">Elfo</option>
+        <option value="Nano">Nano</option>
+        <option value="Halfling">Halfling</option>
+        <option value="Tiefling">Tiefling</option>
+        <option value="Mezzorco">Mezzorco</option>
+        <option value="Dragonide">Dragonide</option>
+        <option value="Gnomo">Gnomo</option>
+      </select>
+      <small>La razza influenza abilità e tratti speciali.</small>
+    </label>
+
+    <label>Allineamento
+      <select id="alignment">
+        <option value="">Seleziona allineamento</option>
+        <option value="LB">Legale Buono</option>
+        <option value="NB">Neutrale Buono</option>
+        <option value="CB">Caotico Buono</option>
+        <option value="LN">Legale Neutrale</option>
+        <option value="NN">Neutrale Puro</option>
+        <option value="CN">Caotico Neutrale</option>
+        <option value="LM">Legale Malvagio</option>
+        <option value="NM">Neutrale Malvagio</option>
+        <option value="CM">Caotico Malvagio</option>
+      </select>
+      <small>L’allineamento descrive l’etica e il comportamento del personaggio.</small>
+    </label>
+
+    <label>Background
+      <select id="background">
+        <option value="">Seleziona background</option>
+        <option value="Eroe della città">Eroe della città</option>
+        <option value="Criminale">Criminale</option>
+        <option value="Saggio">Saggio</option>
+        <option value="Eremita">Eremita</option>
+        <option value="Mercante">Mercante</option>
+        <option value="Soldato">Soldato</option>
+        <option value="Artigiano">Artigiano</option>
+      </select>
+      <small>Il background offre competenze e tratti aggiuntivi.</small>
+    </label>
+
+    <label>Livello<input type="number" id="level" value="1" min="1"><small>Il livello determina potere e PF.</small></label>
+    <label>Giocatore<input type="text" id="player_name"><small>Nome del giocatore che controlla il PG.</small></label>
+    <label>Punti esperienza<input type="number" id="xp" value="0"><small>Punti esperienza accumulati.</small></label>
 
     <h2>Caratteristiche</h2>
-    <label>Forza<input type="number" id="strength" value="10"></label>
-    <label>Destrezza<input type="number" id="dexterity" value="10"></label>
-    <label>Costituzione<input type="number" id="constitution" value="10"></label>
-    <label>Intelligenza<input type="number" id="intelligence" value="10"></label>
-    <label>Saggezza<input type="number" id="wisdom" value="10"></label>
-    <label>Carisma<input type="number" id="charisma" value="10"></label>
+    <label>Forza<input type="number" id="strength" value="10"><small>Influenza attacchi corpo a corpo e capacità di sollevamento.</small></label>
+    <label>Destrezza<input type="number" id="dexterity" value="10"><small>Influenza iniziativa, acrobazia e tiri per schivare.</small></label>
+    <label>Costituzione<input type="number" id="constitution" value="10"><small>Determina PF e resistenze.</small></label>
+    <label>Intelligenza<input type="number" id="intelligence" value="10"><small>Influenza abilità di conoscenza e magia.</small></label>
+    <label>Saggezza<input type="number" id="wisdom" value="10"><small>Influenza percezione, sopravvivenza e abilità divine.</small></label>
+    <label>Carisma<input type="number" id="charisma" value="10"><small>Influenza incantesimi e abilità sociali.</small></label>
 
     <h2>Combattimento</h2>
-    <label>Punti ferita massimi<input type="number" id="max_hp" value="10"></label>
-    <label>Punti ferita attuali<input type="number" id="current_hp" value="10"></label>
-    <label>Classe armatura<input type="number" id="armor_class" value="10"></label>
-    <label>Iniziativa<input type="number" id="initiative" value="0"></label>
-    <label>Velocità<input type="number" id="speed" value="30"></label>
-    <label>Dadi vita<input type="text" id="hit_dice" value="1d10"></label>
+    <label>Punti ferita massimi<input type="number" id="max_hp" value="10"><small>PF massimi del personaggio.</small></label>
+    <label>Punti ferita attuali<input type="number" id="current_hp" value="10"><small>PF attuali.</small></label>
+    <label>Classe armatura<input type="number" id="armor_class" value="10"><small>Difesa dagli attacchi.</small></label>
+    <label>Iniziativa<input type="number" id="initiative" value="0"><small>Influenza ordine dei turni.</small></label>
+    <label>Velocità<input type="number" id="speed" value="30"><small>Velocità di movimento in piedi per round.</small></label>
+    <label>Dadi vita<input type="text" id="hit_dice" value="1d10"><small>Tipo di dado vita della classe.</small></label>
     <label>Tiri salvezza successi<input type="number" id="death_saves_success" value="0"></label>
     <label>Tiri salvezza fallimenti<input type="number" id="death_saves_failure" value="0"></label>
 
@@ -68,21 +131,21 @@
     <h2>Lista Personaggi</h2>
     <div id="pgList" class="pg-list"></div>
   </div>
-
-  <script>
+    <script>
     const createBtn = document.getElementById("createBtn");
     const randomBtn = document.getElementById("randomBtn");
     const pgList = document.getElementById("pgList");
 
+    // Legge i dati dal form
     function getCharacterData() {
       return {
         name: document.getElementById("name").value,
         class: document.getElementById("class").value,
-        level: parseInt(document.getElementById("level").value),
-        background: document.getElementById("background").value,
-        player_name: document.getElementById("player_name").value,
         race: document.getElementById("race").value,
         alignment: document.getElementById("alignment").value,
+        background: document.getElementById("background").value,
+        level: parseInt(document.getElementById("level").value),
+        player_name: document.getElementById("player_name").value,
         xp: parseInt(document.getElementById("xp").value),
         strength: parseInt(document.getElementById("strength").value),
         dexterity: parseInt(document.getElementById("dexterity").value),
@@ -108,6 +171,7 @@
       };
     }
 
+    // Carica tutti i PG dal server
     async function fetchCharacters() {
       try {
         const res = await fetch("/characters");
@@ -122,7 +186,7 @@
             <button class="delete">Elimina</button>
             <pre>${JSON.stringify(pg, null, 2)}</pre>
           `;
-          // Edit
+          // Modifica
           div.querySelector(".edit").addEventListener("click", () => {
             for (const key in pg) {
               const el = document.getElementById(key);
@@ -130,7 +194,7 @@
             }
             document.getElementById("char_id").value = pg.id;
           });
-          // Delete
+          // Elimina
           div.querySelector(".delete").addEventListener("click", async () => {
             await fetch(`/characters/${pg.id}`, { method: "DELETE" });
             fetchCharacters();
@@ -142,18 +206,17 @@
       }
     }
 
+    // Salva o aggiorna PG
     createBtn.addEventListener("click", async () => {
       const char = getCharacterData();
       const charId = document.getElementById("char_id").value;
       if (charId) {
-        // Aggiorna
         await fetch(`/characters/${charId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(char)
         });
       } else {
-        // Crea nuovo
         await fetch("/characters", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -164,6 +227,7 @@
       fetchCharacters();
     });
 
+    // Genera PG random
     randomBtn.addEventListener("click", async () => {
       const res = await fetch("/characters/random");
       const data = await res.json();
@@ -173,7 +237,7 @@
       }
     });
 
-    // Carica personaggi all'avvio
+    // Carica i PG all’avvio
     fetchCharacters();
   </script>
 </body>
