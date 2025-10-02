@@ -447,5 +447,53 @@
     // Carica i PG salvati all’avvio
     window.onload = loadCharacters;
   </script>
+  <script>
+  async function testSave() {
+    try {
+      const testPG = {
+        name: "TestPG",
+        class: "Guerriero",
+        race: "Umano",
+        level: 1,
+        str: 15,
+        dex: 12,
+        con: 14,
+        int: 10,
+        wis: 8,
+        cha: 13
+      };
+
+      const res = await fetch("/characters", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(testPG)
+      });
+
+      const data = await res.json();
+      console.log("Risposta server:", data);
+
+      if (res.ok) alert("✅ Test PG salvato! Controlla la lista o /characters");
+      else alert("❌ Errore durante il salvataggio: " + JSON.stringify(data));
+    } catch (err) {
+      console.error("Errore fetch:", err);
+      alert("❌ Fetch fallito, controlla console");
+    }
+  }
+
+  // Aggiungi un pulsante temporaneo per test
+  const btn = document.createElement("button");
+  btn.textContent = "💾 Test Salva PG";
+  btn.onclick = testSave;
+  btn.style.position = "fixed";
+  btn.style.bottom = "10px";
+  btn.style.right = "10px";
+  btn.style.zIndex = 9999;
+  btn.style.padding = "10px";
+  btn.style.background = "#222";
+  btn.style.color = "#fff";
+  btn.style.border = "none";
+  btn.style.borderRadius = "5px";
+  document.body.appendChild(btn);
+</script>
 </body>
 </html>
