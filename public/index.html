@@ -2,21 +2,28 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Creazione Personaggio D&D 5e</title>
+  <title>Gestione Personaggi D&D 5e</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
-    label { display: block; margin-top: 10px; }
-    input, select, textarea { width: 100%; padding: 5px; margin-top: 2px; }
-    button { margin-top: 15px; padding: 10px 15px; }
-    .section { background: #fff; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
-    h2 { margin-top: 0; }
+    body { font-family: Arial, sans-serif; padding: 15px; background: #f4f4f4; }
+    h1, h2 { text-align: center; }
+    .section { background: #fff; padding: 15px; margin-bottom: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    label { display: block; margin-top: 10px; font-weight: bold; }
+    input, select, textarea { width: 100%; padding: 6px; margin-top: 2px; border-radius: 4px; border: 1px solid #ccc; }
+    button { margin-top: 12px; padding: 10px 15px; border: none; border-radius: 5px; background-color: #007bff; color: #fff; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
+    .pg-list { margin-top: 15px; }
+    .pg-item { border: 1px solid #ccc; border-radius: 5px; padding: 10px; margin-bottom: 10px; background: #fafafa; }
+    .pg-item button { margin-right: 5px; background-color: #dc3545; }
+    .pg-item button.edit { background-color: #28a745; }
+    pre { background: #eee; padding: 10px; border-radius: 5px; overflow-x: auto; }
   </style>
 </head>
 <body>
-  <h1>Creazione Personaggio D&D 5e</h1>
+  <h1>Gestione Personaggi D&D 5e</h1>
 
   <div class="section">
-    <h2>Informazioni generali</h2>
+    <h2>Form Personaggio</h2>
+    <input type="hidden" id="char_id">
     <label>Nome<input type="text" id="name" required></label>
     <label>Classe<input type="text" id="class" required></label>
     <label>Livello<input type="number" id="level" value="1" min="1"></label>
@@ -25,9 +32,7 @@
     <label>Razza<input type="text" id="race"></label>
     <label>Allineamento<input type="text" id="alignment"></label>
     <label>Punti esperienza<input type="number" id="xp" value="0"></label>
-  </div>
 
-  <div class="section">
     <h2>Caratteristiche</h2>
     <label>Forza<input type="number" id="strength" value="10"></label>
     <label>Destrezza<input type="number" id="dexterity" value="10"></label>
@@ -35,9 +40,7 @@
     <label>Intelligenza<input type="number" id="intelligence" value="10"></label>
     <label>Saggezza<input type="number" id="wisdom" value="10"></label>
     <label>Carisma<input type="number" id="charisma" value="10"></label>
-  </div>
 
-  <div class="section">
     <h2>Combattimento</h2>
     <label>Punti ferita massimi<input type="number" id="max_hp" value="10"></label>
     <label>Punti ferita attuali<input type="number" id="current_hp" value="10"></label>
@@ -47,9 +50,7 @@
     <label>Dadi vita<input type="text" id="hit_dice" value="1d10"></label>
     <label>Tiri salvezza successi<input type="number" id="death_saves_success" value="0"></label>
     <label>Tiri salvezza fallimenti<input type="number" id="death_saves_failure" value="0"></label>
-  </div>
 
-  <div class="section">
     <h2>Note e background</h2>
     <label>Equipaggiamento<textarea id="equipment"></textarea></label>
     <label>Tratti della personalità<textarea id="personality_traits"></textarea></label>
@@ -58,17 +59,20 @@
     <label>Difetti<textarea id="flaws"></textarea></label>
     <label>Aspetto fisico<textarea id="appearance"></textarea></label>
     <label>Storia<textarea id="backstory"></textarea></label>
+
+    <button id="createBtn">Salva Personaggio</button>
+    <button id="randomBtn">Crea Random PG</button>
   </div>
 
-  <button id="createBtn">Crea Personaggio</button>
-  <button id="randomBtn">Crea Personaggio Random</button>
-
-  <div id="result" class="section"></div>
+  <div class="section">
+    <h2>Lista Personaggi</h2>
+    <div id="pgList" class="pg-list"></div>
+  </div>
 
   <script>
     const createBtn = document.getElementById("createBtn");
     const randomBtn = document.getElementById("randomBtn");
-    const result = document.getElementById("result");
+    const pgList = document.getElementById("pgList");
 
     function getCharacterData() {
       return {
@@ -104,36 +108,73 @@
       };
     }
 
-    async function createCharacter(char) {
-      const res = await fetch("/characters", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(char)
-      });
-      const data = await res.json();
-      result.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+    async function fetchCharacters() {
+      try {
+        const res = await fetch("/characters");
+        const data = await res.json();
+        pgList.innerHTML = "";
+        data.forEach(pg => {
+          const div = document.createElement("div");
+          div.className = "pg-item";
+          div.innerHTML = `
+            <strong>${pg.name}</strong> - ${pg.class} Lvl ${pg.level} (${pg.race})<br>
+            <button class="edit">Modifica</button>
+            <button class="delete">Elimina</button>
+            <pre>${JSON.stringify(pg, null, 2)}</pre>
+          `;
+          // Edit
+          div.querySelector(".edit").addEventListener("click", () => {
+            for (const key in pg) {
+              const el = document.getElementById(key);
+              if (el) el.value = pg[key];
+            }
+            document.getElementById("char_id").value = pg.id;
+          });
+          // Delete
+          div.querySelector(".delete").addEventListener("click", async () => {
+            await fetch(`/characters/${pg.id}`, { method: "DELETE" });
+            fetchCharacters();
+          });
+          pgList.appendChild(div);
+        });
+      } catch (err) {
+        console.error(err);
+      }
     }
 
-    async function createRandomCharacter() {
+    createBtn.addEventListener("click", async () => {
+      const char = getCharacterData();
+      const charId = document.getElementById("char_id").value;
+      if (charId) {
+        // Aggiorna
+        await fetch(`/characters/${charId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(char)
+        });
+      } else {
+        // Crea nuovo
+        await fetch("/characters", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(char)
+        });
+      }
+      document.getElementById("char_id").value = "";
+      fetchCharacters();
+    });
+
+    randomBtn.addEventListener("click", async () => {
       const res = await fetch("/characters/random");
       const data = await res.json();
-
-      // Riempi il form con i valori random
       for (const key in data) {
         const el = document.getElementById(key);
         if (el) el.value = data[key];
       }
-      result.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
-    }
-
-    createBtn.addEventListener("click", () => {
-      const char = getCharacterData();
-      createCharacter(char);
     });
 
-    randomBtn.addEventListener("click", () => {
-      createRandomCharacter();
-    });
+    // Carica personaggi all'avvio
+    fetchCharacters();
   </script>
 </body>
 </html>
