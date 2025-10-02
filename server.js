@@ -1,23 +1,41 @@
 const express = require("express");
 const path = require("path");
+const { Pool } = require("pg"); // Importa PostgreSQL
+
 const app = express();
-
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "public"))); // Serve file statici dalla cartella "public"
 
-// Serve il frontend
-app.use(express.static(path.join(__dirname, "public")));
-
-// Lista dei personaggi
-let characters = [];
-app.get("/characters", (req, res) => {
-  res.json(characters);
+// Configura il database PostgreSQL
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }
 });
 
-// Crea un nuovo personaggio
-app.post("/characters", (req, res) => {
-  const character = req.body;
-  characters.push(character);
-  res.json(character);
+// Endpoint per ottenere tutti i personaggi
+app.get("/characters", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM characters");
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Errore nel recupero dei personaggi");
+  }
+});
+
+// Endpoint per creare un nuovo personaggio
+app.post("/characters", async (req, res) => {
+  const { name, race, class: className } = req.body;
+  try {
+    const result = await pool.query(
+      "INSERT INTO characters(name, race, class) VALUES($1, $2, $3) RETURNING *",
+      [name, race, className]
+    );
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Errore nella creazione del personaggio");
+  }
 });
 
 // Avvio server
