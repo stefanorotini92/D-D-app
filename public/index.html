@@ -495,5 +495,31 @@
   btn.style.borderRadius = "5px";
   document.body.appendChild(btn);
 </script>
+  <script>
+async function loadCharacters() {
+  try {
+    const res = await fetch("/characters");
+    const characters = await res.json();
+
+    const list = document.getElementById("characters-list");
+    if (!list) {
+      console.error("Elemento #characters-list non trovato nel DOM");
+      return;
+    }
+
+    list.innerHTML = ""; // svuota la lista prima di aggiungere
+    characters.forEach(pg => {
+      const li = document.createElement("li");
+      li.textContent = `${pg.name} - ${pg.class} - Livello ${pg.level}`;
+      list.appendChild(li);
+    });
+  } catch (err) {
+    console.error("Errore caricamento PG:", err);
+  }
+}
+
+// Chiama la funzione all’apertura della pagina
+window.onload = loadCharacters;
+</script>
 </body>
 </html>
