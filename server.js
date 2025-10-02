@@ -13,7 +13,7 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-// --- MIGRAZIONE AUTOMATICA ---
+// --- MIGRAZIONE AUTOMATICA SICURA ---
 (async () => {
   const cols = [
     `level INTEGER DEFAULT 1`,
@@ -49,29 +49,31 @@ const pool = new Pool({
   try {
     for (const def of cols) {
       const colName = def.split(' ')[0];
-      await pool.query(`ALTER TABLE characters ADD COLUMN IF NOT EXISTS ${def};`);
-      console.log(`✅ Colonna verificata/creata: ${colName}`);
+      try {
+        await pool.query(`ALTER TABLE characters ADD COLUMN IF NOT EXISTS ${def};`);
+        console.log(`✅ Colonna verificata/creata: ${colName}`);
+      } catch (innerErr) {
+        console.warn(`⚠️ Colonna ${colName} già presente o errore minore:`, innerErr.message);
+      }
     }
     console.log("✅ Migrazione completata: tutte le colonne verificate/aggiunte.");
   } catch (err) {
-    console.error("❌ Errore durante la migrazione automatica:", err);
+    console.error("❌ Errore durante la migrazione automatica:", err.message);
   }
 })();
 
 // --- ENDPOINTS CRUD ---
 
-// GET: Lista personaggi
 app.get("/characters", async (req, res) => {
   try {
     const result = await pool.query("SELECT * FROM characters ORDER BY id ASC");
     res.json(result.rows);
   } catch (err) {
-    console.error("❌ Errore recupero personaggi:", err);
+    console.error("❌ Errore recupero personaggi:", err.message);
     res.status(500).send("Errore caricamento personaggi");
   }
 });
 
-// POST: Creare nuovo personaggio
 app.post("/characters", async (req, res) => {
   const char = req.body;
   try {
@@ -98,12 +100,11 @@ app.post("/characters", async (req, res) => {
     );
     res.json(result.rows[0]);
   } catch (err) {
-    console.error("❌ Errore salvataggio:", err);
+    console.error("❌ Errore salvataggio:", err.message);
     res.status(500).send("Errore creazione personaggio");
   }
 });
 
-// PUT: Aggiornare personaggio
 app.put("/characters/:id", async (req, res) => {
   const { id } = req.params;
   const char = req.body;
@@ -127,24 +128,22 @@ app.put("/characters/:id", async (req, res) => {
     );
     res.json(result.rows[0]);
   } catch (err) {
-    console.error("❌ Errore aggiornamento:", err);
+    console.error("❌ Errore aggiornamento:", err.message);
     res.status(500).send("Errore aggiornamento personaggio");
   }
 });
 
-// DELETE: Eliminare personaggio
 app.delete("/characters/:id", async (req, res) => {
   const { id } = req.params;
   try {
     await pool.query("DELETE FROM characters WHERE id = $1", [id]);
     res.json({ success: true });
   } catch (err) {
-    console.error("❌ Errore eliminazione:", err);
+    console.error("❌ Errore eliminazione:", err.message);
     res.status(500).send("Errore eliminazione personaggio");
   }
 });
 
-// GET: Creazione randomica completa
 app.get("/characters/random", (req, res) => {
   function rollStat() {
     let rolls = Array.from({length:4}, () => Math.floor(Math.random()*6)+1);
@@ -193,4 +192,5 @@ app.get("/characters/random", (req, res) => {
 
 // --- Avvio server ---
 app.listen(PORT, () => {
-  console.log(`🚀 Server avviato su http
+  console.log(`🚀 Server avviato su http://localhost:${PORT}`);
+});
