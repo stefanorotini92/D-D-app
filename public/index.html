@@ -1,142 +1,165 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>D&D PG Manager</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 10px; background: #f0f0f0; }
-    input, select { margin-bottom: 5px; padding: 5px; width: 100%; }
-    label { font-weight: bold; margin-top: 10px; display: block; }
-    button { padding: 10px; margin-top: 10px; background: #333; color: #fff; border: none; border-radius: 5px; width: 100%; }
-    ul { list-style: none; padding-left: 0; }
-    li { background: #fff; margin-bottom: 5px; padding: 5px; border-radius: 5px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>D&D PG Manager Avanzato</title>
+<style>
+body { font-family: Arial, sans-serif; padding: 10px; background: #f0f0f0; }
+input, select, textarea { margin-bottom: 5px; padding: 5px; width: 100%; }
+label { font-weight: bold; margin-top: 10px; display: block; }
+button { padding: 10px; margin-top: 10px; background: #333; color: #fff; border: none; border-radius: 5px; width: 100%; }
+ul { list-style: none; padding-left: 0; }
+li { background: #fff; margin-bottom: 5px; padding: 5px; border-radius: 5px; }
+small { display: block; color: #555; margin-bottom: 5px; }
+</style>
 </head>
 <body>
 
-  <h1>D&D PG Manager</h1>
+<h1>D&D PG Manager Avanzato</h1>
 
-  <form id="pg-form">
-    <label>Nome:</label>
-    <input type="text" id="name" required>
+<form id="pg-form">
+  <label>Nome:</label><input type="text" id="name" required>
+  <label>Classe:</label><select id="class" required></select>
+  <label>Razza:</label><select id="race" required></select>
+  <label>Livello:</label><input type="number" id="level" min="1" value="1" required>
 
-    <label>Classe:</label>
-    <select id="class" required>
-      <option value="">Seleziona</option>
-      <option>Guerriero</option>
-      <option>Mago</option>
-      <option>Ladro</option>
-      <option>Chierico</option>
-      <option>Paladino</option>
-      <option>Ranger</option>
-      <option>Barbaro</option>
-      <option>Stregone</option>
-      <option>Druido</option>
-      <option>Bardo</option>
-      <option>Monaco</option>
-      <option>Warlock</option>
-    </select>
+  <label>Forza:</label><input type="number" id="strength" min="1" value="10" required>
+  <label>Destrezza:</label><input type="number" id="dexterity" min="1" value="10" required>
+  <label>Costituzione:</label><input type="number" id="constitution" min="1" value="10" required>
+  <label>Intelligenza:</label><input type="number" id="intelligence" min="1" value="10" required>
+  <label>Saggezza:</label><input type="number" id="wisdom" min="1" value="10" required>
+  <label>Carisma:</label><input type="number" id="charisma" min="1" value="10" required>
 
-    <label>Razza:</label>
-    <select id="race" required>
-      <option value="">Seleziona</option>
-      <option>Umano</option>
-      <option>Elfo</option>
-      <option>Nano</option>
-      <option>Halfling</option>
-      <option>Dragonide</option>
-      <option>Mezzelfo</option>
-      <option>Mezzorco</option>
-      <option>Gnomo</option>
-    </select>
+  <div id="advanced-fields"></div>
 
-    <label>Livello:</label>
-    <input type="number" id="level" min="1" value="1" required>
+  <button type="submit">💾 Crea PG</button>
+  <button type="button" id="random-btn">🎲 Random PG</button>
+</form>
 
-    <label>Forza:</label>
-    <input type="number" id="strength" min="1" value="10" required>
+<h2>Anteprima:</h2>
+<div id="preview"></div>
 
-    <label>Destrezza:</label>
-    <input type="number" id="dexterity" min="1" value="10" required>
+<h2>Personaggi salvati:</h2>
+<ul id="characters-list"></ul>
 
-    <label>Costituzione:</label>
-    <input type="number" id="constitution" min="1" value="10" required>
+<script>
+// Campi principali
+const CLASSES = ["Guerriero","Mago","Ladro","Chierico","Paladino","Ranger","Barbaro","Stregone","Druido","Bardo","Monaco","Warlock"];
+const RACES = ["Umano","Elfo","Nano","Halfling","Dragonide","Mezzelfo","Mezzorco","Gnomo"];
 
-    <label>Intelligenza:</label>
-    <input type="number" id="intelligence" min="1" value="10" required>
+// Popolazione dropdown principali
+function populateDropdown(selectId, options) {
+  const select = document.getElementById(selectId);
+  options.forEach(opt => {
+    const el = document.createElement("option");
+    el.value = opt; el.textContent = opt;
+    select.appendChild(el);
+  });
+}
+populateDropdown("class", CLASSES);
+populateDropdown("race", RACES);
 
-    <label>Saggezza:</label>
-    <input type="number" id="wisdom" min="1" value="10" required>
+// Creazione dinamica campi avanzati
+const ADVANCED_FIELDS = [
+  { id: "background", label: "Background", type: "select", options: ["Soldato","Nobile","Accolito","Criminale","Eremita","Marinaio","Artigiano","Saggio"], description: "Origine e storia del personaggio" },
+  { id: "alignment", label: "Allineamento", type: "select", options: ["Legale Buono","Neutrale Buono","Caotico Buono","Legale Neutrale","Neutrale Puro","Caotico Neutrale","Legale Malvagio","Neutrale Malvagio","Caotico Malvagio"], description: "Allineamento morale ed etico del personaggio" },
+  { id: "spell_slots", label: "Slot Incantesimi", type: "number", min:0, max:10, description:"Numero di slot disponibili per gli incantesimi"},
+  { id: "equipment", label:"Equipaggiamento", type:"text", description:"Lista di oggetti e armi possedute"},
+  { id: "racial_traits", label:"Tratti Raziali", type:"text", description:"Caratteristiche e abilità della razza"},
+  { id: "special_abilities", label:"Abilità Speciali", type:"text", description:"Abilità uniche del personaggio"}
+];
 
-    <label>Carisma:</label>
-    <input type="number" id="charisma" min="1" value="10" required>
+const advContainer = document.getElementById("advanced-fields");
+ADVANCED_FIELDS.forEach(f => {
+  const label = document.createElement("label");
+  label.textContent = f.label;
+  advContainer.appendChild(label);
 
-    <button type="submit">💾 Crea PG</button>
-  </form>
+  let input;
+  if(f.type==="select") {
+    input = document.createElement("select");
+    input.id = f.id;
+    input.required = true;
+    const empty = document.createElement("option"); empty.value=""; empty.textContent="Seleziona"; input.appendChild(empty);
+    f.options.forEach(o=>{ const el=document.createElement("option"); el.value=o; el.textContent=o; input.appendChild(el);});
+  } else if(f.type==="number") {
+    input = document.createElement("input");
+    input.type="number"; input.id=f.id; input.min=f.min||0; input.max=f.max||100; input.value=f.min||0;
+  } else {
+    input = document.createElement("input"); input.type="text"; input.id=f.id;
+  }
+  advContainer.appendChild(input);
 
-  <h2>Personaggi salvati:</h2>
-  <ul id="characters-list"></ul>
+  const desc = document.createElement("small"); desc.textContent=f.description;
+  advContainer.appendChild(desc);
+});
 
-  <script>
-    const form = document.getElementById("pg-form");
-    const list = document.getElementById("characters-list");
+// Funzioni principali
+const form=document.getElementById("pg-form");
+const list=document.getElementById("characters-list");
+const preview=document.getElementById("preview");
 
-    // Funzione per caricare i PG dal backend
-    async function loadCharacters() {
-      try {
-        const res = await fetch("/characters");
-        const characters = await res.json();
-        list.innerHTML = "";
-        characters.forEach(pg => {
-          const li = document.createElement("li");
-          li.textContent = `${pg.name} - ${pg.class} - Livello ${pg.level}`;
-          list.appendChild(li);
-        });
-      } catch (err) {
-        console.error("Errore caricamento PG:", err);
-      }
-    }
-
-    // Chiamata iniziale per caricare i PG all’apertura della pagina
-    loadCharacters();
-
-    // Funzione per creare PG
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const newPG = {
-        name: document.getElementById("name").value,
-        class: document.getElementById("class").value,
-        race: document.getElementById("race").value,
-        level: parseInt(document.getElementById("level").value),
-        strength: parseInt(document.getElementById("strength").value),
-        dexterity: parseInt(document.getElementById("dexterity").value),
-        constitution: parseInt(document.getElementById("constitution").value),
-        intelligence: parseInt(document.getElementById("intelligence").value),
-        wisdom: parseInt(document.getElementById("wisdom").value),
-        charisma: parseInt(document.getElementById("charisma").value)
-      };
-
-      try {
-        const res = await fetch("/characters", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newPG)
-        });
-        const data = await res.json();
-        if (res.ok) {
-          loadCharacters(); // ricarica lista PG
-          form.reset(); // pulisci form
-        } else {
-          alert("Errore creazione PG: " + JSON.stringify(data));
-        }
-      } catch (err) {
-        console.error("Errore fetch:", err);
-        alert("Errore connessione al server");
-      }
+// Caricamento PG
+async function loadCharacters(){
+  try{
+    const res=await fetch("/characters");
+    const characters=await res.json();
+    list.innerHTML="";
+    characters.forEach(pg=>{
+      const li=document.createElement("li");
+      li.textContent=`${pg.name} - ${pg.class} - Livello ${pg.level}`;
+      list.appendChild(li);
     });
-  </script>
+  }catch(err){console.error(err);}
+}
+loadCharacters();
+
+// Anteprima in tempo reale
+function updatePreview(){
+  const values={};
+  [...form.elements].forEach(el=>{
+    if(el.id) values[el.id]=el.value;
+  });
+  preview.innerHTML=`<pre>${JSON.stringify(values,null,2)}</pre>`;
+}
+form.addEventListener("input", updatePreview);
+updatePreview();
+
+// Random PG
+document.getElementById("random-btn").addEventListener("click",()=>{
+  form.name.value="PG"+Math.floor(Math.random()*1000);
+  form.class.value=CLASSES[Math.floor(Math.random()*CLASSES.length)];
+  form.race.value=RACES[Math.floor(Math.random()*RACES.length)];
+  form.level.value=Math.floor(Math.random()*20)+1;
+  form.strength.value=Math.floor(Math.random()*20)+1;
+  form.dexterity.value=Math.floor(Math.random()*20)+1;
+  form.constitution.value=Math.floor(Math.random()*20)+1;
+  form.intelligence.value=Math.floor(Math.random()*20)+1;
+  form.wisdom.value=Math.floor(Math.random()*20)+1;
+  form.charisma.value=Math.floor(Math.random()*20)+1;
+  ADVANCED_FIELDS.forEach(f=>{
+    const el=document.getElementById(f.id);
+    if(f.type==="select") el.value=f.options[Math.floor(Math.random()*f.options.length)];
+    else if(f.type==="number") el.value=Math.floor(Math.random()*10);
+    else el.value="Random";
+  });
+  updatePreview();
+});
+
+// Invio form
+form.addEventListener("submit",async(e)=>{
+  e.preventDefault();
+  const data={};
+  [...form.elements].forEach(el=>{ if(el.id) data[el.id]=el.value; });
+  try{
+    const res=await fetch("/characters",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});
+    const result=await res.json();
+    if(res.ok){loadCharacters();form.reset();updatePreview();}
+    else alert("Errore: "+JSON.stringify(result));
+  }catch(err){alert("Errore connessione"); console.error(err);}
+});
+</script>
 
 </body>
 </html>
