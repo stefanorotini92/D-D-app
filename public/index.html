@@ -2,525 +2,141 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Scheda Personaggio D&D 5e</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Uncial+Antiqua&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D&D PG Manager</title>
   <style>
-    body { font-family: 'Cinzel', serif; background: #f4f1ea; margin:0; padding:0; color:#222; }
-    h1 { font-family: 'Uncial Antiqua', cursive; text-align:center; margin:20px; font-size:2.2em; }
-    .container { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; padding: 20px; max-width: 1400px; margin: auto; }
-    .box { background:#fff; border:2px solid #000; border-radius:8px; padding:15px; margin-bottom:20px; }
-    .box h2 { font-size:1.3em; border-bottom:2px solid #000; padding-bottom:5px; margin-bottom:10px; }
-    label { display:block; margin-top:8px; font-weight:bold; }
-    input, select, textarea { width:100%; padding:5px; margin-top:3px; border:1px solid #333; border-radius:4px; font-family:inherit; font-size:0.9em; }
-    small { display:block; font-weight:normal; color:#555; font-size:0.8em; margin-top:2px; }
-    .stats { display:grid; grid-template-columns: repeat(3,1fr); gap:10px; }
-    .stat { border:1px solid #000; border-radius:6px; text-align:center; padding:10px; background:#fdfbf7; }
-    .stat label { margin:0; font-size:0.9em; }
-    .stat input { width:60px; text-align:center; font-size:1.2em; }
-    .btn { display:inline-block; margin:10px 5px 0 0; padding:10px 15px; background:#222; color:#fff; border:none; border-radius:5px; cursor:pointer; font-family:inherit; }
-    .btn:hover { background:#555; }
-    .pg-list { margin-top:20px; }
-    .pg-item { border:1px solid #000; border-radius:6px; background:#fafafa; padding:10px; margin-bottom:10px; }
-    pre { background:#eee; border:1px solid #ccc; border-radius:6px; padding:10px; max-height:300px; overflow-y:auto; }
+    body { font-family: Arial, sans-serif; padding: 10px; background: #f0f0f0; }
+    input, select { margin-bottom: 5px; padding: 5px; width: 100%; }
+    label { font-weight: bold; margin-top: 10px; display: block; }
+    button { padding: 10px; margin-top: 10px; background: #333; color: #fff; border: none; border-radius: 5px; width: 100%; }
+    ul { list-style: none; padding-left: 0; }
+    li { background: #fff; margin-bottom: 5px; padding: 5px; border-radius: 5px; }
   </style>
 </head>
 <body>
-  <h1>Scheda Personaggio D&D 5e</h1>
-  <div class="container">
 
-    <!-- Colonna sinistra -->
-    <div>
-      <div class="box">
-        <h2>Dati Base</h2>
-        <label>Nome
-          <input type="text" id="name">
-          <small>Il nome del personaggio.</small>
-        </label>
+  <h1>D&D PG Manager</h1>
+
+  <form id="pg-form">
+    <label>Nome:</label>
+    <input type="text" id="name" required>
+
+    <label>Classe:</label>
+    <select id="class" required>
+      <option value="">Seleziona</option>
+      <option>Guerriero</option>
+      <option>Mago</option>
+      <option>Ladro</option>
+      <option>Chierico</option>
+      <option>Paladino</option>
+      <option>Ranger</option>
+      <option>Barbaro</option>
+      <option>Stregone</option>
+      <option>Druido</option>
+      <option>Bardo</option>
+      <option>Monaco</option>
+      <option>Warlock</option>
+    </select>
+
+    <label>Razza:</label>
+    <select id="race" required>
+      <option value="">Seleziona</option>
+      <option>Umano</option>
+      <option>Elfo</option>
+      <option>Nano</option>
+      <option>Halfling</option>
+      <option>Dragonide</option>
+      <option>Mezzelfo</option>
+      <option>Mezzorco</option>
+      <option>Gnomo</option>
+    </select>
+
+    <label>Livello:</label>
+    <input type="number" id="level" min="1" value="1" required>
+
+    <label>Forza:</label>
+    <input type="number" id="strength" min="1" value="10" required>
+
+    <label>Destrezza:</label>
+    <input type="number" id="dexterity" min="1" value="10" required>
+
+    <label>Costituzione:</label>
+    <input type="number" id="constitution" min="1" value="10" required>
+
+    <label>Intelligenza:</label>
+    <input type="number" id="intelligence" min="1" value="10" required>
+
+    <label>Saggezza:</label>
+    <input type="number" id="wisdom" min="1" value="10" required>
+
+    <label>Carisma:</label>
+    <input type="number" id="charisma" min="1" value="10" required>
+
+    <button type="submit">💾 Crea PG</button>
+  </form>
+
+  <h2>Personaggi salvati:</h2>
+  <ul id="characters-list"></ul>
 
-        <label>Classe
-          <select id="class">
-            <option value="">Seleziona</option>
-            <option>Guerriero</option><option>Mago</option><option>Ladro</option>
-            <option>Chierico</option><option>Barbaro</option><option>Bardo</option>
-            <option>Druido</option><option>Paladino</option><option>Monaco</option>
-            <option>Ranger</option><option>Stregone</option><option>Warlock</option>
-          </select>
-          <small>La classe definisce abilità, dadi vita e progressione.</small>
-        </label>
-
-        <label>Razza
-          <select id="race">
-            <option value="">Seleziona</option>
-            <option>Umano</option><option>Elfo</option><option>Nano</option>
-            <option>Halfling</option><option>Gnomo</option><option>Tiefling</option>
-            <option>Dragonide</option><option>Mezzorco</option>
-          </select>
-          <small>La razza influisce su tratti, bonus e capacità.</small>
-        </label>
-
-        <label>Sottorazza
-          <input type="text" id="subrace">
-          <small>Opzionale (es. Elfo dei Boschi, Nano delle Colline).</small>
-        </label>
-
-        <label>Background
-          <input type="text" id="background">
-          <small>Il passato del PG, fornisce competenze extra.</small>
-        </label>
-
-        <label>Allineamento
-          <select id="alignment">
-            <option value="">Seleziona</option>
-            <option>Legale Buono</option><option>Neutrale Buono</option><option>Caotico Buono</option>
-            <option>Legale Neutrale</option><option>Neutrale</option><option>Caotico Neutrale</option>
-            <option>Legale Malvagio</option><option>Neutrale Malvagio</option><option>Caotico Malvagio</option>
-          </select>
-          <small>Etica e comportamento del personaggio.</small>
-        </label>
-
-        <label>Livello
-          <input type="number" id="level" value="1" min="1" max="20">
-          <small>Determina potere, competenze e capacità.</small>
-        </label>
-
-        <label>Punti Esperienza
-          <input type="number" id="xp" value="0" min="0">
-          <small>Serve per avanzare di livello.</small>
-        </label>
-      </div>
-
-      <div class="box">
-        <h2>Caratteristiche</h2>
-        <div class="stats">
-          <div class="stat">
-            <label>Forza</label>
-            <input type="number" id="strength" value="10">
-            <small>Attacchi corpo a corpo, peso trasportabile.</small>
-          </div>
-          <div class="stat">
-            <label>Destrezza</label>
-            <input type="number" id="dexterity" value="10">
-            <small>CA, iniziativa, furtività.</small>
-          </div>
-          <div class="stat">
-            <label>Costituzione</label>
-            <input type="number" id="constitution" value="10">
-            <small>Punti ferita e resistenza fisica.</small>
-          </div>
-          <div class="stat">
-            <label>Intelligenza</label>
-            <input type="number" id="intelligence" value="10">
-            <small>Conoscenze, magia arcana.</small>
-          </div>
-          <div class="stat">
-            <label>Saggezza</label>
-            <input type="number" id="wisdom" value="10">
-            <small>Percezione, intuizione, magia divina.</small>
-          </div>
-          <div class="stat">
-            <label>Carisma</label>
-            <input type="number" id="charisma" value="10">
-            <small>Abilità sociali e incantesimi di fascino.</small>
-          </div>
-        </div>
-      </div>
-            <div class="box">
-        <h2>Tiri Salvezza</h2>
-        <label><input type="checkbox" id="save_str"> Forza</label>
-        <small>Difesa contro prove fisiche di forza.</small>
-
-        <label><input type="checkbox" id="save_dex"> Destrezza</label>
-        <small>Resistenza ad attacchi ad area o trappole.</small>
-
-        <label><input type="checkbox" id="save_con"> Costituzione</label>
-        <small>Resistenza a malattie, veleni e fatica.</small>
-
-        <label><input type="checkbox" id="save_int"> Intelligenza</label>
-        <small>Difesa contro illusioni e magie mentali.</small>
-
-        <label><input type="checkbox" id="save_wis"> Saggezza</label>
-        <small>Difesa contro charme, paura e percezioni mentali.</small>
-
-        <label><input type="checkbox" id="save_cha"> Carisma</label>
-        <small>Resistenza a magie di fascino o influenza.</small>
-      </div>
-
-      <div class="box">
-        <h2>Abilità</h2>
-        <label><input type="checkbox" id="acrobatics"> Acrobazia (Des)</label>
-        <small>Capacità di equilibrio e manovre agili.</small>
-
-        <label><input type="checkbox" id="animal"> Addestrare Animali (Sag)</label>
-        <small>Gestire e controllare animali.</small>
-
-        <label><input type="checkbox" id="arcana"> Arcano (Int)</label>
-        <small>Conoscenze magiche e incantamenti.</small>
-
-        <label><input type="checkbox" id="athletics"> Atletica (For)</label>
-        <small>Salti, arrampicate e nuoto.</small>
-
-        <label><input type="checkbox" id="deception"> Inganno (Car)</label>
-        <small>Mentire e convincere con false parole.</small>
-
-        <label><input type="checkbox" id="history"> Storia (Int)</label>
-        <small>Conoscenza di eventi passati e culture.</small>
-
-        <label><input type="checkbox" id="insight"> Intuizione (Sag)</label>
-        <small>Capire le intenzioni altrui.</small>
-
-        <label><input type="checkbox" id="intimidation"> Intimidire (Car)</label>
-        <small>Impaurire o minacciare gli altri.</small>
-
-        <label><input type="checkbox" id="investigation"> Investigare (Int)</label>
-        <small>Trovare indizi e fare deduzioni.</small>
-
-        <label><input type="checkbox" id="medicine"> Medicina (Sag)</label>
-        <small>Stabilizzare feriti e riconoscere malattie.</small>
-
-        <label><input type="checkbox" id="nature"> Natura (Int)</label>
-        <small>Conoscenza di piante, animali e ambienti naturali.</small>
-
-        <label><input type="checkbox" id="perception"> Percezione (Sag)</label>
-        <small>Notare dettagli, ascoltare rumori, avvistare nemici.</small>
-
-        <label><input type="checkbox" id="performance"> Intrattenere (Car)</label>
-        <small>Suonare, recitare, esibirsi.</small>
-
-        <label><input type="checkbox" id="persuasion"> Persuasione (Car)</label>
-        <small>Convincere con parole e diplomazia.</small>
-
-        <label><input type="checkbox" id="religion"> Religione (Int)</label>
-        <small>Conoscenze divine, culti e riti.</small>
-
-        <label><input type="checkbox" id="sleight"> Rapidità di Mano (Des)</label>
-        <small>Furti, borseggi e manipolazioni sottili.</small>
-
-        <label><input type="checkbox" id="stealth"> Furtività (Des)</label>
-        <small>Muoversi senza farsi notare.</small>
-
-        <label><input type="checkbox" id="survival"> Sopravvivenza (Sag)</label>
-        <small>Seguire tracce, orientarsi, vivere in natura.</small>
-      </div>
-
-    </div> <!-- fine colonna sinistra -->
-
-    <!-- Colonna destra -->
-    <div>
-      <div class="box">
-        <h2>Combattimento</h2>
-        <label>Punti Ferita Massimi
-          <input type="number" id="max_hp" value="10">
-          <small>Il totale dei PF del personaggio.</small>
-        </label>
-
-        <label>Punti Ferita Attuali
-          <input type="number" id="current_hp" value="10">
-          <small>I PF rimasti dopo i danni.</small>
-        </label>
-
-        <label>Classe Armatura
-          <input type="number" id="armor_class" value="10">
-          <small>Quanto è difficile colpire il PG.</small>
-        </label>
-
-        <label>Iniziativa
-          <input type="number" id="initiative" value="0">
-          <small>Modificatore ai tiri di iniziativa.</small>
-        </label>
-
-        <label>Velocità
-          <input type="number" id="speed" value="9">
-          <small>Metri percorribili in un turno.</small>
-        </label>
-
-        <label>Dado Vita
-          <input type="text" id="hit_dice" value="1d8">
-          <small>Usato per recuperare PF nei riposi.</small>
-        </label>
-
-        <label>Punti Ispirazione
-          <input type="number" id="inspiration" value="0">
-          <small>Punti bonus dati dal DM per interpretazione.</small>
-        </label>
-
-        <label>Bonus Competenza
-          <input type="number" id="proficiency_bonus" value="2">
-          <small>Aggiunto a tiri salvezza, abilità e attacchi competenti.</small>
-        </label>
-      </div>
-            <div class="box">
-        <h2>Attacchi e Incantesimi</h2>
-        <label>Attacchi
-          <textarea id="attacks" rows="4"></textarea>
-          <small>Inserisci armi, bonus al tiro per colpire e danni (es: Spada Lunga +5, 1d8+3).</small>
-        </label>
-
-        <label>Incantesimi Conosciuti
-          <textarea id="spells" rows="4"></textarea>
-          <small>Lista di incantesimi preparati o conosciuti.</small>
-        </label>
-
-        <label>Slot Incantesimo
-          <input type="text" id="spell_slots" placeholder="Esempio: 4/2/0/0/0">
-          <small>Numero di slot disponibili per livello di incantesimo.</small>
-        </label>
-      </div>
-
-      <div class="box">
-        <h2>Equipaggiamento</h2>
-        <label>Inventario
-          <textarea id="equipment" rows="4"></textarea>
-          <small>Armi, armature, oggetti magici e altri beni.</small>
-        </label>
-
-        <label>Oro
-          <input type="number" id="gold" value="0">
-          <small>Quantità di monete d’oro disponibili.</small>
-        </label>
-      </div>
-
-      <div class="box">
-        <h2>Tratti e Background</h2>
-        <label>Tratti della Personalità
-          <textarea id="traits" rows="3"></textarea>
-          <small>Comportamenti tipici del PG.</small>
-        </label>
-
-        <label>Ideali
-          <textarea id="ideals" rows="3"></textarea>
-          <small>Principi guida del personaggio.</small>
-        </label>
-
-        <label>Legami
-          <textarea id="bonds" rows="3"></textarea>
-          <small>Relazioni o vincoli forti che motivano il PG.</small>
-        </label>
-
-        <label>Difetti
-          <textarea id="flaws" rows="3"></textarea>
-          <small>Punti deboli caratteriali o morali.</small>
-        </label>
-      </div>
-
-      <div class="box">
-        <h2>Anteprima Scheda</h2>
-        <div id="preview"><em>Compila i campi per vedere l’anteprima</em></div>
-      </div>
-
-      <div class="box">
-        <button class="btn" onclick="saveCharacter()">💾 Salva</button>
-        <button class="btn" onclick="randomCharacter()">🎲 Genera Casuale</button>
-      </div>
-
-      <div class="box">
-        <h2>Personaggi salvati:</h2>
-<ul id="characters-list"></ul>
-        <div class="pg-list" id="pgList"></div>
-      </div>
-    </div> <!-- fine colonna destra -->
-  </div> <!-- fine container -->
-    <script>
-    // === Funzione per aggiornare l’anteprima ===
-    function updatePreview() {
-      const name = document.getElementById("name").value;
-      const race = document.getElementById("race").value;
-      const charClass = document.getElementById("class").value;
-      const level = document.getElementById("level").value;
-      const background = document.getElementById("background").value;
-
-      const str = document.getElementById("str").value;
-      const dex = document.getElementById("dex").value;
-      const con = document.getElementById("con").value;
-      const int = document.getElementById("int").value;
-      const wis = document.getElementById("wis").value;
-      const cha = document.getElementById("cha").value;
-
-      document.getElementById("preview").innerHTML = `
-        <h3>${name || "Senza nome"} (Lv.${level} ${race} ${charClass})</h3>
-        <p><b>Background:</b> ${background}</p>
-        <p><b>For:</b> ${str}, <b>Des:</b> ${dex}, <b>Cos:</b> ${con},
-        <b>Int:</b> ${int}, <b>Sag:</b> ${wis}, <b>Car:</b> ${cha}</p>
-      `;
-    }
-
-    // Aggiorna l’anteprima quando i campi cambiano
-    document.querySelectorAll("input, select, textarea")
-      .forEach(el => el.addEventListener("input", updatePreview));
-
-    // === Salvataggio PG ===
-    async function saveCharacter() {
-      const character = {
-        name: document.getElementById("name").value,
-        race: document.getElementById("race").value,
-        class: document.getElementById("class").value,
-        level: document.getElementById("level").value,
-        background: document.getElementById("background").value,
-        str: document.getElementById("str").value,
-        dex: document.getElementById("dex").value,
-        con: document.getElementById("con").value,
-        int: document.getElementById("int").value,
-        wis: document.getElementById("wis").value,
-        cha: document.getElementById("cha").value,
-        hp: document.getElementById("hp").value,
-        ac: document.getElementById("ac").value,
-        initiative: document.getElementById("initiative").value,
-        speed: document.getElementById("speed").value,
-        attacks: document.getElementById("attacks").value,
-        spells: document.getElementById("spells").value,
-        spell_slots: document.getElementById("spell_slots").value,
-        equipment: document.getElementById("equipment").value,
-        gold: document.getElementById("gold").value,
-        traits: document.getElementById("traits").value,
-        ideals: document.getElementById("ideals").value,
-        bonds: document.getElementById("bonds").value,
-        flaws: document.getElementById("flaws").value
-      };
-
-      const res = await fetch("/characters", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(character)
-      });
-
-      if (res.ok) {
-        loadCharacters();
-        alert("Personaggio salvato!");
-      } else {
-        alert("Errore nel salvataggio.");
-      }
-    }
-
-    // === Caricamento PG salvati ===
-    async function loadCharacters() {
-      const res = await fetch("/characters");
-      const list = document.getElementById("pgList");
-      list.innerHTML = "";
-
-      if (res.ok) {
-        const chars = await res.json();
-        chars.forEach(c => {
-          const div = document.createElement("div");
-          div.classList.add("pg-card");
-          div.innerHTML = `
-            <b>${c.name}</b> (Lv.${c.level} ${c.race} ${c.class})
-            <br><button class="btn" onclick="deleteCharacter(${c.id})">❌ Elimina</button>
-          `;
-          list.appendChild(div);
-        });
-      }
-    }
-
-    // === Eliminazione PG ===
-    async function deleteCharacter(id) {
-      const res = await fetch("/characters/" + id, { method: "DELETE" });
-      if (res.ok) {
-        loadCharacters();
-      }
-    }
-
-    // === Generazione casuale PG ===
-    function randomStat() {
-      let rolls = [];
-      for (let i = 0; i < 4; i++) rolls.push(Math.floor(Math.random() * 6) + 1);
-      rolls.sort((a, b) => b - a);
-      return rolls[0] + rolls[1] + rolls[2]; // somma i migliori 3
-    }
-
-    function randomCharacter() {
-      const races = ["Umano", "Elfo", "Nano", "Halfling", "Tiefling", "Draconide", "Mezzorco", "Gnomo"];
-      const classes = ["Guerriero", "Mago", "Ladro", "Chierico", "Barbaro", "Bardo", "Druido", "Paladino", "Ranger", "Stregone", "Warlock", "Monaco"];
-
-      document.getElementById("name").value = "PG Casuale";
-      document.getElementById("race").value = races[Math.floor(Math.random() * races.length)];
-      document.getElementById("class").value = classes[Math.floor(Math.random() * classes.length)];
-      document.getElementById("level").value = 1;
-
-      document.getElementById("str").value = randomStat();
-      document.getElementById("dex").value = randomStat();
-      document.getElementById("con").value = randomStat();
-      document.getElementById("int").value = randomStat();
-      document.getElementById("wis").value = randomStat();
-      document.getElementById("cha").value = randomStat();
-
-      updatePreview();
-    }
-
-    // Carica i PG salvati all’avvio
-    window.onload = loadCharacters;
-  </script>
   <script>
-  async function testSave() {
-    try {
-      const testPG = {
-        name: "TestPG",
-        class: "Guerriero",
-        race: "Umano",
-        level: 1,
-        str: 15,
-        dex: 12,
-        con: 14,
-        int: 10,
-        wis: 8,
-        cha: 13
-      };
-
-      const res = await fetch("/characters", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(testPG)
-      });
-
-      const data = await res.json();
-      console.log("Risposta server:", data);
-
-      if (res.ok) alert("✅ Test PG salvato! Controlla la lista o /characters");
-      else alert("❌ Errore durante il salvataggio: " + JSON.stringify(data));
-    } catch (err) {
-      console.error("Errore fetch:", err);
-      alert("❌ Fetch fallito, controlla console");
-    }
-  }
-
-  // Aggiungi un pulsante temporaneo per test
-  const btn = document.createElement("button");
-  btn.textContent = "💾 Test Salva PG";
-  btn.onclick = testSave;
-  btn.style.position = "fixed";
-  btn.style.bottom = "10px";
-  btn.style.right = "10px";
-  btn.style.zIndex = 9999;
-  btn.style.padding = "10px";
-  btn.style.background = "#222";
-  btn.style.color = "#fff";
-  btn.style.border = "none";
-  btn.style.borderRadius = "5px";
-  document.body.appendChild(btn);
-</script>
-  <script>
-async function loadCharacters() {
-  try {
-    const res = await fetch("/characters");
-    const characters = await res.json();
-
+    const form = document.getElementById("pg-form");
     const list = document.getElementById("characters-list");
-    if (!list) {
-      console.error("Elemento #characters-list non trovato nel DOM");
-      return;
+
+    // Funzione per caricare i PG dal backend
+    async function loadCharacters() {
+      try {
+        const res = await fetch("/characters");
+        const characters = await res.json();
+        list.innerHTML = "";
+        characters.forEach(pg => {
+          const li = document.createElement("li");
+          li.textContent = `${pg.name} - ${pg.class} - Livello ${pg.level}`;
+          list.appendChild(li);
+        });
+      } catch (err) {
+        console.error("Errore caricamento PG:", err);
+      }
     }
 
-    list.innerHTML = ""; // svuota la lista prima di aggiungere
-    characters.forEach(pg => {
-      const li = document.createElement("li");
-      li.textContent = `${pg.name} - ${pg.class} - Livello ${pg.level}`;
-      list.appendChild(li);
-    });
-  } catch (err) {
-    console.error("Errore caricamento PG:", err);
-  }
-}
+    // Chiamata iniziale per caricare i PG all’apertura della pagina
+    loadCharacters();
 
-// Chiama la funzione all’apertura della pagina
-window.onload = loadCharacters;
-</script>
+    // Funzione per creare PG
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const newPG = {
+        name: document.getElementById("name").value,
+        class: document.getElementById("class").value,
+        race: document.getElementById("race").value,
+        level: parseInt(document.getElementById("level").value),
+        strength: parseInt(document.getElementById("strength").value),
+        dexterity: parseInt(document.getElementById("dexterity").value),
+        constitution: parseInt(document.getElementById("constitution").value),
+        intelligence: parseInt(document.getElementById("intelligence").value),
+        wisdom: parseInt(document.getElementById("wisdom").value),
+        charisma: parseInt(document.getElementById("charisma").value)
+      };
+
+      try {
+        const res = await fetch("/characters", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newPG)
+        });
+        const data = await res.json();
+        if (res.ok) {
+          loadCharacters(); // ricarica lista PG
+          form.reset(); // pulisci form
+        } else {
+          alert("Errore creazione PG: " + JSON.stringify(data));
+        }
+      } catch (err) {
+        console.error("Errore fetch:", err);
+        alert("Errore connessione al server");
+      }
+    });
+  </script>
+
 </body>
 </html>
