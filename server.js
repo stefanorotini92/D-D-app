@@ -42,15 +42,19 @@ app.get("/characters", async (req, res) => {
 
 // Endpoint per creare un nuovo personaggio
 app.post("/characters", async (req, res) => {
+  console.log("📥 Ricevuto personaggio dal frontend:", req.body); // <-- LOG 1
+
   const { name, race, class: className } = req.body;
   try {
     const result = await pool.query(
       "INSERT INTO characters(name, race, class) VALUES($1, $2, $3) RETURNING *",
       [name, race, className]
     );
+
+    console.log("✅ Personaggio salvato nel DB:", result.rows[0]); // <-- LOG 2
     res.json(result.rows[0]);
   } catch (err) {
-    console.error(err);
+    console.error("❌ Errore nella creazione del personaggio:", err); // <-- LOG 3
     res.status(500).send("Errore nella creazione del personaggio");
   }
 });
