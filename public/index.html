@@ -1,165 +1,624 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>D&D PG Manager Avanzato</title>
-<style>
-body { font-family: Arial, sans-serif; padding: 10px; background: #f0f0f0; }
-input, select, textarea { margin-bottom: 5px; padding: 5px; width: 100%; }
-label { font-weight: bold; margin-top: 10px; display: block; }
-button { padding: 10px; margin-top: 10px; background: #333; color: #fff; border: none; border-radius: 5px; width: 100%; }
-ul { list-style: none; padding-left: 0; }
-li { background: #fff; margin-bottom: 5px; padding: 5px; border-radius: 5px; }
-small { display: block; color: #555; margin-bottom: 5px; }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Scheda D&D 5e — Creazione PG</title>
+
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#f6f4ef;
+      --card:#ffffff;
+      --accent:#2b6cb0;
+      --muted:#6b6b6b;
+      --border:#ddd;
+      --danger:#d73737;
+      --ok:#2d8a4f;
+      --radius:10px;
+      --gap:12px;
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background:var(--bg);
+      color:#111;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    header{
+      padding:18px 16px;
+      text-align:center;
+    }
+    header h1{
+      margin:0;
+      font-family:"Cinzel", serif;
+      font-size:20px;
+      letter-spacing:1px;
+    }
+    header p{ margin:6px 0 0; color:var(--muted); font-size:13px; }
+
+    /* grid main: left = form, right = overview + list */
+    .main {
+      max-width:1100px;
+      margin:12px auto;
+      padding:12px;
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap:var(--gap);
+    }
+
+    /* cards */
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:12px;
+      box-shadow: 0 6px 18px rgba(20,20,20,0.06);
+      border:1px solid var(--border);
+    }
+
+    /* Form area */
+    #form-area label{ display:block; font-weight:600; margin-top:10px; font-size:14px; }
+    #form-area input[type="text"],
+    #form-area input[type="number"],
+    #form-area select,
+    #form-area textarea{
+      width:100%;
+      padding:8px 10px;
+      margin-top:6px;
+      border:1px solid #d0d0d0;
+      border-radius:8px;
+      font-size:14px;
+      background:#fff;
+    }
+    #form-area textarea{ min-height:70px; resize:vertical; }
+
+    .row {
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+
+    .col-2{ display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
+
+    .small { font-size:12px; color:var(--muted); margin-top:4px; }
+
+    /* stats grid (compact on mobile) */
+    .stats {
+      display:grid;
+      grid-template-columns: repeat(3,1fr);
+      gap:8px;
+      margin-top:8px;
+    }
+    .stat-box{
+      background:#fbfbfb;
+      border:1px solid #e6e6e6;
+      padding:8px;
+      border-radius:8px;
+      text-align:center;
+    }
+    .stat-box input{
+      width:64px;
+      font-size:16px;
+      text-align:center;
+    }
+    .stat-label{ font-size:13px; margin-bottom:6px; display:block; font-weight:600; }
+
+    /* action buttons */
+    .actions { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+    .btn {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:8px;
+      border: none;
+      cursor:pointer;
+      font-weight:600;
+      font-size:14px;
+    }
+    .btn-primary{ background:var(--accent); color:#fff; }
+    .btn-ghost{ background:transparent; border:1px solid var(--border); color:#222; }
+    .btn-danger{ background:var(--danger); color:#fff; }
+
+    /* right column: preview + list */
+    #preview { white-space:pre-wrap; font-family:monospace; font-size:13px; background:#fbfbff; padding:10px; border-radius:8px; border:1px solid #e8e8ff; min-height:120px; overflow:auto; }
+    #characters-list { margin:0; padding:0; list-style:none; }
+    .pg-item{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid #eee;
+      margin-bottom:8px;
+      background:#fff;
+      gap:8px;
+    }
+    .pg-meta{ font-size:14px; font-weight:600; }
+    .pg-sub{ font-size:12px; color:var(--muted); margin-top:4px; }
+
+    .pg-actions { display:flex; gap:8px; align-items:center; }
+
+    .icon-btn{
+      background:transparent;
+      border:none;
+      font-size:16px;
+      cursor:pointer;
+      padding:6px;
+      border-radius:6px;
+    }
+    .icon-btn:hover{ background:#f2f6ff; }
+
+    /* footer */
+    footer{ text-align:center; color:var(--muted); font-size:13px; padding:12px; }
+
+    /* responsiveness: on mobile show single column */
+    @media (max-width:880px){
+      .main{ grid-template-columns: 1fr; padding:10px; }
+      #preview{ min-height:160px; }
+      .stats{ grid-template-columns: repeat(3, 1fr); }
+      .col-2{ grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
+  <header>
+    <h1>Scheda Personaggio — D&D 5e</h1>
+    <p>Creazione rapida, anteprima, modifica e gestione PG — ottimizzato per telefono</p>
+  </header>
 
-<h1>D&D PG Manager Avanzato</h1>
+  <main class="main">
+    <!-- LEFT: form -->
+    <section id="form-area" class="card">
+      <h2 style="margin:0 0 8px 0;">Crea / Modifica Personaggio</h2>
 
-<form id="pg-form">
-  <label>Nome:</label><input type="text" id="name" required>
-  <label>Classe:</label><select id="class" required></select>
-  <label>Razza:</label><select id="race" required></select>
-  <label>Livello:</label><input type="number" id="level" min="1" value="1" required>
+      <!-- hidden id for edit -->
+      <input type="hidden" id="char_id">
 
-  <label>Forza:</label><input type="number" id="strength" min="1" value="10" required>
-  <label>Destrezza:</label><input type="number" id="dexterity" min="1" value="10" required>
-  <label>Costituzione:</label><input type="number" id="constitution" min="1" value="10" required>
-  <label>Intelligenza:</label><input type="number" id="intelligence" min="1" value="10" required>
-  <label>Saggezza:</label><input type="number" id="wisdom" min="1" value="10" required>
-  <label>Carisma:</label><input type="number" id="charisma" min="1" value="10" required>
+      <!-- basic -->
+      <label for="name">Nome</label>
+      <input id="name" type="text" placeholder="Nome del personaggio">
 
-  <div id="advanced-fields"></div>
+      <div class="col-2">
+        <div>
+          <label for="class">Classe</label>
+          <select id="class"></select>
+          <div class="small">Scegli la classe (influisce su abilità e dadi vita)</div>
+        </div>
+        <div>
+          <label for="race">Razza</label>
+          <select id="race"></select>
+          <div class="small">Bonus e tratti razziali</div>
+        </div>
+      </div>
 
-  <button type="submit">💾 Crea PG</button>
-  <button type="button" id="random-btn">🎲 Random PG</button>
-</form>
+      <div class="row" style="margin-top:10px;">
+        <div style="flex:1">
+          <label for="background">Background</label>
+          <select id="background"></select>
+          <div class="small">Storia e competenze aggiuntive</div>
+        </div>
+        <div style="width:110px; margin-left:8px;">
+          <label for="level">Livello</label>
+          <input id="level" type="number" min="1" value="1">
+        </div>
+      </div>
 
-<h2>Anteprima:</h2>
-<div id="preview"></div>
+      <!-- stats -->
+      <div style="margin-top:12px;">
+        <label>Caratteristiche</label>
+        <div class="stats">
+          <div class="stat-box">
+            <span class="stat-label">Forza</span>
+            <input id="strength" type="number" value="10" />
+            <div class="small">Attacchi corpo a corpo</div>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Destrezza</span>
+            <input id="dexterity" type="number" value="10" />
+            <div class="small">Iniziativa, CA</div>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Costituzione</span>
+            <input id="constitution" type="number" value="10" />
+            <div class="small">PF e resistenza</div>
+          </div>
 
-<h2>Personaggi salvati:</h2>
-<ul id="characters-list"></ul>
+          <div class="stat-box">
+            <span class="stat-label">Intelligenza</span>
+            <input id="intelligence" type="number" value="10" />
+            <div class="small">Conoscenze arcane</div>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Saggezza</span>
+            <input id="wisdom" type="number" value="10" />
+            <div class="small">Percezione</div>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Carisma</span>
+            <input id="charisma" type="number" value="10" />
+            <div class="small">Incantesimi e social</div>
+          </div>
+        </div>
+      </div>
 
+      <!-- advanced area placeholder (will be filled by JS) -->
+      <div id="advanced-area" style="margin-top:14px;"></div>
+
+      <!-- actions -->
+      <div class="actions" style="margin-top:12px;">
+        <button id="saveBtn" class="btn btn-primary"><span>💾</span> Salva Personaggio</button>
+        <button id="randomBtn" class="btn btn-ghost" type="button"><span>🎲</span> Genera Random</button>
+        <button id="resetBtn" class="btn" type="button">🔄 Reset</button>
+      </div>
+
+      <div style="margin-top:10px;">
+        <small>Note: puoi modificare un personaggio dalla lista usando ✏️, cancellarlo con 🗑️</small>
+      </div>
+    </section>
+
+    <!-- RIGHT: preview & list -->
+    <aside>
+      <div class="card" style="margin-bottom:var(--gap);">
+        <h3 style="margin:0 0 8px 0;">Anteprima</h3>
+        <div id="preview">Nessun personaggio selezionato — compila il form per vedere l'anteprima in tempo reale.</div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin:0 0 8px 0;">Personaggi salvati</h3>
+        <div id="characters-container">
+          <ul id="characters-list"></ul>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <small>App D&D — versione prototipo • Ottimizzata per mobile</small>
+  </footer>
+
+  <!-- Parte 2 e 3 (script) arriveranno subito dopo; non rimuovere gli ID presenti qui -->
 <script>
-// Campi principali
-const CLASSES = ["Guerriero","Mago","Ladro","Chierico","Paladino","Ranger","Barbaro","Stregone","Druido","Bardo","Monaco","Warlock"];
-const RACES = ["Umano","Elfo","Nano","Halfling","Dragonide","Mezzelfo","Mezzorco","Gnomo"];
-
-// Popolazione dropdown principali
-function populateDropdown(selectId, options) {
-  const select = document.getElementById(selectId);
-  options.forEach(opt => {
-    const el = document.createElement("option");
-    el.value = opt; el.textContent = opt;
-    select.appendChild(el);
-  });
-}
-populateDropdown("class", CLASSES);
-populateDropdown("race", RACES);
-
-// Creazione dinamica campi avanzati
-const ADVANCED_FIELDS = [
-  { id: "background", label: "Background", type: "select", options: ["Soldato","Nobile","Accolito","Criminale","Eremita","Marinaio","Artigiano","Saggio"], description: "Origine e storia del personaggio" },
-  { id: "alignment", label: "Allineamento", type: "select", options: ["Legale Buono","Neutrale Buono","Caotico Buono","Legale Neutrale","Neutrale Puro","Caotico Neutrale","Legale Malvagio","Neutrale Malvagio","Caotico Malvagio"], description: "Allineamento morale ed etico del personaggio" },
-  { id: "spell_slots", label: "Slot Incantesimi", type: "number", min:0, max:10, description:"Numero di slot disponibili per gli incantesimi"},
-  { id: "equipment", label:"Equipaggiamento", type:"text", description:"Lista di oggetti e armi possedute"},
-  { id: "racial_traits", label:"Tratti Raziali", type:"text", description:"Caratteristiche e abilità della razza"},
-  { id: "special_abilities", label:"Abilità Speciali", type:"text", description:"Abilità uniche del personaggio"}
+// ================================
+// Dati di base D&D 5e (ridotti)
+// ================================
+const classes = [
+  "Barbaro","Bardo","Chierico","Druido","Guerriero",
+  "Ladro","Mago","Monaco","Paladino","Ranger","Stregone","Warlock"
+];
+const races = [
+  "Umano","Elfo","Nano","Mezzorco","Halfling","Gnomo",
+  "Dragonide","Tiefling","Mezzelfo"
+];
+const backgrounds = [
+  "Accolito","Eroe Popolare","Nobile","Marinaio","Soldato","Criminale","Eremita","Saggio"
 ];
 
-const advContainer = document.getElementById("advanced-fields");
-ADVANCED_FIELDS.forEach(f => {
-  const label = document.createElement("label");
-  label.textContent = f.label;
-  advContainer.appendChild(label);
+// Caratteristiche disponibili
+const abilities = ["strength","dexterity","constitution","intelligence","wisdom","charisma"];
 
-  let input;
-  if(f.type==="select") {
-    input = document.createElement("select");
-    input.id = f.id;
-    input.required = true;
-    const empty = document.createElement("option"); empty.value=""; empty.textContent="Seleziona"; input.appendChild(empty);
-    f.options.forEach(o=>{ const el=document.createElement("option"); el.value=o; el.textContent=o; input.appendChild(el);});
-  } else if(f.type==="number") {
-    input = document.createElement("input");
-    input.type="number"; input.id=f.id; input.min=f.min||0; input.max=f.max||100; input.value=f.min||0;
-  } else {
-    input = document.createElement("input"); input.type="text"; input.id=f.id;
-  }
-  advContainer.appendChild(input);
-
-  const desc = document.createElement("small"); desc.textContent=f.description;
-  advContainer.appendChild(desc);
-});
-
-// Funzioni principali
-const form=document.getElementById("pg-form");
-const list=document.getElementById("characters-list");
-const preview=document.getElementById("preview");
-
-// Caricamento PG
-async function loadCharacters(){
-  try{
-    const res=await fetch("/characters");
-    const characters=await res.json();
-    list.innerHTML="";
-    characters.forEach(pg=>{
-      const li=document.createElement("li");
-      li.textContent=`${pg.name} - ${pg.class} - Livello ${pg.level}`;
-      list.appendChild(li);
-    });
-  }catch(err){console.error(err);}
+// ================================
+// Popola i dropdown base
+// ================================
+function populateDropdown(id, arr){
+  const sel = document.getElementById(id);
+  sel.innerHTML = "<option value=''>— Seleziona —</option>";
+  arr.forEach(v=>{
+    const opt = document.createElement("option");
+    opt.value = v;
+    opt.textContent = v;
+    sel.appendChild(opt);
+  });
 }
-loadCharacters();
+populateDropdown("class", classes);
+populateDropdown("race", races);
+populateDropdown("background", backgrounds);
 
+// ================================
+// Campi avanzati — generati dinamicamente
+// ================================
+const advancedFields = [
+  {id:"alignment", label:"Allineamento", type:"select", options:[
+    "Legale Buono","Neutrale Buono","Caotico Buono",
+    "Legale Neutrale","Neutrale Puro","Caotico Neutrale",
+    "Legale Malvagio","Neutrale Malvagio","Caotico Malvagio"
+  ], desc:"Orientamento etico e morale"},
+  {id:"armorClass", label:"Classe Armatura (CA)", type:"number", desc:"Difesa base contro attacchi"},
+  {id:"hitPoints", label:"Punti Ferita Massimi", type:"number", desc:"PF massimi del personaggio"},
+  {id:"speed", label:"Velocità", type:"number", desc:"Metri a turno (default 9m = 30ft)"},
+  {id:"proficiencies", label:"Competenze", type:"textarea", desc:"Armi, armature, strumenti..."},
+  {id:"equipment", label:"Equipaggiamento", type:"textarea", desc:"Oggetti iniziali e acquisiti"},
+  {id:"features", label:"Tratti e Abilità", type:"textarea", desc:"Tratti razziali e abilità di classe"},
+  {id:"spells", label:"Incantesimi", type:"textarea", desc:"Incantesimi conosciuti/preparati"},
+  {id:"notes", label:"Note Extra", type:"textarea", desc:"Annotazioni libere"}
+];
+
+function renderAdvancedFields(){
+  const container = document.getElementById("advanced-area");
+  container.innerHTML = "";
+  advancedFields.forEach(f=>{
+    const wrap = document.createElement("div");
+    wrap.style.marginTop = "8px";
+    const label = document.createElement("label");
+    label.textContent = f.label;
+    label.setAttribute("for",f.id);
+    wrap.appendChild(label);
+
+    let input;
+    if(f.type==="select"){
+      input = document.createElement("select");
+      input.id=f.id;
+      input.innerHTML="<option value=''>— Seleziona —</option>";
+      f.options.forEach(o=>{
+        const opt=document.createElement("option");
+        opt.value=o; opt.textContent=o;
+        input.appendChild(opt);
+      });
+    } else if(f.type==="textarea"){
+      input=document.createElement("textarea");
+      input.id=f.id;
+    } else {
+      input=document.createElement("input");
+      input.type=f.type;
+      input.id=f.id;
+    }
+    wrap.appendChild(input);
+
+    const small=document.createElement("div");
+    small.className="small";
+    small.textContent=f.desc;
+    wrap.appendChild(small);
+
+    container.appendChild(wrap);
+  });
+}
+renderAdvancedFields();
+
+// ================================
 // Anteprima in tempo reale
+// ================================
 function updatePreview(){
-  const values={};
-  [...form.elements].forEach(el=>{
-    if(el.id) values[el.id]=el.value;
+  const preview=document.getElementById("preview");
+  let txt="";
+  txt+=`Nome: ${document.getElementById("name").value}\n`;
+  txt+=`Classe: ${document.getElementById("class").value}\n`;
+  txt+=`Razza: ${document.getElementById("race").value}\n`;
+  txt+=`Background: ${document.getElementById("background").value}\n`;
+  txt+=`Livello: ${document.getElementById("level").value}\n`;
+  abilities.forEach(a=>{
+    txt+=`${a.toUpperCase()}: ${document.getElementById(a).value}\n`;
   });
-  preview.innerHTML=`<pre>${JSON.stringify(values,null,2)}</pre>`;
+  advancedFields.forEach(f=>{
+    const val=document.getElementById(f.id).value;
+    if(val) txt+=`${f.label}: ${val}\n`;
+  });
+  preview.textContent=txt;
 }
-form.addEventListener("input", updatePreview);
-updatePreview();
 
-// Random PG
-document.getElementById("random-btn").addEventListener("click",()=>{
-  form.name.value="PG"+Math.floor(Math.random()*1000);
-  form.class.value=CLASSES[Math.floor(Math.random()*CLASSES.length)];
-  form.race.value=RACES[Math.floor(Math.random()*RACES.length)];
-  form.level.value=Math.floor(Math.random()*20)+1;
-  form.strength.value=Math.floor(Math.random()*20)+1;
-  form.dexterity.value=Math.floor(Math.random()*20)+1;
-  form.constitution.value=Math.floor(Math.random()*20)+1;
-  form.intelligence.value=Math.floor(Math.random()*20)+1;
-  form.wisdom.value=Math.floor(Math.random()*20)+1;
-  form.charisma.value=Math.floor(Math.random()*20)+1;
-  ADVANCED_FIELDS.forEach(f=>{
-    const el=document.getElementById(f.id);
-    if(f.type==="select") el.value=f.options[Math.floor(Math.random()*f.options.length)];
-    else if(f.type==="number") el.value=Math.floor(Math.random()*10);
-    else el.value="Random";
-  });
+// Aggiungo event listener a tutti i campi
+document.querySelectorAll("#form-area input, #form-area select, #form-area textarea")
+  .forEach(el=>el.addEventListener("input", updatePreview));
+
+// ================================
+// Generazione randomica PG
+// ================================
+function randomFrom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function rollStat(){ return 8+Math.floor(Math.random()*11); }
+
+function generateRandom(){
+  document.getElementById("name").value="PG_"+Math.floor(Math.random()*1000);
+  document.getElementById("class").value=randomFrom(classes);
+  document.getElementById("race").value=randomFrom(races);
+  document.getElementById("background").value=randomFrom(backgrounds);
+  document.getElementById("level").value=1+Math.floor(Math.random()*5);
+  abilities.forEach(a=>document.getElementById(a).value=rollStat());
+  document.getElementById("alignment").value=randomFrom(advancedFields[0].options);
+  document.getElementById("armorClass").value=10+Math.floor(Math.random()*8);
+  document.getElementById("hitPoints").value=5+Math.floor(Math.random()*20);
+  document.getElementById("speed").value=9;
   updatePreview();
+}
+document.getElementById("randomBtn").addEventListener("click",generateRandom);
+
+// ================================
+// Salvataggio su backend
+// ================================
+async function saveCharacter(){
+  const data={
+    name:document.getElementById("name").value,
+    class:document.getElementById("class").value,
+    race:document.getElementById("race").value,
+    background:document.getElementById("background").value,
+    level:document.getElementById("level").value,
+    strength:document.getElementById("strength").value,
+    dexterity:document.getElementById("dexterity").value,
+    constitution:document.getElementById("constitution").value,
+    intelligence:document.getElementById("intelligence").value,
+    wisdom:document.getElementById("wisdom").value,
+    charisma:document.getElementById("charisma").value,
+    extra_data:{}
+  };
+  advancedFields.forEach(f=>{
+    data.extra_data[f.id]=document.getElementById(f.id).value;
+  });
+
+  const res=await fetch("/api/characters",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(data)
+  });
+  if(res.ok){
+    await loadCharacters();
+    resetForm();
+  } else {
+    const err=await res.json();
+    alert("Errore salvataggio: "+JSON.stringify(err));
+  }
+}
+document.getElementById("saveBtn").addEventListener("click",e=>{
+  e.preventDefault(); saveCharacter();
 });
 
-// Invio form
-form.addEventListener("submit",async(e)=>{
-  e.preventDefault();
-  const data={};
-  [...form.elements].forEach(el=>{ if(el.id) data[el.id]=el.value; });
-  try{
-    const res=await fetch("/characters",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});
-    const result=await res.json();
-    if(res.ok){loadCharacters();form.reset();updatePreview();}
-    else alert("Errore: "+JSON.stringify(result));
-  }catch(err){alert("Errore connessione"); console.error(err);}
-});
+// ================================
+// Carica personaggi
+// ================================
+async function loadCharacters(){
+  const res=await fetch("/api/characters");
+  const chars=await res.json();
+  const list=document.getElementById("characters-list");
+  list.innerHTML="";
+  chars.forEach(ch=>{
+    const li=document.createElement("li");
+    li.className="pg-item";
+    const meta=document.createElement("div");
+    meta.innerHTML=`<div class="pg-meta">${ch.name} (Lv.${ch.level})</div><div class="pg-sub">${ch.race} ${ch.class}</div>`;
+    const act=document.createElement("div");
+    act.className="pg-actions";
+    const editBtn=document.createElement("button");
+    editBtn.className="icon-btn"; editBtn.innerHTML="✏️";
+    editBtn.onclick=()=>fillForm(ch);
+    const delBtn=document.createElement("button");
+    delBtn.className="icon-btn"; delBtn.innerHTML="🗑️";
+    delBtn.onclick=()=>deleteCharacter(ch.id);
+    act.appendChild(editBtn); act.appendChild(delBtn);
+    li.appendChild(meta); li.appendChild(act);
+    list.appendChild(li);
+  });
+}
+async function deleteCharacter(id){
+  if(confirm("Sicuro di cancellare?")){
+    await fetch("/api/characters/"+id,{method:"DELETE"});
+    loadCharacters();
+  }
+}
+function fillForm(ch){
+  document.getElementById("char_id").value=ch.id;
+  document.getElementById("name").value=ch.name;
+  document.getElementById("class").value=ch.class;
+  document.getElementById("race").value=ch.race;
+  document.getElementById("background").value=ch.background;
+  document.getElementById("level").value=ch.level;
+  abilities.forEach(a=>document.getElementById(a).value=ch[a]);
+  if(ch.extra_data){
+    Object.keys(ch.extra_data).forEach(k=>{
+      if(document.getElementById(k)) document.getElementById(k).value=ch.extra_data[k];
+    });
+  }
+  updatePreview();
+}
+function resetForm(){
+  document.getElementById("form-area").reset();
+  document.getElementById("char_id").value="";
+  updatePreview();
+}
+document.getElementById("resetBtn").addEventListener("click", resetForm);
+
+// init
+loadCharacters();
+updatePreview();
+// ================================
+// PARTE 3 — Calcoli automatici & migliorie grafiche
+// ================================
+
+// Calcolo modificatore caratteristica
+function abilityMod(score){
+  return Math.floor((score - 10) / 2);
+}
+
+// Aggiorna l'anteprima con modificatori e dettagli
+function updatePreviewDetailed(){
+  const preview=document.getElementById("preview");
+  let txt="";
+
+  txt+=`Nome: ${document.getElementById("name").value || "-"}\n`;
+  txt+=`Classe: ${document.getElementById("class").value || "-"} | Razza: ${document.getElementById("race").value || "-"} | Background: ${document.getElementById("background").value || "-"}\n`;
+  txt+=`Livello: ${document.getElementById("level").value || 1}\n\n`;
+
+  txt+="Caratteristiche:\n";
+  abilities.forEach(a=>{
+    const val=parseInt(document.getElementById(a).value)||10;
+    const mod=abilityMod(val);
+    const label=a.charAt(0).toUpperCase()+a.slice(1);
+    txt+=`- ${label}: ${val} (mod ${mod>=0?"+":""}${mod})\n`;
+  });
+
+  txt+="\n";
+  // Calcolo base PF e CA (molto semplificato)
+  const cosMod=abilityMod(parseInt(document.getElementById("constitution").value)||10);
+  const liv=parseInt(document.getElementById("level").value)||1;
+  const basePF= (8 + cosMod) * liv;
+  const dexMod=abilityMod(parseInt(document.getElementById("dexterity").value)||10);
+  const baseCA=10+dexMod;
+
+  txt+=`CA stimata: ${baseCA}\n`;
+  txt+=`PF stimati: ${basePF}\n\n`;
+
+  advancedFields.forEach(f=>{
+    const val=document.getElementById(f.id).value;
+    if(val) txt+=`${f.label}: ${val}\n`;
+  });
+
+  preview.textContent=txt;
+}
+
+// Sostituisco updatePreview con versione dettagliata
+document.querySelectorAll("#form-area input, #form-area select, #form-area textarea")
+  .forEach(el=>el.removeEventListener("input", updatePreview));
+document.querySelectorAll("#form-area input, #form-area select, #form-area textarea")
+  .forEach(el=>el.addEventListener("input", updatePreviewDetailed));
+
+// Rendo anche generateRandom compatibile
+const oldRandom=generateRandom;
+generateRandom=function(){
+  oldRandom();
+  updatePreviewDetailed();
+};
+
+// Alla fine dell’init carico l’anteprima dettagliata
+updatePreviewDetailed();
+
+// ================================
+// Ritocco grafico lista personaggi
+// ================================
+function renderCharacterListItem(ch){
+  const li=document.createElement("li");
+  li.className="pg-item";
+  const meta=document.createElement("div");
+  meta.innerHTML=`
+    <div class="pg-meta">${ch.name} (Lv.${ch.level})</div>
+    <div class="pg-sub">${ch.race} ${ch.class} • CA ${ch.extra_data?.armorClass||"-"} • PF ${ch.extra_data?.hitPoints||"-"}</div>
+  `;
+  const act=document.createElement("div");
+  act.className="pg-actions";
+  const editBtn=document.createElement("button");
+  editBtn.className="icon-btn"; editBtn.innerHTML="✏️";
+  editBtn.onclick=()=>fillForm(ch);
+  const delBtn=document.createElement("button");
+  delBtn.className="icon-btn"; delBtn.innerHTML="🗑️";
+  delBtn.onclick=()=>deleteCharacter(ch.id);
+  act.appendChild(editBtn); act.appendChild(delBtn);
+  li.appendChild(meta); li.appendChild(act);
+  return li;
+}
+
+// Rimpiazzo la loadCharacters con versione aggiornata
+async function loadCharacters(){
+  const res=await fetch("/api/characters");
+  const chars=await res.json();
+  const list=document.getElementById("characters-list");
+  list.innerHTML="";
+  chars.forEach(ch=>{
+    list.appendChild(renderCharacterListItem(ch));
+  });
+}
 </script>
-
 </body>
 </html>
