@@ -5,67 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>D&D App</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #1e1e2f;
-      color: #f0f0f0;
-      padding: 20px;
-    }
-    h1, h2 {
-      text-align: center;
-    }
+    body { font-family: Arial, sans-serif; background: #1e1e2f; color: #f0f0f0; padding: 20px; }
+    h1, h2 { text-align: center; }
     form {
-      display: flex;
-      flex-direction: column;
-      max-width: 300px;
-      margin: 20px auto;
-      padding: 15px;
-      background: #2a2a3d;
-      border-radius: 8px;
+      display: flex; flex-direction: column;
+      max-width: 300px; margin: 20px auto;
+      padding: 15px; background: #2a2a3d; border-radius: 8px;
     }
-    input {
-      margin: 8px 0;
-      padding: 8px;
-      border: none;
-      border-radius: 4px;
-    }
-    button {
-      padding: 10px;
-      background: #5c6bc0;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #3949ab;
-    }
-    #charactersList {
-      margin-top: 20px;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-    }
+    input { margin: 8px 0; padding: 8px; border: none; border-radius: 4px; }
+    button { padding: 8px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+    .create-btn { background: #5c6bc0; color: white; }
+    .create-btn:hover { background: #3949ab; }
+    .delete-btn { background: #e53935; color: white; }
+    .delete-btn:hover { background: #b71c1c; }
+    .edit-btn { background: #fbc02d; color: black; }
+    .edit-btn:hover { background: #f57f17; }
+    #charactersList { margin-top: 20px; max-width: 400px; margin-left: auto; margin-right: auto; }
     .character {
-      background: #2a2a3d;
-      padding: 10px;
-      margin: 5px 0;
-      border-radius: 4px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      background: #2a2a3d; padding: 10px; margin: 5px 0; border-radius: 4px;
+      display: flex; justify-content: space-between; align-items: center;
     }
-    .delete-btn {
-      background: #e53935;
-      border: none;
-      color: white;
-      padding: 5px 10px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .delete-btn:hover {
-      background: #b71c1c;
-    }
+    .btn-group { display: flex; gap: 5px; }
   </style>
 </head>
 <body>
@@ -75,7 +35,7 @@
     <input type="text" id="name" placeholder="Nome" required>
     <input type="text" id="race" placeholder="Razza" required>
     <input type="text" id="class" placeholder="Classe" required>
-    <button type="submit">Crea</button>
+    <button type="submit" class="create-btn">Crea</button>
   </form>
 
   <h2>Personaggi</h2>
@@ -84,6 +44,7 @@
   <script>
     const form = document.getElementById('characterForm');
     const charactersList = document.getElementById('charactersList');
+    let editingId = null; // ID del pg in modifica
 
     async function loadCharacters() {
       try {
@@ -95,6 +56,21 @@
           const div = document.createElement('div');
           div.className = 'character';
           div.textContent = `${c.name} - ${c.race} - ${c.class}`;
+
+          const btnGroup = document.createElement('div');
+          btnGroup.className = 'btn-group';
+
+          // Bottone modifica
+          const editBtn = document.createElement('button');
+          editBtn.textContent = "✏️";
+          editBtn.className = "edit-btn";
+          editBtn.onclick = () => {
+            document.getElementById('name').value = c.name;
+            document.getElementById('race').value = c.race;
+            document.getElementById('class').value = c.class;
+            editingId = c.id;
+            form.querySelector('button').textContent = "Aggiorna";
+          };
 
           // Bottone elimina
           const delBtn = document.createElement('button');
@@ -111,7 +87,9 @@
             }
           };
 
-          div.appendChild(delBtn);
+          btnGroup.appendChild(editBtn);
+          btnGroup.appendChild(delBtn);
+          div.appendChild(btnGroup);
           charactersList.appendChild(div);
         });
         console.log("✅ Personaggi caricati:", characters);
@@ -120,7 +98,7 @@
       }
     }
 
-    // Carica i personaggi quando parte la pagina
+    // Carica i personaggi al caricamento pagina
     loadCharacters();
 
     form.addEventListener('submit', async (e) => {
@@ -129,24 +107,42 @@
       const race = document.getElementById('race').value;
       const className = document.getElementById('class').value;
 
-      console.log("📤 Invio nuovo personaggio:", { name, race, class: className });
-
-      try {
-        const res = await fetch('/characters', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, race, class: className })
-        });
-
-        if (!res.ok) throw new Error(`Server error: ${res.status}`);
-
-        const savedChar = await res.json();
-        console.log("✅ Personaggio salvato:", savedChar);
-
-        form.reset();
-        loadCharacters();
-      } catch (err) {
-        console.error("❌ Errore creazione:", err);
+      if (editingId) {
+        // UPDATE
+        console.log("✏️ Aggiornamento personaggio:", { id: editingId, name, race, class: className });
+        try {
+          const res = await fetch(`/characters/${editingId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, race, class: className })
+          });
+          if (!res.ok) throw new Error(`Server error: ${res.status}`);
+          const updatedChar = await res.json();
+          console.log("✅ Personaggio aggiornato:", updatedChar);
+          editingId = null;
+          form.reset();
+          form.querySelector('button').textContent = "Crea";
+          loadCharacters();
+        } catch (err) {
+          console.error("❌ Errore aggiornamento:", err);
+        }
+      } else {
+        // CREATE
+        console.log("📤 Invio nuovo personaggio:", { name, race, class: className });
+        try {
+          const res = await fetch('/characters', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, race, class: className })
+          });
+          if (!res.ok) throw new Error(`Server error: ${res.status}`);
+          const savedChar = await res.json();
+          console.log("✅ Personaggio salvato:", savedChar);
+          form.reset();
+          loadCharacters();
+        } catch (err) {
+          console.error("❌ Errore creazione:", err);
+        }
       }
     });
   </script>
