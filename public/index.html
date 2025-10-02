@@ -2,148 +2,137 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>D&D App</title>
+  <title>Creazione Personaggio D&D 5e</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #1e1e2f; color: #f0f0f0; padding: 20px; }
-    h1, h2 { text-align: center; }
-    form {
-      display: flex; flex-direction: column;
-      max-width: 300px; margin: 20px auto;
-      padding: 15px; background: #2a2a3d; border-radius: 8px;
-    }
-    input { margin: 8px 0; padding: 8px; border: none; border-radius: 4px; }
-    button { padding: 8px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
-    .create-btn { background: #5c6bc0; color: white; }
-    .create-btn:hover { background: #3949ab; }
-    .delete-btn { background: #e53935; color: white; }
-    .delete-btn:hover { background: #b71c1c; }
-    .edit-btn { background: #fbc02d; color: black; }
-    .edit-btn:hover { background: #f57f17; }
-    #charactersList { margin-top: 20px; max-width: 400px; margin-left: auto; margin-right: auto; }
-    .character {
-      background: #2a2a3d; padding: 10px; margin: 5px 0; border-radius: 4px;
-      display: flex; justify-content: space-between; align-items: center;
-    }
-    .btn-group { display: flex; gap: 5px; }
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+    label { display: block; margin-top: 10px; }
+    input, select, textarea { width: 100%; padding: 5px; margin-top: 2px; }
+    button { margin-top: 15px; padding: 10px 15px; }
+    .section { background: #fff; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
+    h2 { margin-top: 0; }
   </style>
 </head>
 <body>
-  <h1>D&D Adventure App</h1>
+  <h1>Creazione Personaggio D&D 5e</h1>
 
-  <form id="characterForm">
-    <input type="text" id="name" placeholder="Nome" required>
-    <input type="text" id="race" placeholder="Razza" required>
-    <input type="text" id="class" placeholder="Classe" required>
-    <button type="submit" class="create-btn">Crea</button>
-  </form>
+  <div class="section">
+    <h2>Informazioni generali</h2>
+    <label>Nome<input type="text" id="name" required></label>
+    <label>Classe<input type="text" id="class" required></label>
+    <label>Livello<input type="number" id="level" value="1" min="1"></label>
+    <label>Background<textarea id="background"></textarea></label>
+    <label>Giocatore<input type="text" id="player_name"></label>
+    <label>Razza<input type="text" id="race"></label>
+    <label>Allineamento<input type="text" id="alignment"></label>
+    <label>Punti esperienza<input type="number" id="xp" value="0"></label>
+  </div>
 
-  <h2>Personaggi</h2>
-  <div id="charactersList"></div>
+  <div class="section">
+    <h2>Caratteristiche</h2>
+    <label>Forza<input type="number" id="strength" value="10"></label>
+    <label>Destrezza<input type="number" id="dexterity" value="10"></label>
+    <label>Costituzione<input type="number" id="constitution" value="10"></label>
+    <label>Intelligenza<input type="number" id="intelligence" value="10"></label>
+    <label>Saggezza<input type="number" id="wisdom" value="10"></label>
+    <label>Carisma<input type="number" id="charisma" value="10"></label>
+  </div>
+
+  <div class="section">
+    <h2>Combattimento</h2>
+    <label>Punti ferita massimi<input type="number" id="max_hp" value="10"></label>
+    <label>Punti ferita attuali<input type="number" id="current_hp" value="10"></label>
+    <label>Classe armatura<input type="number" id="armor_class" value="10"></label>
+    <label>Iniziativa<input type="number" id="initiative" value="0"></label>
+    <label>Velocità<input type="number" id="speed" value="30"></label>
+    <label>Dadi vita<input type="text" id="hit_dice" value="1d10"></label>
+    <label>Tiri salvezza successi<input type="number" id="death_saves_success" value="0"></label>
+    <label>Tiri salvezza fallimenti<input type="number" id="death_saves_failure" value="0"></label>
+  </div>
+
+  <div class="section">
+    <h2>Note e background</h2>
+    <label>Equipaggiamento<textarea id="equipment"></textarea></label>
+    <label>Tratti della personalità<textarea id="personality_traits"></textarea></label>
+    <label>Ideali<textarea id="ideals"></textarea></label>
+    <label>Legami<textarea id="bonds"></textarea></label>
+    <label>Difetti<textarea id="flaws"></textarea></label>
+    <label>Aspetto fisico<textarea id="appearance"></textarea></label>
+    <label>Storia<textarea id="backstory"></textarea></label>
+  </div>
+
+  <button id="createBtn">Crea Personaggio</button>
+  <button id="randomBtn">Crea Personaggio Random</button>
+
+  <div id="result" class="section"></div>
 
   <script>
-    const form = document.getElementById('characterForm');
-    const charactersList = document.getElementById('charactersList');
-    let editingId = null; // ID del pg in modifica
+    const createBtn = document.getElementById("createBtn");
+    const randomBtn = document.getElementById("randomBtn");
+    const result = document.getElementById("result");
 
-    async function loadCharacters() {
-      try {
-        const res = await fetch('/characters');
-        if (!res.ok) throw new Error(`Server error: ${res.status}`);
-        const characters = await res.json();
-        charactersList.innerHTML = '';
-        characters.forEach(c => {
-          const div = document.createElement('div');
-          div.className = 'character';
-          div.textContent = `${c.name} - ${c.race} - ${c.class}`;
-
-          const btnGroup = document.createElement('div');
-          btnGroup.className = 'btn-group';
-
-          // Bottone modifica
-          const editBtn = document.createElement('button');
-          editBtn.textContent = "✏️";
-          editBtn.className = "edit-btn";
-          editBtn.onclick = () => {
-            document.getElementById('name').value = c.name;
-            document.getElementById('race').value = c.race;
-            document.getElementById('class').value = c.class;
-            editingId = c.id;
-            form.querySelector('button').textContent = "Aggiorna";
-          };
-
-          // Bottone elimina
-          const delBtn = document.createElement('button');
-          delBtn.textContent = "❌";
-          delBtn.className = "delete-btn";
-          delBtn.onclick = async () => {
-            try {
-              const res = await fetch(`/characters/${c.id}`, { method: 'DELETE' });
-              if (!res.ok) throw new Error("Errore eliminazione");
-              console.log(`🗑️ Eliminato personaggio con ID ${c.id}`);
-              loadCharacters();
-            } catch (err) {
-              console.error("❌ Errore eliminazione:", err);
-            }
-          };
-
-          btnGroup.appendChild(editBtn);
-          btnGroup.appendChild(delBtn);
-          div.appendChild(btnGroup);
-          charactersList.appendChild(div);
-        });
-        console.log("✅ Personaggi caricati:", characters);
-      } catch (err) {
-        console.error("❌ Errore caricamento personaggi:", err);
-      }
+    function getCharacterData() {
+      return {
+        name: document.getElementById("name").value,
+        class: document.getElementById("class").value,
+        level: parseInt(document.getElementById("level").value),
+        background: document.getElementById("background").value,
+        player_name: document.getElementById("player_name").value,
+        race: document.getElementById("race").value,
+        alignment: document.getElementById("alignment").value,
+        xp: parseInt(document.getElementById("xp").value),
+        strength: parseInt(document.getElementById("strength").value),
+        dexterity: parseInt(document.getElementById("dexterity").value),
+        constitution: parseInt(document.getElementById("constitution").value),
+        intelligence: parseInt(document.getElementById("intelligence").value),
+        wisdom: parseInt(document.getElementById("wisdom").value),
+        charisma: parseInt(document.getElementById("charisma").value),
+        max_hp: parseInt(document.getElementById("max_hp").value),
+        current_hp: parseInt(document.getElementById("current_hp").value),
+        armor_class: parseInt(document.getElementById("armor_class").value),
+        initiative: parseInt(document.getElementById("initiative").value),
+        speed: parseInt(document.getElementById("speed").value),
+        hit_dice: document.getElementById("hit_dice").value,
+        death_saves_success: parseInt(document.getElementById("death_saves_success").value),
+        death_saves_failure: parseInt(document.getElementById("death_saves_failure").value),
+        equipment: document.getElementById("equipment").value,
+        personality_traits: document.getElementById("personality_traits").value,
+        ideals: document.getElementById("ideals").value,
+        bonds: document.getElementById("bonds").value,
+        flaws: document.getElementById("flaws").value,
+        appearance: document.getElementById("appearance").value,
+        backstory: document.getElementById("backstory").value
+      };
     }
 
-    // Carica i personaggi al caricamento pagina
-    loadCharacters();
+    async function createCharacter(char) {
+      const res = await fetch("/characters", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(char)
+      });
+      const data = await res.json();
+      result.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+    }
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const name = document.getElementById('name').value;
-      const race = document.getElementById('race').value;
-      const className = document.getElementById('class').value;
+    async function createRandomCharacter() {
+      const res = await fetch("/characters/random");
+      const data = await res.json();
 
-      if (editingId) {
-        // UPDATE
-        console.log("✏️ Aggiornamento personaggio:", { id: editingId, name, race, class: className });
-        try {
-          const res = await fetch(`/characters/${editingId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, race, class: className })
-          });
-          if (!res.ok) throw new Error(`Server error: ${res.status}`);
-          const updatedChar = await res.json();
-          console.log("✅ Personaggio aggiornato:", updatedChar);
-          editingId = null;
-          form.reset();
-          form.querySelector('button').textContent = "Crea";
-          loadCharacters();
-        } catch (err) {
-          console.error("❌ Errore aggiornamento:", err);
-        }
-      } else {
-        // CREATE
-        console.log("📤 Invio nuovo personaggio:", { name, race, class: className });
-        try {
-          const res = await fetch('/characters', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, race, class: className })
-          });
-          if (!res.ok) throw new Error(`Server error: ${res.status}`);
-          const savedChar = await res.json();
-          console.log("✅ Personaggio salvato:", savedChar);
-          form.reset();
-          loadCharacters();
-        } catch (err) {
-          console.error("❌ Errore creazione:", err);
-        }
+      // Riempi il form con i valori random
+      for (const key in data) {
+        const el = document.getElementById(key);
+        if (el) el.value = data[key];
       }
+      result.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+    }
+
+    createBtn.addEventListener("click", () => {
+      const char = getCharacterData();
+      createCharacter(char);
+    });
+
+    randomBtn.addEventListener("click", () => {
+      createRandomCharacter();
     });
   </script>
 </body>
