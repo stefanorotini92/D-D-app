@@ -11,37 +11,12 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false },
 });
 
-// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
 // ROUTE: controllo server
 app.get("/health", (req, res) => res.json({ ok: true }));
-
-// Funzione per creare la tabella se non esiste
-async function ensureTable() {
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS characters (
-        id SERIAL PRIMARY KEY,
-        name TEXT,
-        class TEXT,
-        race TEXT,
-        level INTEGER DEFAULT 1,
-        strength INTEGER, dexterity INTEGER, constitution INTEGER, intelligence INTEGER, wisdom INTEGER, charisma INTEGER,
-        extra_data JSONB DEFAULT '{}'::jsonb,
-        created_at TIMESTAMP DEFAULT now()
-      );
-    `);
-    console.log("✅ Tabella characters verificata/creata.");
-  } catch (err) {
-    console.error("Errore creazione/verifica tabella:", err.message);
-  }
-}
-
-// Assicuriamoci che la tabella esista all’avvio
-ensureTable();
 
 // ROUTE: ottenere tutti i personaggi
 app.get("/characters", async (req, res) => {
@@ -54,21 +29,20 @@ app.get("/characters", async (req, res) => {
   }
 });
 
-// ROUTE: creare un nuovo personaggio
+// ROUTE: creare un nuovo personaggio (solo campi base)
 app.post("/characters", async (req, res) => {
   const {
     name, class: pgClass, race, level,
-    strength, dexterity, constitution, intelligence, wisdom, charisma,
-    extra_data // oggetto JSON con dati avanzati
+    strength, dexterity, constitution, intelligence, wisdom, charisma
   } = req.body;
 
   try {
     const result = await pool.query(
       `INSERT INTO characters 
-      (name, class, race, level, strength, dexterity, constitution, intelligence, wisdom, charisma, extra_data)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+      (name, class, race, level, strength, dexterity, constitution, intelligence, wisdom, charisma)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
       RETURNING *`,
-      [name, pgClass, race, level, strength, dexterity, constitution, intelligence, wisdom, charisma, extra_data || {}]
+      [name, pgClass, race, level, strength, dexterity, constitution, intelligence, wisdom, charisma]
     );
     res.json(result.rows[0]);
   } catch (err) {
@@ -91,7 +65,6 @@ app.delete("/characters/:id", async (req, res) => {
   }
 });
 
-// Avvio server
 app.listen(port, () => {
   console.log(`Server attivo sulla porta ${port}`);
 });
