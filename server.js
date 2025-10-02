@@ -12,6 +12,23 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
+// Creazione automatica della tabella characters
+(async () => {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS characters (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(50),
+        race VARCHAR(50),
+        class VARCHAR(50)
+      )
+    `);
+    console.log("Tabella characters creata!");
+  } catch (err) {
+    console.error("Errore nella creazione della tabella:", err);
+  }
+})();
+
 // Endpoint per ottenere tutti i personaggi
 app.get("/characters", async (req, res) => {
   try {
