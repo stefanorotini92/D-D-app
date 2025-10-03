@@ -467,6 +467,13 @@ document.getElementById("saveBtn").addEventListener("click",e=>{
   e.preventDefault(); saveCharacter();
 });
 
+<!-- ====== Anteprima personaggio ====== -->
+<section id="preview-card" class="card" style="margin-top:12px;">
+  <h3>Anteprima</h3>
+  <pre id="preview-content" style="white-space:pre-wrap; font-family:monospace; min-height:120px; margin:0; padding:8px;">
+    Compila il form per vedere l'anteprima...
+  </pre>
+</section>
 // ================================
 // Carica personaggi
 // ================================
@@ -722,6 +729,228 @@ updatePreview = function() {
 
 // inizializza subito la sezione TS e Abilità
 renderSavingThrowsAndSkills();
+  <!-- ====== Lista Personaggi salvati ====== -->
+<section id="character-list-card" class="card">
+  <h3>Personaggi salvati</h3>
+  <ul id="characters-list" style="margin:0; padding:0; list-style:none;"></ul>
+  <div id="characters-empty" style="color:#666; font-size:13px; margin-top:8px; display:none;">Nessun personaggio salvato.</div>
+</section>
+
+<!-- ====== Anteprima personaggio ====== -->
+<section id="preview-card" class="card" style="margin-top:12px;">
+  <h3>Anteprima</h3>
+  <pre id="preview-content" style="white-space:pre-wrap; font-family:monospace; min-height:120px; margin:0; padding:8px;">
+    Compila il form per vedere l'anteprima...
+  </pre>
+</section>
+  /* ---------- helper: prova prima /api/characters poi /characters ---------- */
+async function tryGetCharacters() {
+  const candidates = ['/api/characters', '/characters'];
+  for (const url of candidates) {
+    try {
+      const res = await fetch(url);
+      if (res.ok) {
+        const json = await res.json();
+        // salva anche l'url usato per i successivi POST/DELETE
+        window.__CHAR_ENDPOINT = url; 
+        return json;
+      }
+    } catch (e) { /* continua al prossimo */ }
+  }
+  throw new Error("Nessun endpoint characters raggiungibile (/api/characters o /characters).");
+}
+
+async function tryPostCharacter(data) {
+  const candidates = [ (window.__CHAR_ENDPOINT || '/api/characters'), '/api/characters', '/characters' ];
+  const tried = new Set();
+  for (const url of candidates) {
+    if (tried.has(url)) continue;
+    tried.add(url);
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (res.ok) {
+        window.__CHAR_ENDPOINT = url;
+        return await res.json();
+      } else {
+        // prova leggere il body per capire l'errore
+        try { const err = await res.json(); console.warn('POST', url, '=>', err); } catch(e){}
+      }
+    } catch (e) { /* ignora e prova il prossimo */ }
+  }
+  throw new Error("POST fallito su entrambi gli endpoint.");
+}
+
+async function tryDeleteCharacter(id) {
+  const candidates = [ (window.__CHAR_ENDPOINT || '/api/characters'), '/api/characters', '/characters' ];
+  const tried = new Set();
+  for (const urlBase of candidates) {
+    if (tried.has(urlBase)) continue;
+    tried.add(urlBase);
+    const url = urlBase + (urlBase.endsWith('/') ? '' : '/') + encodeURIComponent(id);
+    try {
+      const res = await fetch(url, { method: 'DELETE' });
+      if (res.ok) {
+        window.__CHAR_ENDPOINT = urlBase;
+        return true;
+      } else {
+        try { const err = await res.json(); console.warn('DELETE', url, '=>', err); } catch(e){}
+      }
+    } catch (e) { /* ignora */ }
+  }
+  throw new Error("DELETE fallito su entrambi gli endpoint.");
+}
+
+/* ---------- render di un singolo item (usa fillForm se esiste) ---------- */
+function renderCharacterItem(ch) {
+  const li = document.createElement('li');
+  li.className = 'pg-item';
+  li.style.listStyle = 'none';
+
+  const meta = document.createElement('div');
+  meta.innerHTML = `<div class="pg-meta">${escapeHtml(ch.name || '—')} (Lv.${ch.level || 1})</div>
+                    <div class="pg-sub">${escapeHtml(ch.race || '-') } ${escapeHtml(ch.class || '-') }</div>`;
+
+  const actions = document.createElement('div');
+  actions.className = 'pg-actions';
+
+  const editBtn = document.createElement('button');
+  editBtn.className = 'icon-btn';
+  editBtn.type = 'button';
+  editBtn.title = 'Modifica';
+  editBtn.innerHTML = '✏️';
+  editBtn.addEventListener('click', () => {
+    if (typeof window.fillForm === 'function') {
+      window.fillForm(ch);
+    } else {
+      // fallback: popoliamo campi standard se esistono
+      try {
+        if (document.getElementById('char_id')) document.getElementById('char_id').value = ch.id || '';
+        if (document.getElementById('name')) document.getElementById('name').value = ch.name || '';
+        if (document.getElementById('class')) document.getElementById('class').value = ch.class || '';
+        if (document.getElementById('race')) document.getElementById('race').value = ch.race || '';
+        if (document.getElementById('level')) document.getElementById('level').value = ch.level || 1;
+        // abilità/base stats: prova diversi nomi
+        ['strength','dexterity','constitution','intelligence','wisdom','charisma'].forEach(k=>{
+          if (document.getElementById(k) && (ch[k] !== undefined)) document.getElementById(k).value = ch[k];
+        });
+        // se esiste extra_data proviamo ad applicarla
+        if (ch.extra_data && typeof ch.extra_data === 'object') {
+          Object.keys(ch.extra_data).forEach(k => {
+            const el = document.getElementById(k);
+            if (el) el.value = ch.extra_data[k];
+          });
+        }
+        // aggiorna preview se esiste la funzione
+        if (typeof updatePreviewDetailed === 'function') updatePreviewDetailed();
+        else if (typeof updatePreview === 'function') updatePreview();
+      } catch (e) { console.warn('fill fallback error', e); }
+    }
+  });
+
+  const delBtn = document.createElement('button');
+  delBtn.className = 'icon-btn';
+  delBtn.type = 'button';
+  delBtn.title = 'Elimina';
+  delBtn.innerHTML = '🗑️';
+  delBtn.addEventListener('click', async () => {
+    if (!confirm(`Eliminare ${ch.name || 'questo personaggio'}?`)) return;
+    try {
+      await tryDeleteCharacter(ch.id);
+      await loadCharacters(); // ricarica lista
+    } catch (err) {
+      console.error(err);
+      alert('Errore eliminazione: ' + (err.message || err));
+    }
+  });
+
+  actions.appendChild(editBtn);
+  actions.appendChild(delBtn);
+
+  li.appendChild(meta);
+  li.appendChild(actions);
+  return li;
+}
+
+/* ---------- escape semplice per testo in HTML (sicurezza) ---------- */
+function escapeHtml(s){
+  if(!s && s !== 0) return '';
+  return String(s).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]); });
+}
+
+/* ---------- carica e mostra tutti i personaggi ---------- */
+async function loadCharacters() {
+  const list = document.getElementById('characters-list');
+  const empty = document.getElementById('characters-empty');
+  list.innerHTML = '';
+  empty.style.display = 'none';
+  try {
+    const chars = await tryGetCharacters();
+    if (!chars || chars.length === 0) {
+      empty.style.display = 'block';
+      return;
+    }
+    chars.forEach(ch => {
+      list.appendChild(renderCharacterItem(ch));
+    });
+  } catch (err) {
+    console.error('Impossibile caricare i personaggi:', err);
+    empty.textContent = 'Errore caricamento personaggi. Controlla i log del server.';
+    empty.style.display = 'block';
+  }
+}
+
+/* ---------- utilità: salva personaggio (usa tryPostCharacter) ---------- */
+async function saveFromFormAsTest() {
+  // prova a costruire un oggetto ragionevole (non sovrascrive funzioni già esistenti)
+  const data = {};
+  ['name','class','race','background','level','strength','dexterity','constitution','intelligence','wisdom','charisma'].forEach(k=>{
+    const el = document.getElementById(k);
+    if (el) data[k] = el.value;
+  });
+  // raccogli anche eventuale extra_data
+  const extra = {};
+  document.querySelectorAll('#advanced-area [id]').forEach(el=>{
+    if (el.id) extra[el.id] = el.value;
+  });
+  data.extra_data = extra;
+
+  try {
+    const saved = await tryPostCharacter(data);
+    // mostra messaggio o ricarica lista
+    await loadCharacters();
+    // se fillForm esiste, chiamalo con l'oggetto salvato (possibile ID)
+    if (typeof window.fillForm === 'function') window.fillForm(saved);
+    return saved;
+  } catch (err) {
+    console.error(err);
+    alert('Errore salvataggio: ' + (err.message || err));
+    throw err;
+  }
+}
+
+/* ---------- hook di inizializzazione: al caricamento DOM ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+  // carica la lista subito
+  loadCharacters();
+
+  // se esiste il saveBtn collegalo a saveFromFormAsTest (se non è già collegato)
+  const saveBtn = document.getElementById('saveBtn');
+  if (saveBtn && !saveBtn.dataset._hooked) {
+    saveBtn.addEventListener('click', async (ev) => {
+      ev.preventDefault();
+      await saveFromFormAsTest();
+    });
+    saveBtn.dataset._hooked = '1';
+  }
+
+  // Assicuriamoci che la preview venga aggiornata subito (se esiste funzione updatePreviewDetailed o updatePreview)
+  if (typeof updatePreviewDetailed === 'function') updatePreviewDetailed();
+  else if (typeof updatePreview === 'function') updatePreview();
+});
 </script>
 </body>
 </html>
