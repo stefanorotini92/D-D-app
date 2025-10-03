@@ -578,5 +578,66 @@ loadCharacters = async function(){
   attachListButtons();
 };
   </script>
+  <script>
+// ================================
+// ANTEPRIMA AVANZATA IN STILE D&D BEYOND
+// ================================
+
+function renderAdvancedPreview() {
+  const preview = document.getElementById("preview");
+  let txt = "";
+
+  // Informazioni base
+  txt += `Nome: ${document.getElementById("name").value || "-"}\n`;
+  txt += `Classe: ${document.getElementById("class").value || "-"} | Razza: ${document.getElementById("race").value || "-"} | Background: ${document.getElementById("background").value || "-"}\n`;
+  txt += `Livello: ${document.getElementById("level").value || 1}\n\n`;
+
+  // Caratteristiche e modificatori
+  txt += "Caratteristiche:\n";
+  abilities.forEach(a => {
+    const val = parseInt(document.getElementById(a).value) || 10;
+    const mod = Math.floor((val - 10)/2);
+    const label = a.charAt(0).toUpperCase() + a.slice(1);
+    txt += `- ${label}: ${val} (mod ${mod>=0?"+":""}${mod})\n`;
+  });
+
+  // PF e CA stimati
+  const conMod = Math.floor((parseInt(document.getElementById("constitution").value)||10 - 10)/2);
+  const dexMod = Math.floor((parseInt(document.getElementById("dexterity").value)||10 - 10)/2);
+  const level = parseInt(document.getElementById("level").value) || 1;
+  const basePF = (8 + conMod) * level;
+  const baseCA = 10 + dexMod;
+  txt += `\nCA stimata: ${baseCA} | PF stimati: ${basePF}\n\n`;
+
+  // Campi avanzati con descrizione breve
+  advancedFields.forEach(f => {
+    const val = document.getElementById(f.id).value;
+    if(val) txt += `${f.label}: ${val} — ${f.desc}\n`;
+  });
+
+  // Aggiorna il contenuto della preview
+  preview.textContent = txt;
+}
+
+// Sostituisci gli event listener precedenti
+document.querySelectorAll("#form-area input, #form-area select, #form-area textarea")
+  .forEach(el=>{
+    el.removeEventListener("input", updatePreviewDetailed);
+    el.removeEventListener("input", updatePreview);
+    el.addEventListener("input", renderAdvancedPreview);
+  });
+
+// Assicura compatibilità con random
+const oldGenerateRandom = generateRandom;
+generateRandom = function(){
+  oldGenerateRandom();
+  renderAdvancedPreview();
+};
+
+// Aggiorna anteprima subito al caricamento
+document.addEventListener("DOMContentLoaded", () => {
+  renderAdvancedPreview();
+});
+  </script>
 </body>
 </html>
