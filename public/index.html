@@ -26,26 +26,15 @@
     html,body{
       height:100%;
       margin:0;
-      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      font-family:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       background:var(--bg);
       color:#111;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
     }
 
-    header{
-      padding:18px 16px;
-      text-align:center;
-    }
-    header h1{
-      margin:0;
-      font-family:"Cinzel", serif;
-      font-size:20px;
-      letter-spacing:1px;
-    }
+    header{ padding:18px 16px; text-align:center; }
+    header h1{ margin:0; font-family:"Cinzel", serif; font-size:20px; }
     header p{ margin:6px 0 0; color:var(--muted); font-size:13px; }
 
-    /* grid main: left = form, right = overview + list */
     .main {
       max-width:1100px;
       margin:12px auto;
@@ -55,135 +44,68 @@
       gap:var(--gap);
     }
 
-    /* cards */
     .card{
       background:var(--card);
       border-radius:var(--radius);
       padding:12px;
-      box-shadow: 0 6px 18px rgba(20,20,20,0.06);
+      box-shadow:0 6px 18px rgba(20,20,20,0.06);
       border:1px solid var(--border);
     }
 
-    /* Form area */
     #form-area label{ display:block; font-weight:600; margin-top:10px; font-size:14px; }
-    #form-area input[type="text"],
-    #form-area input[type="number"],
-    #form-area select,
-    #form-area textarea{
+    #form-area input, #form-area select, #form-area textarea{
       width:100%;
       padding:8px 10px;
       margin-top:6px;
       border:1px solid #d0d0d0;
       border-radius:8px;
       font-size:14px;
-      background:#fff;
     }
     #form-area textarea{ min-height:70px; resize:vertical; }
 
-    .row {
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
+    .row{ display:flex; gap:8px; align-items:center; }
+    .col-2{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .small{ font-size:12px; color:var(--muted); margin-top:4px; }
 
-    .col-2{ display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
-
-    .small { font-size:12px; color:var(--muted); margin-top:4px; }
-
-    /* stats grid (compact on mobile) */
-    .stats {
-      display:grid;
-      grid-template-columns: repeat(3,1fr);
-      gap:8px;
-      margin-top:8px;
-    }
-    .stat-box{
-      background:#fbfbfb;
-      border:1px solid #e6e6e6;
-      padding:8px;
-      border-radius:8px;
-      text-align:center;
-    }
-    .stat-box input{
-      width:64px;
-      font-size:16px;
-      text-align:center;
-    }
+    .stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:8px; }
+    .stat-box{ background:#fbfbfb; border:1px solid #e6e6e6; padding:8px; border-radius:8px; text-align:center; }
+    .stat-box input{ width:64px; font-size:16px; text-align:center; }
     .stat-label{ font-size:13px; margin-bottom:6px; display:block; font-weight:600; }
 
-    /* action buttons */
-    .actions { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
-    .btn {
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:10px 12px;
-      border-radius:8px;
-      border: none;
-      cursor:pointer;
-      font-weight:600;
-      font-size:14px;
-    }
+    .actions{ display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+    .btn{ display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border-radius:8px; border:none; cursor:pointer; font-weight:600; font-size:14px; }
     .btn-primary{ background:var(--accent); color:#fff; }
     .btn-ghost{ background:transparent; border:1px solid var(--border); color:#222; }
     .btn-danger{ background:var(--danger); color:#fff; }
 
-    /* right column: preview + list */
-    #preview { white-space:pre-wrap; font-family:monospace; font-size:13px; background:#fbfbff; padding:10px; border-radius:8px; border:1px solid #e8e8ff; min-height:120px; overflow:auto; }
-    #characters-list { margin:0; padding:0; list-style:none; }
-    .pg-item{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      padding:10px;
-      border-radius:8px;
-      border:1px solid #eee;
-      margin-bottom:8px;
-      background:#fff;
-      gap:8px;
-    }
+    #preview{ white-space:pre-wrap; font-family:monospace; font-size:13px; background:#fbfbff; padding:10px; border-radius:8px; border:1px solid #e8e8ff; min-height:120px; overflow:auto; }
+    .pg-item{ display:flex; justify-content:space-between; align-items:center; padding:10px; border-radius:8px; border:1px solid #eee; margin-bottom:8px; background:#fff; gap:8px; }
     .pg-meta{ font-size:14px; font-weight:600; }
     .pg-sub{ font-size:12px; color:var(--muted); margin-top:4px; }
-
-    .pg-actions { display:flex; gap:8px; align-items:center; }
-
-    .icon-btn{
-      background:transparent;
-      border:none;
-      font-size:16px;
-      cursor:pointer;
-      padding:6px;
-      border-radius:6px;
-    }
+    .pg-actions{ display:flex; gap:8px; align-items:center; }
+    .icon-btn{ background:transparent; border:none; font-size:16px; cursor:pointer; padding:6px; border-radius:6px; }
     .icon-btn:hover{ background:#f2f6ff; }
 
-    /* footer */
     footer{ text-align:center; color:var(--muted); font-size:13px; padding:12px; }
 
-    /* responsiveness: on mobile show single column */
-    @media (max-width:880px){
-      .main{ grid-template-columns: 1fr; padding:10px; }
+    @media(max-width:880px){
+      .main{ grid-template-columns:1fr; }
       #preview{ min-height:160px; }
-      .stats{ grid-template-columns: repeat(3, 1fr); }
-      .col-2{ grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <header>
     <h1>Scheda Personaggio — D&D 5e</h1>
-    <p>Creazione rapida, anteprima, modifica e gestione PG — ottimizzato per telefono</p>
+    <p>Creazione rapida, anteprima, modifica e gestione PG</p>
   </header>
 
   <main class="main">
-    <!-- LEFT: form -->
+    <!-- Form -->
     <section id="form-area" class="card">
-      <h2 style="margin:0 0 8px 0;">Crea / Modifica Personaggio</h2>
-
-      <!-- hidden id for edit -->
+      <h2>Crea / Modifica Personaggio</h2>
       <input type="hidden" id="char_id">
 
-      <!-- basic -->
       <label for="name">Nome</label>
       <input id="name" type="text" placeholder="Nome del personaggio">
 
@@ -191,12 +113,10 @@
         <div>
           <label for="class">Classe</label>
           <select id="class"></select>
-          <div class="small">Scegli la classe (influisce su abilità e dadi vita)</div>
         </div>
         <div>
           <label for="race">Razza</label>
           <select id="race"></select>
-          <div class="small">Bonus e tratti razziali</div>
         </div>
       </div>
 
@@ -204,753 +124,97 @@
         <div style="flex:1">
           <label for="background">Background</label>
           <select id="background"></select>
-          <div class="small">Storia e competenze aggiuntive</div>
         </div>
-        <div style="width:110px; margin-left:8px;">
+        <div style="width:110px;">
           <label for="level">Livello</label>
           <input id="level" type="number" min="1" value="1">
         </div>
       </div>
 
-      <!-- stats -->
+      <!-- Caratteristiche -->
       <div style="margin-top:12px;">
         <label>Caratteristiche</label>
         <div class="stats">
-          <div class="stat-box">
-            <span class="stat-label">Forza</span>
-            <input id="strength" type="number" value="10" />
-            <div class="small">Attacchi corpo a corpo</div>
-          </div>
-          <div class="stat-box">
-            <span class="stat-label">Destrezza</span>
-            <input id="dexterity" type="number" value="10" />
-            <div class="small">Iniziativa, CA</div>
-          </div>
-          <div class="stat-box">
-            <span class="stat-label">Costituzione</span>
-            <input id="constitution" type="number" value="10" />
-            <div class="small">PF e resistenza</div>
-          </div>
-
-          <div class="stat-box">
-            <span class="stat-label">Intelligenza</span>
-            <input id="intelligence" type="number" value="10" />
-            <div class="small">Conoscenze arcane</div>
-          </div>
-          <div class="stat-box">
-            <span class="stat-label">Saggezza</span>
-            <input id="wisdom" type="number" value="10" />
-            <div class="small">Percezione</div>
-          </div>
-          <div class="stat-box">
-            <span class="stat-label">Carisma</span>
-            <input id="charisma" type="number" value="10" />
-            <div class="small">Incantesimi e social</div>
-          </div>
+          <div class="stat-box"><span class="stat-label">Forza</span><input id="strength" type="number" value="10"/></div>
+          <div class="stat-box"><span class="stat-label">Destrezza</span><input id="dexterity" type="number" value="10"/></div>
+          <div class="stat-box"><span class="stat-label">Costituzione</span><input id="constitution" type="number" value="10"/></div>
+          <div class="stat-box"><span class="stat-label">Intelligenza</span><input id="intelligence" type="number" value="10"/></div>
+          <div class="stat-box"><span class="stat-label">Saggezza</span><input id="wisdom" type="number" value="10"/></div>
+          <div class="stat-box"><span class="stat-label">Carisma</span><input id="charisma" type="number" value="10"/></div>
         </div>
       </div>
 
-      <!-- advanced area placeholder (will be filled by JS) -->
+      <!-- Avanzate -->
       <div id="advanced-area" style="margin-top:14px;"></div>
 
-      <!-- actions -->
-      <div class="actions" style="margin-top:12px;">
-        <button id="saveBtn" class="btn btn-primary"><span>💾</span> Salva Personaggio</button>
-        <button id="randomBtn" class="btn btn-ghost" type="button"><span>🎲</span> Genera Random</button>
+      <!-- Pulsanti -->
+      <div class="actions">
+        <button id="saveBtn" class="btn btn-primary">💾 Salva</button>
+        <button id="randomBtn" class="btn btn-ghost" type="button">🎲 Random</button>
         <button id="resetBtn" class="btn" type="button">🔄 Reset</button>
-      </div>
-
-      <div style="margin-top:10px;">
-        <small>Note: puoi modificare un personaggio dalla lista usando ✏️, cancellarlo con 🗑️</small>
       </div>
     </section>
 
-    <!-- RIGHT: preview & list -->
+    <!-- Colonna destra -->
     <aside>
       <div class="card" style="margin-bottom:var(--gap);">
-        <h3 style="margin:0 0 8px 0;">Anteprima</h3>
-        <div id="preview">Nessun personaggio selezionato — compila il form per vedere l'anteprima in tempo reale.</div>
+        <h3>Anteprima</h3>
+        <div id="preview">Nessun personaggio selezionato</div>
       </div>
 
       <div class="card">
-        <h3 style="margin:0 0 8px 0;">Personaggi salvati</h3>
-        <div id="characters-container">
-          <ul id="characters-list"></ul>
-        </div>
+        <h3>Personaggi salvati</h3>
+        <ul id="characters-list"></ul>
       </div>
     </aside>
   </main>
 
   <footer>
-    <small>App D&D — versione prototipo • Ottimizzata per mobile</small>
+    <small>App D&D — prototipo</small>
   </footer>
 
-  <!-- Parte 2 e 3 (script) arriveranno subito dopo; non rimuovere gli ID presenti qui -->
 <script>
-// ================================
-// Dati di base D&D 5e (ridotti)
-// ================================
-const classes = [
-  "Barbaro","Bardo","Chierico","Druido","Guerriero",
-  "Ladro","Mago","Monaco","Paladino","Ranger","Stregone","Warlock"
+const classes=["Barbaro","Bardo","Chierico","Druido","Guerriero","Ladro","Mago","Monaco","Paladino","Ranger","Stregone","Warlock"];
+const races=["Umano","Elfo","Nano","Mezzorco","Halfling","Gnomo","Dragonide","Tiefling","Mezzelfo"];
+const backgrounds=["Accolito","Eroe Popolare","Nobile","Marinaio","Soldato","Criminale","Eremita","Saggio"];
+const abilities=["strength","dexterity","constitution","intelligence","wisdom","charisma"];
+
+function populateDropdown(id,arr){const sel=document.getElementById(id);sel.innerHTML="<option value=''>—</option>";arr.forEach(v=>{const o=document.createElement("option");o.value=o.textContent=v;sel.appendChild(o);});}
+populateDropdown("class",classes);populateDropdown("race",races);populateDropdown("background",backgrounds);
+
+const advancedFields=[
+ {id:"alignment",label:"Allineamento",type:"select",options:["Legale Buono","Neutrale Buono","Caotico Buono","Legale Neutrale","Neutrale Puro","Caotico Neutrale","Legale Malvagio","Neutrale Malvagio","Caotico Malvagio"]},
+ {id:"armorClass",label:"Classe Armatura (CA)",type:"number"},
+ {id:"hitPoints",label:"Punti Ferita Massimi",type:"number"},
+ {id:"speed",label:"Velocità",type:"number"},
+ {id:"proficiencies",label:"Competenze",type:"textarea"},
+ {id:"equipment",label:"Equipaggiamento",type:"textarea"},
+ {id:"features",label:"Tratti e Abilità",type:"textarea"},
+ {id:"spells",label:"Incantesimi",type:"textarea"},
+ {id:"notes",label:"Note Extra",type:"textarea"}
 ];
-const races = [
-  "Umano","Elfo","Nano","Mezzorco","Halfling","Gnomo",
-  "Dragonide","Tiefling","Mezzelfo"
-];
-const backgrounds = [
-  "Accolito","Eroe Popolare","Nobile","Marinaio","Soldato","Criminale","Eremita","Saggio"
-];
-
-// Caratteristiche disponibili
-const abilities = ["strength","dexterity","constitution","intelligence","wisdom","charisma"];
-
-// ================================
-// Popola i dropdown base
-// ================================
-function populateDropdown(id, arr){
-  const sel = document.getElementById(id);
-  sel.innerHTML = "<option value=''>— Seleziona —</option>";
-  arr.forEach(v=>{
-    const opt = document.createElement("option");
-    opt.value = v;
-    opt.textContent = v;
-    sel.appendChild(opt);
-  });
-}
-populateDropdown("class", classes);
-populateDropdown("race", races);
-populateDropdown("background", backgrounds);
-
-// ================================
-// Campi avanzati — generati dinamicamente
-// ================================
-const advancedFields = [
-  {id:"alignment", label:"Allineamento", type:"select", options:[
-    "Legale Buono","Neutrale Buono","Caotico Buono",
-    "Legale Neutrale","Neutrale Puro","Caotico Neutrale",
-    "Legale Malvagio","Neutrale Malvagio","Caotico Malvagio"
-  ], desc:"Orientamento etico e morale"},
-  {id:"armorClass", label:"Classe Armatura (CA)", type:"number", desc:"Difesa base contro attacchi"},
-  {id:"hitPoints", label:"Punti Ferita Massimi", type:"number", desc:"PF massimi del personaggio"},
-  {id:"speed", label:"Velocità", type:"number", desc:"Metri a turno (default 9m = 30ft)"},
-  {id:"proficiencies", label:"Competenze", type:"textarea", desc:"Armi, armature, strumenti..."},
-  {id:"equipment", label:"Equipaggiamento", type:"textarea", desc:"Oggetti iniziali e acquisiti"},
-  {id:"features", label:"Tratti e Abilità", type:"textarea", desc:"Tratti razziali e abilità di classe"},
-  {id:"spells", label:"Incantesimi", type:"textarea", desc:"Incantesimi conosciuti/preparati"},
-  {id:"notes", label:"Note Extra", type:"textarea", desc:"Annotazioni libere"}
-];
-
-function renderAdvancedFields(){
-  const container = document.getElementById("advanced-area");
-  container.innerHTML = "";
-  advancedFields.forEach(f=>{
-    const wrap = document.createElement("div");
-    wrap.style.marginTop = "8px";
-    const label = document.createElement("label");
-    label.textContent = f.label;
-    label.setAttribute("for",f.id);
-    wrap.appendChild(label);
-
-    let input;
-    if(f.type==="select"){
-      input = document.createElement("select");
-      input.id=f.id;
-      input.innerHTML="<option value=''>— Seleziona —</option>";
-      f.options.forEach(o=>{
-        const opt=document.createElement("option");
-        opt.value=o; opt.textContent=o;
-        input.appendChild(opt);
-      });
-    } else if(f.type==="textarea"){
-      input=document.createElement("textarea");
-      input.id=f.id;
-    } else {
-      input=document.createElement("input");
-      input.type=f.type;
-      input.id=f.id;
-    }
-    wrap.appendChild(input);
-
-    const small=document.createElement("div");
-    small.className="small";
-    small.textContent=f.desc;
-    wrap.appendChild(small);
-
-    container.appendChild(wrap);
-  });
-}
+function renderAdvancedFields(){const c=document.getElementById("advanced-area");c.innerHTML="";advancedFields.forEach(f=>{const w=document.createElement("div");w.innerHTML=`<label for="${f.id}">${f.label}</label>`;let input;if(f.type==="select"){input=document.createElement("select");input.id=f.id;f.options.forEach(o=>{const op=document.createElement("option");op.value=op.textContent=o;input.appendChild(op);});}else if(f.type==="textarea"){input=document.createElement("textarea");input.id=f.id;}else{input=document.createElement("input");input.type=f.type;input.id=f.id;}w.appendChild(input);c.appendChild(w);});}
 renderAdvancedFields();
 
-// ================================
-// Anteprima in tempo reale
-// ================================
-function updatePreview(){
-  const preview=document.getElementById("preview");
-  let txt="";
-  txt+=`Nome: ${document.getElementById("name").value}\n`;
-  txt+=`Classe: ${document.getElementById("class").value}\n`;
-  txt+=`Razza: ${document.getElementById("race").value}\n`;
-  txt+=`Background: ${document.getElementById("background").value}\n`;
-  txt+=`Livello: ${document.getElementById("level").value}\n`;
-  abilities.forEach(a=>{
-    txt+=`${a.toUpperCase()}: ${document.getElementById(a).value}\n`;
-  });
-  advancedFields.forEach(f=>{
-    const val=document.getElementById(f.id).value;
-    if(val) txt+=`${f.label}: ${val}\n`;
-  });
-  preview.textContent=txt;
-}
+function abilityMod(s){return Math.floor((s-10)/2);}
+function updatePreview(){const p=document.getElementById("preview");let t="";t+=`Nome: ${name.value||"-"}\n`;t+=`Classe: ${class.value||"-"} | Razza: ${race.value||"-"} | BG: ${background.value||"-"}\n`;t+=`Livello: ${level.value||1}\n\nCaratteristiche:\n`;abilities.forEach(a=>{const v=parseInt(document.getElementById(a).value)||10;const m=abilityMod(v);t+=`- ${a}: ${v} (mod ${m>=0?"+":""}${m})\n`;});const cos=abilityMod(parseInt(constitution.value)||10);const liv=parseInt(level.value)||1;const basePF=(8+cos)*liv;const dex=abilityMod(parseInt(dexterity.value)||10);t+=`\nCA stimata: ${10+dex}\nPF stimati: ${basePF}\n`;advancedFields.forEach(f=>{const val=document.getElementById(f.id).value;if(val) t+=`\n${f.label}: ${val}`;});p.textContent=t;}
+document.querySelectorAll("#form-area input,#form-area select,#form-area textarea").forEach(el=>el.addEventListener("input",updatePreview));
 
-// Aggiungo event listener a tutti i campi
-document.querySelectorAll("#form-area input, #form-area select, #form-area textarea")
-  .forEach(el=>el.addEventListener("input", updatePreview));
+function randomFrom(a){return a[Math.floor(Math.random()*a.length)];}
+function rollStat(){return 8+Math.floor(Math.random()*11);}
+function generateRandom(){name.value="PG_"+Math.floor(Math.random()*1000);class.value=randomFrom(classes);race.value=randomFrom(races);background.value=randomFrom(backgrounds);level.value=1+Math.floor(Math.random()*5);abilities.forEach(a=>document.getElementById(a).value=rollStat());document.getElementById("alignment").value=randomFrom(advancedFields[0].options);armorClass.value=10+Math.floor(Math.random()*8);hitPoints.value=5+Math.floor(Math.random()*20);speed.value=9;updatePreview();}
+randomBtn.addEventListener("click",generateRandom);
 
-// ================================
-// Generazione randomica PG
-// ================================
-function randomFrom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-function rollStat(){ return 8+Math.floor(Math.random()*11); }
+async function saveCharacter(){const data={name:name.value,class:class.value,race:race.value,background:background.value,level:level.value,strength:strength.value,dexterity:dexterity.value,constitution:constitution.value,intelligence:intelligence.value,wisdom:wisdom.value,charisma:charisma.value,extra_data:{}};advancedFields.forEach(f=>{data.extra_data[f.id]=document.getElementById(f.id).value;});const r=await fetch("/api/characters",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});if(r.ok){await loadCharacters();resetForm();}else{alert("Errore salvataggio");}}
+saveBtn.addEventListener("click",e=>{e.preventDefault();saveCharacter();});
 
-function generateRandom(){
-  document.getElementById("name").value="PG_"+Math.floor(Math.random()*1000);
-  document.getElementById("class").value=randomFrom(classes);
-  document.getElementById("race").value=randomFrom(races);
-  document.getElementById("background").value=randomFrom(backgrounds);
-  document.getElementById("level").value=1+Math.floor(Math.random()*5);
-  abilities.forEach(a=>document.getElementById(a).value=rollStat());
-  document.getElementById("alignment").value=randomFrom(advancedFields[0].options);
-  document.getElementById("armorClass").value=10+Math.floor(Math.random()*8);
-  document.getElementById("hitPoints").value=5+Math.floor(Math.random()*20);
-  document.getElementById("speed").value=9;
-  updatePreview();
-}
-document.getElementById("randomBtn").addEventListener("click",generateRandom);
+async function loadCharacters(){const r=await fetch("/api/characters");const c=await r.json();const l=document.getElementById("characters-list");l.innerHTML="";c.forEach(ch=>{const li=document.createElement("li");li.className="pg-item";li.innerHTML=`<div><div class="pg-meta">${ch.name} (Lv.${ch.level})</div><div class="pg-sub">${ch.race} ${ch.class}</div></div>`;const act=document.createElement("div");act.className="pg-actions";const eBtn=document.createElement("button");eBtn.className="icon-btn";eBtn.textContent="✏️";eBtn.onclick=()=>fillForm(ch);const dBtn=document.createElement("button");dBtn.className="icon-btn";dBtn.textContent="🗑️";dBtn.onclick=()=>deleteCharacter(ch.id);act.appendChild(eBtn);act.appendChild(dBtn);li.appendChild(act);l.appendChild(li);});}
+async function deleteCharacter(id){if(confirm("Sicuro?")){await fetch("/api/characters/"+id,{method:"DELETE"});loadCharacters();}}
+function fillForm(ch){char_id.value=ch.id;name.value=ch.name;class.value=ch.class;race.value=ch.race;background.value=ch.background;level.value=ch.level;abilities.forEach(a=>document.getElementById(a).value=ch[a]);if(ch.extra_data){Object.keys(ch.extra_data).forEach(k=>{if(document.getElementById(k))document.getElementById(k).value=ch.extra_data[k];});}updatePreview();}
+function resetForm(){document.getElementById("form-area").reset();char_id.value="";updatePreview();}
+resetBtn.addEventListener("click",resetForm);
 
-// ================================
-// Salvataggio su backend
-// ================================
-async function saveCharacter(){
-  const data={
-    name:document.getElementById("name").value,
-    class:document.getElementById("class").value,
-    race:document.getElementById("race").value,
-    background:document.getElementById("background").value,
-    level:document.getElementById("level").value,
-    strength:document.getElementById("strength").value,
-    dexterity:document.getElementById("dexterity").value,
-    constitution:document.getElementById("constitution").value,
-    intelligence:document.getElementById("intelligence").value,
-    wisdom:document.getElementById("wisdom").value,
-    charisma:document.getElementById("charisma").value,
-    extra_data:{}
-  };
-  advancedFields.forEach(f=>{
-    data.extra_data[f.id]=document.getElementById(f.id).value;
-  });
-
-  const res=await fetch("/api/characters",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify(data)
-  });
-  if(res.ok){
-    await loadCharacters();
-    resetForm();
-  } else {
-    const err=await res.json();
-    alert("Errore salvataggio: "+JSON.stringify(err));
-  }
-}
-document.getElementById("saveBtn").addEventListener("click",e=>{
-  e.preventDefault(); saveCharacter();
-});
-
-<!-- ====== Anteprima personaggio ====== -->
-<section id="preview-card" class="card" style="margin-top:12px;">
-  <h3>Anteprima</h3>
-  <pre id="preview-content" style="white-space:pre-wrap; font-family:monospace; min-height:120px; margin:0; padding:8px;">
-    Compila il form per vedere l'anteprima...
-  </pre>
-</section>
-// ================================
-// Carica personaggi
-// ================================
-async function loadCharacters(){
-  const res=await fetch("/api/characters");
-  const chars=await res.json();
-  const list=document.getElementById("characters-list");
-  list.innerHTML="";
-  chars.forEach(ch=>{
-    const li=document.createElement("li");
-    li.className="pg-item";
-    const meta=document.createElement("div");
-    meta.innerHTML=`<div class="pg-meta">${ch.name} (Lv.${ch.level})</div><div class="pg-sub">${ch.race} ${ch.class}</div>`;
-    const act=document.createElement("div");
-    act.className="pg-actions";
-    const editBtn=document.createElement("button");
-    editBtn.className="icon-btn"; editBtn.innerHTML="✏️";
-    editBtn.onclick=()=>fillForm(ch);
-    const delBtn=document.createElement("button");
-    delBtn.className="icon-btn"; delBtn.innerHTML="🗑️";
-    delBtn.onclick=()=>deleteCharacter(ch.id);
-    act.appendChild(editBtn); act.appendChild(delBtn);
-    li.appendChild(meta); li.appendChild(act);
-    list.appendChild(li);
-  });
-}
-async function deleteCharacter(id){
-  if(confirm("Sicuro di cancellare?")){
-    await fetch("/api/characters/"+id,{method:"DELETE"});
-    loadCharacters();
-  }
-}
-function fillForm(ch){
-  document.getElementById("char_id").value=ch.id;
-  document.getElementById("name").value=ch.name;
-  document.getElementById("class").value=ch.class;
-  document.getElementById("race").value=ch.race;
-  document.getElementById("background").value=ch.background;
-  document.getElementById("level").value=ch.level;
-  abilities.forEach(a=>document.getElementById(a).value=ch[a]);
-  if(ch.extra_data){
-    Object.keys(ch.extra_data).forEach(k=>{
-      if(document.getElementById(k)) document.getElementById(k).value=ch.extra_data[k];
-    });
-  }
-  updatePreview();
-}
-function resetForm(){
-  document.getElementById("form-area").reset();
-  document.getElementById("char_id").value="";
-  updatePreview();
-}
-document.getElementById("resetBtn").addEventListener("click", resetForm);
-
-// init
-loadCharacters();
-updatePreview();
-// ================================
-// PARTE 3 — Calcoli automatici & migliorie grafiche
-// ================================
-
-// Calcolo modificatore caratteristica
-function abilityMod(score){
-  return Math.floor((score - 10) / 2);
-}
-
-// Aggiorna l'anteprima con modificatori e dettagli
-function updatePreviewDetailed(){
-  const preview=document.getElementById("preview");
-  let txt="";
-
-  txt+=`Nome: ${document.getElementById("name").value || "-"}\n`;
-  txt+=`Classe: ${document.getElementById("class").value || "-"} | Razza: ${document.getElementById("race").value || "-"} | Background: ${document.getElementById("background").value || "-"}\n`;
-  txt+=`Livello: ${document.getElementById("level").value || 1}\n\n`;
-
-  txt+="Caratteristiche:\n";
-  abilities.forEach(a=>{
-    const val=parseInt(document.getElementById(a).value)||10;
-    const mod=abilityMod(val);
-    const label=a.charAt(0).toUpperCase()+a.slice(1);
-    txt+=`- ${label}: ${val} (mod ${mod>=0?"+":""}${mod})\n`;
-  });
-
-  txt+="\n";
-  // Calcolo base PF e CA (molto semplificato)
-  const cosMod=abilityMod(parseInt(document.getElementById("constitution").value)||10);
-  const liv=parseInt(document.getElementById("level").value)||1;
-  const basePF= (8 + cosMod) * liv;
-  const dexMod=abilityMod(parseInt(document.getElementById("dexterity").value)||10);
-  const baseCA=10+dexMod;
-
-  txt+=`CA stimata: ${baseCA}\n`;
-  txt+=`PF stimati: ${basePF}\n\n`;
-
-  advancedFields.forEach(f=>{
-    const val=document.getElementById(f.id).value;
-    if(val) txt+=`${f.label}: ${val}\n`;
-  });
-
-  preview.textContent=txt;
-}
-
-// Sostituisco updatePreview con versione dettagliata
-document.querySelectorAll("#form-area input, #form-area select, #form-area textarea")
-  .forEach(el=>el.removeEventListener("input", updatePreview));
-document.querySelectorAll("#form-area input, #form-area select, #form-area textarea")
-  .forEach(el=>el.addEventListener("input", updatePreviewDetailed));
-
-// Rendo anche generateRandom compatibile
-const oldRandom=generateRandom;
-generateRandom=function(){
-  oldRandom();
-  updatePreviewDetailed();
-};
-
-// Alla fine dell’init carico l’anteprima dettagliata
-updatePreviewDetailed();
-
-// ================================
-// Ritocco grafico lista personaggi
-// ================================
-function renderCharacterListItem(ch){
-  const li=document.createElement("li");
-  li.className="pg-item";
-  const meta=document.createElement("div");
-  meta.innerHTML=`
-    <div class="pg-meta">${ch.name} (Lv.${ch.level})</div>
-    <div class="pg-sub">${ch.race} ${ch.class} • CA ${ch.extra_data?.armorClass||"-"} • PF ${ch.extra_data?.hitPoints||"-"}</div>
-  `;
-  const act=document.createElement("div");
-  act.className="pg-actions";
-  const editBtn=document.createElement("button");
-  editBtn.className="icon-btn"; editBtn.innerHTML="✏️";
-  editBtn.onclick=()=>fillForm(ch);
-  const delBtn=document.createElement("button");
-  delBtn.className="icon-btn"; delBtn.innerHTML="🗑️";
-  delBtn.onclick=()=>deleteCharacter(ch.id);
-  act.appendChild(editBtn); act.appendChild(delBtn);
-  li.appendChild(meta); li.appendChild(act);
-  return li;
-}
-
-// Rimpiazzo la loadCharacters con versione aggiornata
-async function loadCharacters(){
-  const res=await fetch("/api/characters");
-  const chars=await res.json();
-  const list=document.getElementById("characters-list");
-  list.innerHTML="";
-  chars.forEach(ch=>{
-    list.appendChild(renderCharacterListItem(ch));
-  });
-}
-  /***********************
- * PARTE 4 – TIRI SALVEZZA & ABILITÀ
- ***********************/
-
-// elenco abilità con caratteristica associata
-const skills = {
-  "Acrobazia": "des",
-  "Addestrare Animali": "wis",
-  "Arcano": "int",
-  "Atletica": "str",
-  "Furtività": "dex",
-  "Indagare": "int",
-  "Intimidire": "cha",
-  "Intrattenere": "cha",
-  "Intuizione": "wis",
-  "Medicina": "wis",
-  "Natura": "int",
-  "Percezione": "wis",
-  "Persuasione": "cha",
-  "Rapidità di Mano": "dex",
-  "Religione": "int",
-  "Sopravvivenza": "wis",
-  "Storia": "int",
-};
-
-// caratteristiche principali per tiri salvezza
-const savingThrows = ["str", "dex", "con", "int", "wis", "cha"];
-
-// funzione per creare la sezione TS e Abilità nel form
-function renderSavingThrowsAndSkills() {
-  const container = document.createElement("div");
-  container.classList.add("extra-section");
-
-  let html = "<h3>Tiri Salvezza</h3>";
-  savingThrows.forEach(stat => {
-    html += `
-      <label>
-        <input type="checkbox" class="save-prof" data-stat="${stat}">
-        Competenza in ${stat.toUpperCase()}
-      </label><br>
-    `;
-  });
-
-  html += "<h3>Abilità</h3>";
-  for (let skill in skills) {
-    html += `
-      <label>
-        <input type="checkbox" class="skill-prof" data-skill="${skill}">
-        Competenza in ${skill} (${skills[skill].toUpperCase()})
-      </label><br>
-    `;
-  }
-
-  container.innerHTML = html;
-  document.querySelector("#character-form").appendChild(container);
-}
-
-// calcola modificatore caratteristica
-function getModifier(score) {
-  return Math.floor((score - 10) / 2);
-}
-
-// calcola bonus competenza (per ora fisso a +2 a livello 1)
-function getProficiencyBonus() {
-  return 2;
-}
-
-// aggiorna anteprima con TS e Abilità
-function updateSavesAndSkillsPreview(charData) {
-  const saveProfs = document.querySelectorAll(".save-prof");
-  const skillProfs = document.querySelectorAll(".skill-prof");
-
-  let savesHTML = "<h4>Tiri Salvezza</h4><ul>";
-  savingThrows.forEach(stat => {
-    const base = getModifier(parseInt(charData[stat] || 10));
-    const prof = Array.from(saveProfs).find(cb => cb.dataset.stat === stat && cb.checked);
-    const total = base + (prof ? getProficiencyBonus() : 0);
-    savesHTML += `<li>${stat.toUpperCase()}: ${total >= 0 ? "+" : ""}${total}</li>`;
-  });
-  savesHTML += "</ul>";
-
-  let skillsHTML = "<h4>Abilità</h4><ul>";
-  for (let skill in skills) {
-    const base = getModifier(parseInt(charData[skills[skill]] || 10));
-    const prof = Array.from(skillProfs).find(cb => cb.dataset.skill === skill && cb.checked);
-    const total = base + (prof ? getProficiencyBonus() : 0);
-    skillsHTML += `<li>${skill}: ${total >= 0 ? "+" : ""}${total}</li>`;
-  }
-  skillsHTML += "</ul>";
-
-  document.querySelector("#preview").innerHTML += savesHTML + skillsHTML;
-}
-
-// integrazione con anteprima esistente
-const oldUpdatePreview = updatePreview;
-updatePreview = function() {
-  oldUpdatePreview();
-  const formData = Object.fromEntries(new FormData(document.querySelector("#character-form")));
-  updateSavesAndSkillsPreview(formData);
-};
-
-// inizializza subito la sezione TS e Abilità
-renderSavingThrowsAndSkills();
-  <!-- ====== Lista Personaggi salvati ====== -->
-<section id="character-list-card" class="card">
-  <h3>Personaggi salvati</h3>
-  <ul id="characters-list" style="margin:0; padding:0; list-style:none;"></ul>
-  <div id="characters-empty" style="color:#666; font-size:13px; margin-top:8px; display:none;">Nessun personaggio salvato.</div>
-</section>
-
-<!-- ====== Anteprima personaggio ====== -->
-<section id="preview-card" class="card" style="margin-top:12px;">
-  <h3>Anteprima</h3>
-  <pre id="preview-content" style="white-space:pre-wrap; font-family:monospace; min-height:120px; margin:0; padding:8px;">
-    Compila il form per vedere l'anteprima...
-  </pre>
-</section>
-  /* ---------- helper: prova prima /api/characters poi /characters ---------- */
-async function tryGetCharacters() {
-  const candidates = ['/api/characters', '/characters'];
-  for (const url of candidates) {
-    try {
-      const res = await fetch(url);
-      if (res.ok) {
-        const json = await res.json();
-        // salva anche l'url usato per i successivi POST/DELETE
-        window.__CHAR_ENDPOINT = url; 
-        return json;
-      }
-    } catch (e) { /* continua al prossimo */ }
-  }
-  throw new Error("Nessun endpoint characters raggiungibile (/api/characters o /characters).");
-}
-
-async function tryPostCharacter(data) {
-  const candidates = [ (window.__CHAR_ENDPOINT || '/api/characters'), '/api/characters', '/characters' ];
-  const tried = new Set();
-  for (const url of candidates) {
-    if (tried.has(url)) continue;
-    tried.add(url);
-    try {
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-      });
-      if (res.ok) {
-        window.__CHAR_ENDPOINT = url;
-        return await res.json();
-      } else {
-        // prova leggere il body per capire l'errore
-        try { const err = await res.json(); console.warn('POST', url, '=>', err); } catch(e){}
-      }
-    } catch (e) { /* ignora e prova il prossimo */ }
-  }
-  throw new Error("POST fallito su entrambi gli endpoint.");
-}
-
-async function tryDeleteCharacter(id) {
-  const candidates = [ (window.__CHAR_ENDPOINT || '/api/characters'), '/api/characters', '/characters' ];
-  const tried = new Set();
-  for (const urlBase of candidates) {
-    if (tried.has(urlBase)) continue;
-    tried.add(urlBase);
-    const url = urlBase + (urlBase.endsWith('/') ? '' : '/') + encodeURIComponent(id);
-    try {
-      const res = await fetch(url, { method: 'DELETE' });
-      if (res.ok) {
-        window.__CHAR_ENDPOINT = urlBase;
-        return true;
-      } else {
-        try { const err = await res.json(); console.warn('DELETE', url, '=>', err); } catch(e){}
-      }
-    } catch (e) { /* ignora */ }
-  }
-  throw new Error("DELETE fallito su entrambi gli endpoint.");
-}
-
-/* ---------- render di un singolo item (usa fillForm se esiste) ---------- */
-function renderCharacterItem(ch) {
-  const li = document.createElement('li');
-  li.className = 'pg-item';
-  li.style.listStyle = 'none';
-
-  const meta = document.createElement('div');
-  meta.innerHTML = `<div class="pg-meta">${escapeHtml(ch.name || '—')} (Lv.${ch.level || 1})</div>
-                    <div class="pg-sub">${escapeHtml(ch.race || '-') } ${escapeHtml(ch.class || '-') }</div>`;
-
-  const actions = document.createElement('div');
-  actions.className = 'pg-actions';
-
-  const editBtn = document.createElement('button');
-  editBtn.className = 'icon-btn';
-  editBtn.type = 'button';
-  editBtn.title = 'Modifica';
-  editBtn.innerHTML = '✏️';
-  editBtn.addEventListener('click', () => {
-    if (typeof window.fillForm === 'function') {
-      window.fillForm(ch);
-    } else {
-      // fallback: popoliamo campi standard se esistono
-      try {
-        if (document.getElementById('char_id')) document.getElementById('char_id').value = ch.id || '';
-        if (document.getElementById('name')) document.getElementById('name').value = ch.name || '';
-        if (document.getElementById('class')) document.getElementById('class').value = ch.class || '';
-        if (document.getElementById('race')) document.getElementById('race').value = ch.race || '';
-        if (document.getElementById('level')) document.getElementById('level').value = ch.level || 1;
-        // abilità/base stats: prova diversi nomi
-        ['strength','dexterity','constitution','intelligence','wisdom','charisma'].forEach(k=>{
-          if (document.getElementById(k) && (ch[k] !== undefined)) document.getElementById(k).value = ch[k];
-        });
-        // se esiste extra_data proviamo ad applicarla
-        if (ch.extra_data && typeof ch.extra_data === 'object') {
-          Object.keys(ch.extra_data).forEach(k => {
-            const el = document.getElementById(k);
-            if (el) el.value = ch.extra_data[k];
-          });
-        }
-        // aggiorna preview se esiste la funzione
-        if (typeof updatePreviewDetailed === 'function') updatePreviewDetailed();
-        else if (typeof updatePreview === 'function') updatePreview();
-      } catch (e) { console.warn('fill fallback error', e); }
-    }
-  });
-
-  const delBtn = document.createElement('button');
-  delBtn.className = 'icon-btn';
-  delBtn.type = 'button';
-  delBtn.title = 'Elimina';
-  delBtn.innerHTML = '🗑️';
-  delBtn.addEventListener('click', async () => {
-    if (!confirm(`Eliminare ${ch.name || 'questo personaggio'}?`)) return;
-    try {
-      await tryDeleteCharacter(ch.id);
-      await loadCharacters(); // ricarica lista
-    } catch (err) {
-      console.error(err);
-      alert('Errore eliminazione: ' + (err.message || err));
-    }
-  });
-
-  actions.appendChild(editBtn);
-  actions.appendChild(delBtn);
-
-  li.appendChild(meta);
-  li.appendChild(actions);
-  return li;
-}
-
-/* ---------- escape semplice per testo in HTML (sicurezza) ---------- */
-function escapeHtml(s){
-  if(!s && s !== 0) return '';
-  return String(s).replace(/[&<>"']/g, function(m){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]); });
-}
-
-/* ---------- carica e mostra tutti i personaggi ---------- */
-async function loadCharacters() {
-  const list = document.getElementById('characters-list');
-  const empty = document.getElementById('characters-empty');
-  list.innerHTML = '';
-  empty.style.display = 'none';
-  try {
-    const chars = await tryGetCharacters();
-    if (!chars || chars.length === 0) {
-      empty.style.display = 'block';
-      return;
-    }
-    chars.forEach(ch => {
-      list.appendChild(renderCharacterItem(ch));
-    });
-  } catch (err) {
-    console.error('Impossibile caricare i personaggi:', err);
-    empty.textContent = 'Errore caricamento personaggi. Controlla i log del server.';
-    empty.style.display = 'block';
-  }
-}
-
-/* ---------- utilità: salva personaggio (usa tryPostCharacter) ---------- */
-async function saveFromFormAsTest() {
-  // prova a costruire un oggetto ragionevole (non sovrascrive funzioni già esistenti)
-  const data = {};
-  ['name','class','race','background','level','strength','dexterity','constitution','intelligence','wisdom','charisma'].forEach(k=>{
-    const el = document.getElementById(k);
-    if (el) data[k] = el.value;
-  });
-  // raccogli anche eventuale extra_data
-  const extra = {};
-  document.querySelectorAll('#advanced-area [id]').forEach(el=>{
-    if (el.id) extra[el.id] = el.value;
-  });
-  data.extra_data = extra;
-
-  try {
-    const saved = await tryPostCharacter(data);
-    // mostra messaggio o ricarica lista
-    await loadCharacters();
-    // se fillForm esiste, chiamalo con l'oggetto salvato (possibile ID)
-    if (typeof window.fillForm === 'function') window.fillForm(saved);
-    return saved;
-  } catch (err) {
-    console.error(err);
-    alert('Errore salvataggio: ' + (err.message || err));
-    throw err;
-  }
-}
-
-/* ---------- hook di inizializzazione: al caricamento DOM ---------- */
-document.addEventListener('DOMContentLoaded', () => {
-  // carica la lista subito
-  loadCharacters();
-
-  // se esiste il saveBtn collegalo a saveFromFormAsTest (se non è già collegato)
-  const saveBtn = document.getElementById('saveBtn');
-  if (saveBtn && !saveBtn.dataset._hooked) {
-    saveBtn.addEventListener('click', async (ev) => {
-      ev.preventDefault();
-      await saveFromFormAsTest();
-    });
-    saveBtn.dataset._hooked = '1';
-  }
-
-  // Assicuriamoci che la preview venga aggiornata subito (se esiste funzione updatePreviewDetailed o updatePreview)
-  if (typeof updatePreviewDetailed === 'function') updatePreviewDetailed();
-  else if (typeof updatePreview === 'function') updatePreview();
-});
+loadCharacters();updatePreview();
 </script>
 </body>
 </html>
