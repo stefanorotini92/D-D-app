@@ -26,15 +26,26 @@
     html,body{
       height:100%;
       margin:0;
-      font-family:"Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       background:var(--bg);
       color:#111;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
 
-    header{ padding:18px 16px; text-align:center; }
-    header h1{ margin:0; font-family:"Cinzel", serif; font-size:20px; }
+    header{
+      padding:18px 16px;
+      text-align:center;
+    }
+    header h1{
+      margin:0;
+      font-family:"Cinzel", serif;
+      font-size:20px;
+      letter-spacing:1px;
+    }
     header p{ margin:6px 0 0; color:var(--muted); font-size:13px; }
 
+    /* grid main: left = form, right = overview + list */
     .main {
       max-width:1100px;
       margin:12px auto;
@@ -44,64 +55,127 @@
       gap:var(--gap);
     }
 
+    /* cards */
     .card{
       background:var(--card);
       border-radius:var(--radius);
       padding:12px;
-      box-shadow:0 6px 18px rgba(20,20,20,0.06);
+      box-shadow: 0 6px 18px rgba(20,20,20,0.06);
       border:1px solid var(--border);
     }
 
+    /* Form area */
     #form-area label{ display:block; font-weight:600; margin-top:10px; font-size:14px; }
-    #form-area input, #form-area select, #form-area textarea{
+    #form-area input[type="text"],
+    #form-area input[type="number"],
+    #form-area select,
+    #form-area textarea{
       width:100%;
       padding:8px 10px;
       margin-top:6px;
       border:1px solid #d0d0d0;
       border-radius:8px;
       font-size:14px;
+      background:#fff;
     }
     #form-area textarea{ min-height:70px; resize:vertical; }
 
-    .row{ display:flex; gap:8px; align-items:center; }
-    .col-2{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-    .small{ font-size:12px; color:var(--muted); margin-top:4px; }
+    .row {
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
 
-    .stats{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:8px; }
-    .stat-box{ background:#fbfbfb; border:1px solid #e6e6e6; padding:8px; border-radius:8px; text-align:center; }
-    .stat-box input{ width:64px; font-size:16px; text-align:center; }
+    .col-2{ display:grid; grid-template-columns: 1fr 1fr; gap:8px; }
+
+    .small { font-size:12px; color:var(--muted); margin-top:4px; }
+
+    /* stats grid */
+    .stats {
+      display:grid;
+      grid-template-columns: repeat(3,1fr);
+      gap:8px;
+      margin-top:8px;
+    }
+    .stat-box{
+      background:#fbfbfb;
+      border:1px solid #e6e6e6;
+      padding:8px;
+      border-radius:8px;
+      text-align:center;
+    }
+    .stat-box input{
+      width:64px;
+      font-size:16px;
+      text-align:center;
+    }
     .stat-label{ font-size:13px; margin-bottom:6px; display:block; font-weight:600; }
 
-    .actions{ display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
-    .btn{ display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border-radius:8px; border:none; cursor:pointer; font-weight:600; font-size:14px; }
+    /* action buttons */
+    .actions { display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
+    .btn {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 12px;
+      border-radius:8px;
+      border: none;
+      cursor:pointer;
+      font-weight:600;
+      font-size:14px;
+    }
     .btn-primary{ background:var(--accent); color:#fff; }
     .btn-ghost{ background:transparent; border:1px solid var(--border); color:#222; }
     .btn-danger{ background:var(--danger); color:#fff; }
 
-    #preview{ white-space:pre-wrap; font-family:monospace; font-size:13px; background:#fbfbff; padding:10px; border-radius:8px; border:1px solid #e8e8ff; min-height:120px; overflow:auto; }
-    .pg-item{ display:flex; justify-content:space-between; align-items:center; padding:10px; border-radius:8px; border:1px solid #eee; margin-bottom:8px; background:#fff; gap:8px; }
+    /* right column: preview + list */
+    #preview { white-space:pre-wrap; font-family:monospace; font-size:13px; background:#fbfbff; padding:10px; border-radius:8px; border:1px solid #e8e8ff; min-height:120px; overflow:auto; }
+    #characters-list { margin:0; padding:0; list-style:none; }
+    .pg-item{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid #eee;
+      margin-bottom:8px;
+      background:#fff;
+      gap:8px;
+    }
     .pg-meta{ font-size:14px; font-weight:600; }
     .pg-sub{ font-size:12px; color:var(--muted); margin-top:4px; }
-    .pg-actions{ display:flex; gap:8px; align-items:center; }
-    .icon-btn{ background:transparent; border:none; font-size:16px; cursor:pointer; padding:6px; border-radius:6px; }
+
+    .pg-actions { display:flex; gap:8px; align-items:center; }
+
+    .icon-btn{
+      background:transparent;
+      border:none;
+      font-size:16px;
+      cursor:pointer;
+      padding:6px;
+      border-radius:6px;
+    }
     .icon-btn:hover{ background:#f2f6ff; }
 
+    /* footer */
     footer{ text-align:center; color:var(--muted); font-size:13px; padding:12px; }
 
-    @media(max-width:880px){
-      .main{ grid-template-columns:1fr; }
+    @media (max-width:880px){
+      .main{ grid-template-columns: 1fr; padding:10px; }
       #preview{ min-height:160px; }
+      .stats{ grid-template-columns: repeat(3, 1fr); }
+      .col-2{ grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
   <header>
     <h1>Scheda Personaggio — D&D 5e</h1>
-    <p>Creazione rapida, anteprima, modifica e gestione PG</p>
+    <p>Creazione rapida, anteprima, modifica e gestione PG — ottimizzato per telefono</p>
   </header>
 
   <main class="main">
-    <!-- Form -->
+    <!-- LEFT: form -->
     <section id="form-area" class="card">
       <h2>Crea / Modifica Personaggio</h2>
       <input type="hidden" id="char_id">
@@ -113,10 +187,12 @@
         <div>
           <label for="class">Classe</label>
           <select id="class"></select>
+          <div class="small">Scegli la classe (influisce su abilità e dadi vita)</div>
         </div>
         <div>
           <label for="race">Razza</label>
           <select id="race"></select>
+          <div class="small">Bonus e tratti razziali</div>
         </div>
       </div>
 
@@ -124,97 +200,276 @@
         <div style="flex:1">
           <label for="background">Background</label>
           <select id="background"></select>
+          <div class="small">Storia e competenze aggiuntive</div>
         </div>
-        <div style="width:110px;">
+        <div style="width:110px; margin-left:8px;">
           <label for="level">Livello</label>
           <input id="level" type="number" min="1" value="1">
         </div>
       </div>
 
-      <!-- Caratteristiche -->
       <div style="margin-top:12px;">
         <label>Caratteristiche</label>
         <div class="stats">
-          <div class="stat-box"><span class="stat-label">Forza</span><input id="strength" type="number" value="10"/></div>
-          <div class="stat-box"><span class="stat-label">Destrezza</span><input id="dexterity" type="number" value="10"/></div>
-          <div class="stat-box"><span class="stat-label">Costituzione</span><input id="constitution" type="number" value="10"/></div>
-          <div class="stat-box"><span class="stat-label">Intelligenza</span><input id="intelligence" type="number" value="10"/></div>
-          <div class="stat-box"><span class="stat-label">Saggezza</span><input id="wisdom" type="number" value="10"/></div>
-          <div class="stat-box"><span class="stat-label">Carisma</span><input id="charisma" type="number" value="10"/></div>
+          <div class="stat-box">
+            <span class="stat-label">Forza</span>
+            <input id="strength" type="number" value="10" />
+            <div class="small">Attacchi corpo a corpo</div>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Destrezza</span>
+            <input id="dexterity" type="number" value="10" />
+            <div class="small">Iniziativa, CA</div>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Costituzione</span>
+            <input id="constitution" type="number" value="10" />
+            <div class="small">PF e resistenza</div>
+          </div>
+
+          <div class="stat-box">
+            <span class="stat-label">Intelligenza</span>
+            <input id="intelligence" type="number" value="10" />
+            <div class="small">Conoscenze arcane</div>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Saggezza</span>
+            <input id="wisdom" type="number" value="
+              10" />
+            <div class="small">Percezione</div>
+          </div>
+          <div class="stat-box">
+            <span class="stat-label">Carisma</span>
+            <input id="charisma" type="number" value="10" />
+            <div class="small">Incantesimi e social</div>
+          </div>
         </div>
       </div>
 
-      <!-- Avanzate -->
+      <!-- advanced area placeholder -->
       <div id="advanced-area" style="margin-top:14px;"></div>
 
-      <!-- Pulsanti -->
-      <div class="actions">
-        <button id="saveBtn" class="btn btn-primary">💾 Salva</button>
-        <button id="randomBtn" class="btn btn-ghost" type="button">🎲 Random</button>
+      <!-- actions -->
+      <div class="actions" style="margin-top:12px;">
+        <button id="saveBtn" class="btn btn-primary"><span>💾</span> Salva Personaggio</button>
+        <button id="randomBtn" class="btn btn-ghost" type="button"><span>🎲</span> Genera Random</button>
         <button id="resetBtn" class="btn" type="button">🔄 Reset</button>
+      </div>
+
+      <div style="margin-top:10px;">
+        <small>Note: puoi modificare un personaggio dalla lista usando ✏️, cancellarlo con 🗑️</small>
       </div>
     </section>
 
-    <!-- Colonna destra -->
+    <!-- RIGHT: preview & list -->
     <aside>
       <div class="card" style="margin-bottom:var(--gap);">
-        <h3>Anteprima</h3>
-        <div id="preview">Nessun personaggio selezionato</div>
+        <h3 style="margin:0 0 8px 0;">Anteprima</h3>
+        <div id="preview">Nessun personaggio selezionato — compila il form per vedere l'anteprima in tempo reale.</div>
       </div>
 
       <div class="card">
-        <h3>Personaggi salvati</h3>
-        <ul id="characters-list"></ul>
+        <h3 style="margin:0 0 8px 0;">Personaggi salvati</h3>
+        <div id="characters-container">
+          <ul id="characters-list"></ul>
+        </div>
       </div>
     </aside>
   </main>
 
   <footer>
-    <small>App D&D — prototipo</small>
+    <small>App D&D — versione prototipo • Ottimizzata per mobile</small>
   </footer>
 
-<script>
-const classes=["Barbaro","Bardo","Chierico","Druido","Guerriero","Ladro","Mago","Monaco","Paladino","Ranger","Stregone","Warlock"];
-const races=["Umano","Elfo","Nano","Mezzorco","Halfling","Gnomo","Dragonide","Tiefling","Mezzelfo"];
-const backgrounds=["Accolito","Eroe Popolare","Nobile","Marinaio","Soldato","Criminale","Eremita","Saggio"];
-const abilities=["strength","dexterity","constitution","intelligence","wisdom","charisma"];
+  <!-- JS -->
+  <script>
+  // ================================
+  // Dati base
+  // ================================
+  const classes = ["Barbaro","Bardo","Chierico","Druido","Guerriero","Ladro","Mago","Monaco","Paladino","Ranger","Stregone","Warlock"];
+  const races = ["Umano","Elfo","Nano","Mezzorco","Halfling","Gnomo","Dragonide","Tiefling","Mezzelfo"];
+  const backgrounds = ["Accolito","Eroe Popolare","Nobile","Marinaio","Soldato","Criminale","Eremita","Saggio"];
+  const abilities = ["strength","dexterity","constitution","intelligence","wisdom","charisma"];
 
-function populateDropdown(id,arr){const sel=document.getElementById(id);sel.innerHTML="<option value=''>—</option>";arr.forEach(v=>{const o=document.createElement("option");o.value=o.textContent=v;sel.appendChild(o);});}
-populateDropdown("class",classes);populateDropdown("race",races);populateDropdown("background",backgrounds);
+  function populateDropdown(id, arr){
+    const sel = document.getElementById(id);
+    sel.innerHTML = "<option value=''>— Seleziona —</option>";
+    arr.forEach(v=>{
+      const opt = document.createElement("option");
+      opt.value = v; opt.textContent = v;
+      sel.appendChild(opt);
+    });
+  }
 
-const advancedFields=[
- {id:"alignment",label:"Allineamento",type:"select",options:["Legale Buono","Neutrale Buono","Caotico Buono","Legale Neutrale","Neutrale Puro","Caotico Neutrale","Legale Malvagio","Neutrale Malvagio","Caotico Malvagio"]},
- {id:"armorClass",label:"Classe Armatura (CA)",type:"number"},
- {id:"hitPoints",label:"Punti Ferita Massimi",type:"number"},
- {id:"speed",label:"Velocità",type:"number"},
- {id:"proficiencies",label:"Competenze",type:"textarea"},
- {id:"equipment",label:"Equipaggiamento",type:"textarea"},
- {id:"features",label:"Tratti e Abilità",type:"textarea"},
- {id:"spells",label:"Incantesimi",type:"textarea"},
- {id:"notes",label:"Note Extra",type:"textarea"}
-];
-function renderAdvancedFields(){const c=document.getElementById("advanced-area");c.innerHTML="";advancedFields.forEach(f=>{const w=document.createElement("div");w.innerHTML=`<label for="${f.id}">${f.label}</label>`;let input;if(f.type==="select"){input=document.createElement("select");input.id=f.id;f.options.forEach(o=>{const op=document.createElement("option");op.value=op.textContent=o;input.appendChild(op);});}else if(f.type==="textarea"){input=document.createElement("textarea");input.id=f.id;}else{input=document.createElement("input");input.type=f.type;input.id=f.id;}w.appendChild(input);c.appendChild(w);});}
-renderAdvancedFields();
+  populateDropdown("class", classes);
+  populateDropdown("race", races);
+  populateDropdown("background", backgrounds);
 
-function abilityMod(s){return Math.floor((s-10)/2);}
-function updatePreview(){const p=document.getElementById("preview");let t="";t+=`Nome: ${name.value||"-"}\n`;t+=`Classe: ${class.value||"-"} | Razza: ${race.value||"-"} | BG: ${background.value||"-"}\n`;t+=`Livello: ${level.value||1}\n\nCaratteristiche:\n`;abilities.forEach(a=>{const v=parseInt(document.getElementById(a).value)||10;const m=abilityMod(v);t+=`- ${a}: ${v} (mod ${m>=0?"+":""}${m})\n`;});const cos=abilityMod(parseInt(constitution.value)||10);const liv=parseInt(level.value)||1;const basePF=(8+cos)*liv;const dex=abilityMod(parseInt(dexterity.value)||10);t+=`\nCA stimata: ${10+dex}\nPF stimati: ${basePF}\n`;advancedFields.forEach(f=>{const val=document.getElementById(f.id).value;if(val) t+=`\n${f.label}: ${val}`;});p.textContent=t;}
-document.querySelectorAll("#form-area input,#form-area select,#form-area textarea").forEach(el=>el.addEventListener("input",updatePreview));
+  // ================================
+  // Campi avanzati
+  // ================================
+  const advancedFields = [
+    {id:"alignment", label:"Allineamento", type:"select", options:["Legale Buono","Neutrale Buono","Caotico Buono","Legale Neutrale","Neutrale Puro","Caotico Neutrale","Legale Malvagio","Neutrale Malvagio","Caotico Malvagio"], desc:"Orientamento etico e morale"},
+    {id:"armorClass", label:"Classe Armatura (CA)", type:"number", desc:"Difesa base contro attacchi"},
+    {id:"hitPoints", label:"Punti Ferita Massimi", type:"number", desc:"PF massimi del personaggio"},
+    {id:"speed", label:"Velocità", type:"number", desc:"Metri a turno (default 9m = 30ft)"},
+    {id:"proficiencies", label:"Competenze", type:"textarea", desc:"Armi, armature, strumenti..."},
+    {id:"equipment", label:"Equipaggiamento", type:"textarea", desc:"Oggetti iniziali e acquisiti"},
+    {id:"features", label:"Tratti e Abilità", type:"textarea", desc:"Tratti razziali e abilità di classe"},
+    {id:"spells", label:"Incantesimi", type:"textarea", desc:"Incantesimi conosciuti/preparati"},
+    {id:"notes", label:"Note Extra", type:"textarea", desc:"Annotazioni libere"}
+  ];
 
-function randomFrom(a){return a[Math.floor(Math.random()*a.length)];}
-function rollStat(){return 8+Math.floor(Math.random()*11);}
-function generateRandom(){name.value="PG_"+Math.floor(Math.random()*1000);class.value=randomFrom(classes);race.value=randomFrom(races);background.value=randomFrom(backgrounds);level.value=1+Math.floor(Math.random()*5);abilities.forEach(a=>document.getElementById(a).value=rollStat());document.getElementById("alignment").value=randomFrom(advancedFields[0].options);armorClass.value=10+Math.floor(Math.random()*8);hitPoints.value=5+Math.floor(Math.random()*20);speed.value=9;updatePreview();}
-randomBtn.addEventListener("click",generateRandom);
+  function renderAdvancedFields(){
+    const container=document.getElementById("advanced-area");
+    container.innerHTML="";
+    advancedFields.forEach(f=>{
+      const wrap=document.createElement("div");
+      wrap.style.marginTop="8px";
+      const label=document.createElement("label");
+      label.textContent=f.label; label.setAttribute("for",f.id);
+      wrap.appendChild(label);
 
-async function saveCharacter(){const data={name:name.value,class:class.value,race:race.value,background:background.value,level:level.value,strength:strength.value,dexterity:dexterity.value,constitution:constitution.value,intelligence:intelligence.value,wisdom:wisdom.value,charisma:charisma.value,extra_data:{}};advancedFields.forEach(f=>{data.extra_data[f.id]=document.getElementById(f.id).value;});const r=await fetch("/api/characters",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});if(r.ok){await loadCharacters();resetForm();}else{alert("Errore salvataggio");}}
-saveBtn.addEventListener("click",e=>{e.preventDefault();saveCharacter();});
+      let input;
+      if(f.type==="select"){
+        input=document.createElement("select"); input.id=f.id;
+        input.innerHTML="<option value=''>— Seleziona —</option>";
+        f.options.forEach(o=>{const opt=document.createElement("option"); opt.value=o; opt.textContent=o; input.appendChild(opt);});
+      } else if(f.type==="textarea"){ input=document.createElement("textarea"); input.id=f.id; }
+      else { input=document.createElement("input"); input.type=f.type; input.id=f.id; }
 
-async function loadCharacters(){const r=await fetch("/api/characters");const c=await r.json();const l=document.getElementById("characters-list");l.innerHTML="";c.forEach(ch=>{const li=document.createElement("li");li.className="pg-item";li.innerHTML=`<div><div class="pg-meta">${ch.name} (Lv.${ch.level})</div><div class="pg-sub">${ch.race} ${ch.class}</div></div>`;const act=document.createElement("div");act.className="pg-actions";const eBtn=document.createElement("button");eBtn.className="icon-btn";eBtn.textContent="✏️";eBtn.onclick=()=>fillForm(ch);const dBtn=document.createElement("button");dBtn.className="icon-btn";dBtn.textContent="🗑️";dBtn.onclick=()=>deleteCharacter(ch.id);act.appendChild(eBtn);act.appendChild(dBtn);li.appendChild(act);l.appendChild(li);});}
-async function deleteCharacter(id){if(confirm("Sicuro?")){await fetch("/api/characters/"+id,{method:"DELETE"});loadCharacters();}}
-function fillForm(ch){char_id.value=ch.id;name.value=ch.name;class.value=ch.class;race.value=ch.race;background.value=ch.background;level.value=ch.level;abilities.forEach(a=>document.getElementById(a).value=ch[a]);if(ch.extra_data){Object.keys(ch.extra_data).forEach(k=>{if(document.getElementById(k))document.getElementById(k).value=ch.extra_data[k];});}updatePreview();}
-function resetForm(){document.getElementById("form-area").reset();char_id.value="";updatePreview();}
-resetBtn.addEventListener("click",resetForm);
+      wrap.appendChild(input);
+      const small=document.createElement("div"); small.className="small"; small.textContent=f.desc;
+      wrap.appendChild(small);
+      container.appendChild(wrap);
+    });
+  }
+  renderAdvancedFields();
 
-loadCharacters();updatePreview();
-</script>
+  // ================================
+  // Preview
+  // ================================
+  function abilityMod(score){ return Math.floor((score-10)/2); }
+
+  function updatePreviewDetailed(){
+    const preview=document.getElementById("preview");
+    let txt="";
+    txt+=`Nome: ${document.getElementById("name").value||"-"}\n`;
+    txt+=`Classe: ${document.getElementById("class").value||"-"} | Razza: ${document.getElementById("race").value||"-"} | Background: ${document.getElementById("background").value||"-"}\n`;
+    txt+=`Livello: ${document.getElementById("level").value||1}\n\n`;
+    txt+="Caratteristiche:\n";
+    abilities.forEach(a=>{
+      const val=parseInt(document.getElementById(a).value)||10;
+      const mod=abilityMod(val);
+      const label=a.charAt(0).toUpperCase()+a.slice(1);
+      txt+=`- ${label}: ${val} (mod ${mod>=0?"+":""}${mod})\n`;
+    });
+
+    txt+="\n";
+    const cosMod=abilityMod(parseInt(document.getElementById("constitution").value)||10);
+    const liv=parseInt(document.getElementById("level").value)||1;
+    const basePF=(8+cosMod)*liv;
+    const dexMod=abilityMod(parseInt(document.getElementById("dexterity").value)||10);
+    const baseCA=10+dexMod;
+
+    txt+=`CA stimata: ${baseCA}\nPF stimati: ${basePF}\n\n`;
+
+    advancedFields.forEach(f=>{
+      const val=document.getElementById(f.id).value;
+      if(val) txt+=`${f.label}: ${val}\n`;
+    });
+    preview.textContent=txt;
+  }
+
+  document.querySelectorAll("#form-area input, #form-area select, #form-area textarea")
+    .forEach(el=>el.addEventListener("input", updatePreviewDetailed));
+
+  // ================================
+  // Random PG
+  // ================================
+  function randomFrom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function rollStat(){ return 8+Math.floor(Math.random()*11); }
+
+  function generateRandom(){
+    document.getElementById("name").value="PG_"+Math.floor(Math.random()*1000);
+    document.getElementById("class").value=randomFrom(classes);
+    document.getElementById("race").value=randomFrom(races);
+    document.getElementById("background").value=randomFrom(backgrounds);
+    document.getElementById("level").value=1+Math.floor(Math.random()*5);
+    abilities.forEach(a=>document.getElementById(a).value=rollStat());
+    document.getElementById("alignment").value=randomFrom(advancedFields[0].options);
+    document.getElementById("armorClass").value=10+Math.floor(Math.random()*8);
+    document.getElementById("hitPoints").value=5+Math.floor(Math.random()*20);
+    document.getElementById("speed").value=9;
+    updatePreviewDetailed();
+  }
+  document.getElementById("randomBtn").addEventListener("click", generateRandom);
+
+  // ================================
+  // Salvataggio / caricamento / reset
+  // ================================
+  async function saveCharacter(){
+    const data={
+      name:document.getElementById("name").value,
+      class:document.getElementById("class").value,
+      race:document.getElementById("race").value,
+      background:document.getElementById("background").value,
+      level:document.getElementById("level").value,
+      strength:document.getElementById("strength").value,
+      dexterity:document.getElementById("dexterity").value,
+      constitution:document.getElementById("constitution").value,
+      intelligence:document.getElementById("intelligence").value,
+      wisdom:document.getElementById("wisdom").value,
+      charisma:document.getElementById("charisma").value,
+      extra_data:{}
+    };
+    advancedFields.forEach(f=>{ data.extra_data[f.id]=document.getElementById(f.id).value; });
+    const res=await fetch("/api/characters",{method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(data)});
+    if(res.ok){ await loadCharacters(); resetForm(); }
+    else { const err=await res.json(); alert("Errore salvataggio: "+JSON.stringify(err)); }
+  }
+
+  document.getElementById("saveBtn").addEventListener("click", e=>{ e.preventDefault(); saveCharacter(); });
+  document.getElementById("resetBtn").addEventListener("click", ()=>{ document.getElementById("form-area").reset(); updatePreviewDetailed(); });
+
+  async function loadCharacters(){
+    const list=document.getElementById("characters-list");
+    list.innerHTML="";
+    try{
+      const res=await fetch("/api/characters");
+      const chars=await res.json();
+      chars.forEach(ch=>{
+        const li=document.createElement("li");
+        li.className="pg-item";
+        const meta=document.createElement("div");
+        meta.innerHTML=`<div class="pg-meta">${ch.name} (Lv.${ch.level})</div><div class="pg-sub">${ch.race} ${ch.class}</div>`;
+        const act=document.createElement("div"); act.className="pg-actions";
+        const editBtn=document.createElement("button"); editBtn.className="icon-btn"; editBtn.innerHTML="✏️"; editBtn.onclick=()=>fillForm(ch);
+        const delBtn=document.createElement("button"); delBtn.className="icon-btn"; delBtn.innerHTML="🗑️"; delBtn.onclick=()=>deleteCharacter(ch.id);
+        act.appendChild(editBtn); act.appendChild(delBtn);
+        li.appendChild(meta); li.appendChild(act); list.appendChild(li);
+      });
+    } catch(err){ console.error("Errore caricamento personaggi:",err); }
+  }
+
+  async function deleteCharacter(id){ if(confirm("Sicuro di cancellare?")){ await fetch("/api/characters/"+id,{method:"DELETE"}); loadCharacters(); } }
+
+  function fillForm(ch){
+    document.getElementById("char_id").value=ch.id;
+    document.getElementById("name").value=ch.name;
+    document.getElementById("class").value=ch.class;
+    document.getElementById("race").value=ch.race;
+    document.getElementById("background").value=ch.background;
+    document.getElementById("level").value=ch.level;
+    abilities.forEach(a=>document.getElementById(a).value=ch[a]);
+    if(ch.extra_data){ Object.keys(ch.extra_data).forEach(k=>{ if(document.getElementById(k)) document.getElementById(k).value=ch.extra_data[k]; }); }
+    updatePreviewDetailed();
+  }
+
+  // init
+  document.addEventListener("DOMContentLoaded", ()=>{
+    loadCharacters(); updatePreviewDetailed();
+  });
+  </script>
 </body>
 </html>
