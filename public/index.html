@@ -236,58 +236,162 @@ document.querySelectorAll("#form-area input,#form-area select,#form-area textare
 function randomFrom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 function rollStat(){ return 8+Math.floor(Math.random()*11); }
 
-function generateRandom(){
-  document.getElementById("name").value="PG_"+Math.floor(Math.random()*1000);
-  document.getElementById("class").value=randomFrom(classes);
-  document.getElementById("race").value=randomFrom(races);
-  document.getElementById("background").value=randomFrom(backgrounds);
-  document.getElementById("level").value=1+Math.floor(Math.random()*5);
-  abilities.forEach(a=>document.getElementById(a).value=rollStat());
-  document.getElementById("alignment").value=randomFrom(advancedFields[0].options);
-  document.getElementById("armorClass").value=10+Math.floor(Math.random()*8);
-  document.getElementById("hitPoints").value=5+Math.floor(Math.random()*20);
-  document.getElementById("speed").value=9;
-  updatePreviewDetailed();
+<script>
+// ================================
+// Funzioni di utilità
+// ================================
+function abilityMod(score){
+  return Math.floor((score - 10) / 2);
 }
-document.getElementById("randomBtn").addEventListener("click",generateRandom);
 
-/* ==========================
-   Salvataggio / Caricamento / Reset
-========================== */
-async function saveCharacter(){
-  const data={
-    name:document.getElementById("name").value,
-    class:document.getElementById("class").value,
-    race:document.getElementById("race").value,
-    background:document.getElementById("background").value,
-    level:document.getElementById("level").value,
-    strength:document.getElementById("strength").value,
-    dexterity:document.getElementById("dexterity").value,
-    constitution:document.getElementById("constitution").value,
-    intelligence:document.getElementById("intelligence").value,
-    wisdom:document.getElementById("wisdom").value,
-    charisma:document.getElementById("charisma").value,
-    extra_data:{}
-  };
-  advancedFields.forEach(f=>{ data.extra_data[f.id]=document.getElementById(f.id).value; });
-  const res=await fetch("/api/characters",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});
-  if(res.ok){ await loadCharacters(); resetForm(); }
-  else{ const err=await res.json(); alert("Errore salvataggio: "+JSON.stringify(err)); }
+function escapeHtml(s){
+  if(!s && s !== 0) return '';
+  return String(s).replace(/[&<>"']/g, function(m){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m];
+  });
 }
 
 function resetForm(){
   document.getElementById("form-area").reset();
+  document.getElementById("char_id").value="";
   updatePreviewDetailed();
 }
 
+// ================================
+// Aggiornamento anteprima
+// ================================
+function updatePreviewDetailed(){
+  const preview=document.getElementById("preview");
+  let txt="";
+
+  txt+=`Nome: ${document.getElementById("name").value || "-"}\n`;
+  txt+=`Classe: ${document.getElementById("class").value || "-"} | Razza: ${document.getElementById("race").value || "-"} | Background: ${document.getElementById("background").value || "-"}\n`;
+  txt+=`Livello: ${document.getElementById("level").value || 1}\n\n`;
+
+  txt+="Caratteristiche:\n";
+  const abilities = ["strength","dexterity","constitution","intelligence","wisdom","charisma"];
+  abilities.forEach(a=>{
+    const val=parseInt(document.getElementById(a).value)||10;
+    const mod=abilityMod(val);
+    const label=a.charAt(0).toUpperCase()+a.slice(1);
+    txt+=`- ${label}: ${val} (mod ${mod>=0?"+":""}${mod})\n`;
+  });
+
+  txt+="\n";
+
+  const cosMod=abilityMod(parseInt(document.getElementById("constitution").value)||10);
+  const liv=parseInt(document.getElementById("level").value)||1;
+  const basePF= (8 + cosMod) * liv;
+  const dexMod=abilityMod(parseInt(document.getElementById("dexterity").value)||10);
+  const baseCA=10+dexMod;
+
+  txt+=`CA stimata: ${baseCA}\n`;
+  txt+=`PF stimati: ${basePF}\n\n`;
+
+  const advancedFields = [
+    {id:"alignment", label:"Allineamento"},
+    {id:"armorClass", label:"Classe Armatura (CA)"},
+    {id:"hitPoints", label:"Punti Ferita Massimi"},
+    {id:"speed", label:"Velocità"},
+    {id:"proficiencies", label:"Competenze"},
+    {id:"equipment", label:"Equipaggiamento"},
+    {id:"features", label:"Tratti e Abilità"},
+    {id:"spells", label:"Incantesimi"},
+    {id:"notes", label:"Note Extra"}
+  ];
+
+  advancedFields.forEach(f=>{
+    const val=document.getElementById(f.id).value;
+    if(val) txt+=`${f.label}: ${val}\n`;
+  });
+
+  preview.textContent=txt;
+}
+
+// ================================
+// Generazione casuale PG
+// ================================
+function randomFrom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function rollStat(){ return 8+Math.floor(Math.random()*11); }
+
+function generateRandom(){
+  document.getElementById("name").value="PG_"+Math.floor(Math.random()*1000);
+  document.getElementById("class").value=randomFrom(["Barbaro","Bardo","Chierico","Druido","Guerriero","Ladro","Mago","Monaco","Paladino","Ranger","Stregone","Warlock"]);
+  document.getElementById("race").value=randomFrom(["Umano","Elfo","Nano","Mezzorco","Halfling","Gnomo","Dragonide","Tiefling","Mezzelfo"]);
+  document.getElementById("background").value=randomFrom(["Accolito","Eroe Popolare","Nobile","Marinaio","Soldato","Criminale","Eremita","Saggio"]);
+  document.getElementById("level").value=1+Math.floor(Math.random()*5);
+
+  const abilities = ["strength","dexterity","constitution","intelligence","wisdom","charisma"];
+  abilities.forEach(a=>document.getElementById(a).value=rollStat());
+
+  document.getElementById("alignment").value=randomFrom([
+    "Legale Buono","Neutrale Buono","Caotico Buono",
+    "Legale Neutrale","Neutrale Puro","Caotico Neutrale",
+    "Legale Malvagio","Neutrale Malvagio","Caotico Malvagio"
+  ]);
+
+  document.getElementById("armorClass").value=10+Math.floor(Math.random()*8);
+  document.getElementById("hitPoints").value=5+Math.floor(Math.random()*20);
+  document.getElementById("speed").value=9;
+
+  updatePreviewDetailed();
+}
+
+// ================================
+// Salvataggio PG su backend
+// ================================
+async function saveCharacter(){
+  const data={};
+  ["name","class","race","background","level","strength","dexterity","constitution","intelligence","wisdom","charisma"]
+    .forEach(k=> data[k] = document.getElementById(k).value);
+
+  data.extra_data={};
+  ["alignment","armorClass","hitPoints","speed","proficiencies","equipment","features","spells","notes"]
+    .forEach(k=> data.extra_data[k] = document.getElementById(k).value);
+
+  const res = await fetch("/api/characters",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(data)
+  });
+
+  if(res.ok){
+    await loadCharacters();
+    resetForm();
+  } else {
+    const err = await res.json();
+    alert("Errore salvataggio: "+JSON.stringify(err));
+  }
+}
+
+// ================================
+// Caricamento PG
+// ================================
 async function loadCharacters(){
-  const list=document.getElementById("characters-list"); list.innerHTML="";
+  const list=document.getElementById("characters-list");
+  const empty=document.getElementById("characters-empty");
+  list.innerHTML="";
+  empty.style.display='none';
+
   try{
-    const res=await fetch("/api/characters"); const chars=await res.json();
+    const res=await fetch("/api/characters");
+    const chars=await res.json();
+
+    if(!chars || chars.length===0){
+      empty.style.display='block';
+      return;
+    }
+
     chars.forEach(ch=>{
-      const li=document.createElement("li"); li.className="pg-item";
-      const meta=document.createElement("div"); meta.innerHTML=`<div class="pg-meta">${ch.name} (Lv.${ch.level})</div><div class="pg-sub">${ch.race} ${ch.class}</div>`;
-      const act=document.createElement("div"); act.className="pg-actions";
+      const li=document.createElement("li");
+      li.className="pg-item";
+
+      const meta=document.createElement("div");
+      meta.innerHTML=`<div class="pg-meta">${escapeHtml(ch.name)} (Lv.${ch.level})</div>
+        <div class="pg-sub">${escapeHtml(ch.race)} ${escapeHtml(ch.class)}</div>`;
+
+      const act=document.createElement("div");
+      act.className="pg-actions";
 
       const editBtn=document.createElement("button");
       editBtn.className="icon-btn"; editBtn.innerHTML="✏️";
@@ -295,51 +399,66 @@ async function loadCharacters(){
 
       const delBtn=document.createElement("button");
       delBtn.className="icon-btn"; delBtn.innerHTML="🗑️";
-      delBtn.onclick=async ()=>{
-        if(confirm("Sicuro di cancellare?")){
-          await fetch("/api/characters/"+ch.id,{method:"DELETE"});
-          await loadCharacters();
-        }
-      };
+      delBtn.onclick=()=>deleteCharacter(ch.id);
 
-      act.appendChild(editBtn);
-      act.appendChild(delBtn);
-      li.appendChild(meta);
-      li.appendChild(act);
+      act.appendChild(editBtn); act.appendChild(delBtn);
+
+      li.appendChild(meta); li.appendChild(act);
       list.appendChild(li);
     });
   } catch(err){
-    console.error("Errore caricamento personaggi:", err);
+    console.error(err);
+    empty.textContent="Errore caricamento personaggi.";
+    empty.style.display='block';
+  }
+}
+
+async function deleteCharacter(id){
+  if(confirm("Sicuro di cancellare?")){
+    await fetch("/api/characters/"+id,{method:"DELETE"});
+    loadCharacters();
   }
 }
 
 function fillForm(ch){
   document.getElementById("char_id").value=ch.id;
-  document.getElementById("name").value=ch.name;
-  document.getElementById("class").value=ch.class;
-  document.getElementById("race").value=ch.race;
-  document.getElementById("background").value=ch.background;
-  document.getElementById("level").value=ch.level;
-  abilities.forEach(a=>{
-    if(ch[a] !== undefined) document.getElementById(a).value=ch[a];
-  });
+  ["name","class","race","background","level","strength","dexterity","constitution","intelligence","wisdom","charisma"]
+    .forEach(k=> document.getElementById(k).value = ch[k] || "");
+
   if(ch.extra_data){
-    Object.keys(ch.extra_data).forEach(k=>{
-      if(document.getElementById(k)) document.getElementById(k).value=ch.extra_data[k];
-    });
+    ["alignment","armorClass","hitPoints","speed","proficiencies","equipment","features","spells","notes"]
+      .forEach(k=>{
+        if(document.getElementById(k)) document.getElementById(k).value = ch.extra_data[k] || "";
+      });
   }
+
   updatePreviewDetailed();
 }
 
-// Event listener principali
-document.getElementById("saveBtn").addEventListener("click", async e=>{
+// ================================
+// Event listeners
+// ================================
+document.getElementById("saveBtn").addEventListener("click", e=>{
   e.preventDefault();
-  await saveCharacter();
+  saveCharacter();
 });
-document.getElementById("resetBtn").addEventListener("click", resetForm);
 
-// Inizializzazione
-document.addEventListener("DOMContentLoaded", ()=>{
+document.getElementById("randomBtn").addEventListener("click", e=>{
+  e.preventDefault();
+  generateRandom();
+});
+
+document.getElementById("resetBtn").addEventListener("click", e=>{
+  e.preventDefault();
+  resetForm();
+});
+
+// Aggiornamento anteprima in tempo reale
+document.querySelectorAll("#form-area input, #form-area select, #form-area textarea")
+  .forEach(el=>el.addEventListener("input", updatePreviewDetailed));
+
+// Init
+document.addEventListener('DOMContentLoaded', ()=>{
   loadCharacters();
   updatePreviewDetailed();
 });
