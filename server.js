@@ -1,71 +1,68 @@
-// server.js
-const express = require("express");
-const fs = require("fs");
-const path = require("path");
-
+const express = require('express');
+const path = require('path');
+const { v4: uuidv4 } = require('uuid'); // per generare ID unici
 const app = express();
-const PORT = 3000;
 
-// Percorso file dati
-const DATA_FILE = path.join(__dirname, "characters.json");
-
-// Middleware
 app.use(express.json());
-app.use(express.static(path.join(__dirname)));
 
-// Legge personaggi dal file
-function loadCharacters() {
-  if (!fs.existsSync(DATA_FILE)) return [];
-  try {
-    return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
-  } catch (e) {
-    console.error("Errore lettura file:", e);
-    return [];
-  }
-}
+// Serve file statici dalla cartella "public"
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Salva personaggi sul file
-function saveCharacters(chars) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(chars, null, 2), "utf8");
-}
+// ------------------------
+// Memoria temporanea personaggi
+// ------------------------
+let characters = [];
 
-// API: lista personaggi
-app.get("/api/characters", (req, res) => {
-  const characters = loadCharacters();
+// ------------------------
+// API: GET /api/characters
+// ------------------------
+app.get('/api/characters', (req, res) => {
   res.json(characters);
 });
 
-// API: crea personaggio
-app.post("/api/characters", (req, res) => {
-  const characters = loadCharacters();
-  const newChar = req.body;
+// ------------------------
+// API: POST /api/characters
+// ------------------------
+app.post('/api/characters', (req, res) => {
+  const data = req.body;
 
-  if (!newChar.id) {
-    newChar.id = Date.now(); // id univoco
+  if (!data.name) {
+    return res.status(400).json({ error: 'Il personaggio deve avere un nome.' });
   }
 
-  // se esiste già -> aggiorno
-  const idx = characters.findIndex(c => c.id === newChar.id);
-  if (idx >= 0) {
-    characters[idx] = newChar;
-  } else {
-    characters.push(newChar);
+  // Se ha già un ID => modifica
+  if (data.id) {
+    const index = characters.findIndex(c => c.id === data.id);
+    if (index !== -1) {
+      characters[index] = { ...characters[index], ...data };
+      return res.json(characters[index]);
+    } else {
+      return res.status(404).json({ error: 'Personaggio non trovato per aggiornamento.' });
+    }
   }
 
-  saveCharacters(characters);
+  // Nuovo personaggio
+  const newChar = { ...data, id: uuidv4() };
+  characters.push(newChar);
   res.json(newChar);
 });
 
-// API: elimina personaggio
-app.delete("/api/characters/:id", (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  let characters = loadCharacters();
-  characters = characters.filter(c => c.id !== id);
-  saveCharacters(characters);
+// ------------------------
+// API: DELETE /api/characters/:id
+// ------------------------
+app.delete('/api/characters/:id', (req, res) => {
+  const id = req.params.id;
+  const index = characters.findIndex(c => c.id === id);
+  if (index === -1) return res.status(404).json({ error: 'Personaggio non trovato' });
+
+  characters.splice(index, 1);
   res.json({ success: true });
 });
 
-// Avvio server
+// ------------------------
+// Start server
+// ------------------------
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server avviato su http://localhost:${PORT}`);
 });
