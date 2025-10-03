@@ -131,19 +131,25 @@
   </div>
 </section>
   
-  <aside>
-    <div class="card" style="margin-bottom:var(--gap);">
-      <h3 style="margin:0 0 8px 0;">Anteprima</h3>
-      <div id="preview">Nessun personaggio selezionato — compila il form per vedere l'anteprima in tempo reale.</div>
+  <!-- RIGHT: preview & list -->
+<aside>
+  <div class="card" style="margin-bottom:var(--gap);">
+    <h3 style="margin:0 0 8px 0;">Anteprima</h3>
+    <div id="preview">
+      Nessun personaggio selezionato — compila il form per vedere l'anteprima in tempo reale.
     </div>
+  </div>
 
-    <div class="card">
-      <h3 style="margin:0 0 8px 0;">Personaggi salvati</h3>
-      <div id="characters-container">
-        <ul id="characters-list"></ul>
+  <div class="card">
+    <h3 style="margin:0 0 8px 0;">Personaggi salvati</h3>
+    <div id="characters-container">
+      <ul id="characters-list"></ul>
+      <div id="characters-empty" style="display:none; color:var(--muted); font-size:13px; padding:8px;">
+        Nessun personaggio salvato.
       </div>
     </div>
-  </aside>
+  </div>
+</aside>
 </main>
 
 <footer>
