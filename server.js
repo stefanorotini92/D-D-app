@@ -1,68 +1,77 @@
+// server.js
 const express = require('express');
+const fs = require('fs');
 const path = require('path');
-const { v4: uuidv4 } = require('uuid'); // per generare ID unici
+const bodyParser = require('body-parser');
+
 const app = express();
+const PORT = 3000;
 
-app.use(express.json());
+// Path file dati
+const DATA_FILE = path.join(__dirname, 'characters.json');
 
-// Serve file statici dalla cartella "public"
-app.use(express.static(path.join(__dirname, 'public')));
+// Middleware
+app.use(bodyParser.json());
+app.use(express.static('public')); // serve index.html dalla cartella public
 
-// ------------------------
-// Memoria temporanea personaggi
-// ------------------------
-let characters = [];
+// Funzione per leggere dati
+function readData() {
+  if (!fs.existsSync(DATA_FILE)) return [];
+  try {
+    const content = fs.readFileSync(DATA_FILE, 'utf-8');
+    return JSON.parse(content) || [];
+  } catch (err) {
+    console.error('Errore lettura file:', err);
+    return [];
+  }
+}
 
-// ------------------------
-// API: GET /api/characters
-// ------------------------
+// Funzione per salvare dati
+function saveData(data) {
+  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+}
+
+// Generatore semplice di ID
+function generateId() {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2,5);
+}
+
+// ------------------ API ------------------
+
+// GET /api/characters
 app.get('/api/characters', (req, res) => {
-  res.json(characters);
+  const chars = readData();
+  res.json(chars);
 });
 
-// ------------------------
-// API: POST /api/characters
-// ------------------------
+// POST /api/characters
 app.post('/api/characters', (req, res) => {
+  const chars = readData();
   const data = req.body;
 
-  if (!data.name) {
-    return res.status(400).json({ error: 'Il personaggio deve avere un nome.' });
-  }
-
-  // Se ha già un ID => modifica
+  // Se c'è id modifica, altrimenti nuovo
   if (data.id) {
-    const index = characters.findIndex(c => c.id === data.id);
-    if (index !== -1) {
-      characters[index] = { ...characters[index], ...data };
-      return res.json(characters[index]);
-    } else {
-      return res.status(404).json({ error: 'Personaggio non trovato per aggiornamento.' });
-    }
+    const idx = chars.findIndex(c => c.id === data.id);
+    if (idx !== -1) chars[idx] = data;
+    else chars.push(data);
+  } else {
+    data.id = generateId();
+    chars.push(data);
   }
 
-  // Nuovo personaggio
-  const newChar = { ...data, id: uuidv4() };
-  characters.push(newChar);
-  res.json(newChar);
+  saveData(chars);
+  res.json(data);
 });
 
-// ------------------------
-// API: DELETE /api/characters/:id
-// ------------------------
+// DELETE /api/characters/:id
 app.delete('/api/characters/:id', (req, res) => {
-  const id = req.params.id;
-  const index = characters.findIndex(c => c.id === id);
-  if (index === -1) return res.status(404).json({ error: 'Personaggio non trovato' });
-
-  characters.splice(index, 1);
-  res.json({ success: true });
+  const chars = readData();
+  const filtered = chars.filter(c => c.id !== req.params.id);
+  saveData(filtered);
+  res.json({ deleted: req.params.id });
 });
 
-// ------------------------
-// Start server
-// ------------------------
-const PORT = process.env.PORT || 3000;
+// Avvio server
 app.listen(PORT, () => {
-  console.log(`Server avviato su http://localhost:${PORT}`);
+  console.log(`Server attivo su http://localhost:${PORT}`);
 });
