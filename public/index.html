@@ -463,5 +463,78 @@ document.addEventListener('DOMContentLoaded', ()=>{
   updatePreviewDetailed();
 });
 </script>
+  <script>
+// ================================
+// Aggiornamento descrizioni campi stile D&D Beyond
+// ================================
+
+// Mappe delle descrizioni per caratteristiche principali
+const abilityDescriptions = {
+  strength: "Attacchi corpo a corpo, capacità di sollevare o spingere oggetti pesanti.",
+  dexterity: "Iniziativa, destrezza nei movimenti, CA, attacchi a distanza.",
+  constitution: "Punti ferita e resistenza agli effetti dannosi.",
+  intelligence: "Conoscenze, abilità arcane e apprendimento.",
+  wisdom: "Percezione, saggezza nelle decisioni e resistenza mentale.",
+  charisma: "Influenza sociale, incantesimi basati su carisma, persuasione."
+};
+
+// Aggiorna le descrizioni dei campi principali
+abilities.forEach(a=>{
+  const input = document.getElementById(a);
+  if(input){
+    let descEl = input.nextElementSibling;
+    if(descEl && descEl.classList.contains('small')){
+      descEl.textContent = abilityDescriptions[a];
+    }
+  }
+});
+
+// Mappe descrizioni per campi avanzati
+const advancedDescriptions = {
+  alignment: "Orientamento etico e morale, influenza interazioni sociali e roleplay.",
+  armorClass: "Difesa base contro attacchi, derivata da armatura e destrezza.",
+  hitPoints: "Punti ferita massimi, determinano quanto può resistere il personaggio.",
+  speed: "Velocità di movimento in metri per turno (default 9m = 30ft).",
+  proficiencies: "Competenze in armi, armature, strumenti o abilità speciali.",
+  equipment: "Oggetti iniziali o acquisiti, armi, armature e strumenti.",
+  features: "Tratti razziali, capacità di classe o abilità speciali.",
+  spells: "Incantesimi conosciuti o preparati, se il personaggio li può lanciare.",
+  notes: "Annotazioni libere per appunti, roleplay o informazioni extra."
+};
+
+// Aggiorna le descrizioni dei campi avanzati
+advancedFields.forEach(f=>{
+  const el = document.getElementById(f.id);
+  if(el){
+    const smallEl = el.nextElementSibling;
+    if(smallEl && smallEl.classList.contains('small') && advancedDescriptions[f.id]){
+      smallEl.textContent = advancedDescriptions[f.id];
+    }
+  }
+});
+
+// ================================
+// Eventuale funzione di tooltip
+// ================================
+// Mostra descrizione breve al focus (opzionale)
+function addTooltipBehavior(){
+  document.querySelectorAll("#form-area input, #form-area select, #form-area textarea")
+    .forEach(el=>{
+      el.addEventListener('focus', ()=>{
+        const tooltip = el.nextElementSibling;
+        if(tooltip && tooltip.classList.contains('small')){
+          tooltip.style.color = '#2b6cb0';
+        }
+      });
+      el.addEventListener('blur', ()=>{
+        const tooltip = el.nextElementSibling;
+        if(tooltip && tooltip.classList.contains('small')){
+          tooltip.style.color = '#6b6b6b';
+        }
+      });
+    });
+}
+addTooltipBehavior();
+  </script>
 </body>
 </html>
