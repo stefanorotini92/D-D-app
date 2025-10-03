@@ -536,5 +536,47 @@ function addTooltipBehavior(){
 }
 addTooltipBehavior();
   </script>
+  <script>
+// ======= RIPRISTINO FUNZIONI BASE =======
+
+// Randomizzazione
+document.getElementById("randomBtn").addEventListener("click", function(){
+  if(typeof generateRandom === "function") generateRandom();
+});
+
+// Salvataggio
+document.getElementById("saveBtn").addEventListener("click", async function(e){
+  e.preventDefault();
+  if(typeof saveCharacter === "function") await saveCharacter();
+});
+
+// Reset
+document.getElementById("resetBtn").addEventListener("click", function(){
+  if(typeof resetForm === "function") resetForm();
+});
+
+// Carica lista PG
+if(typeof loadCharacters === "function") loadCharacters();
+
+// Aggiungi listener ai pulsanti di modifica e cancellazione (dopo caricamento lista)
+async function attachListButtons(){
+  const listItems = document.querySelectorAll("#characters-list .pg-item");
+  listItems.forEach(li=>{
+    const editBtn = li.querySelector(".icon-btn:nth-child(1)");
+    const delBtn  = li.querySelector(".icon-btn:nth-child(2)");
+    if(editBtn) editBtn.onclick = ()=>{ if(typeof fillForm==="function") fillForm(li.dataset.char); };
+    if(delBtn)  delBtn.onclick  = async ()=>{ 
+      const id = li.dataset.id; 
+      if(confirm("Sicuro di cancellare?") && typeof deleteCharacter === "function") await deleteCharacter(id); 
+    };
+  });
+}
+// Chiamalo dopo ogni loadCharacters
+const origLoadCharacters = loadCharacters;
+loadCharacters = async function(){
+  await origLoadCharacters();
+  attachListButtons();
+};
+  </script>
 </body>
 </html>
