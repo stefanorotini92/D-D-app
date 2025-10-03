@@ -55,85 +55,82 @@
 
 <main class="main">
   <section id="form-area" class="card">
-    <h2 style="margin:0 0 8px 0;">Crea / Modifica Personaggio</h2>
-    <input type="hidden" id="char_id">
-    <label for="name">Nome</label>
-    <input id="name" type="text" placeholder="Nome del personaggio">
+  <h2>Crea / Modifica Personaggio</h2>
 
-    <div class="col-2">
-      <div>
-        <label for="class">Classe</label>
-        <select id="class"></select>
-        <div class="small">Scegli la classe (influisce su abilità e dadi vita)</div>
+  <!-- hidden id for edit -->
+  <input type="hidden" id="char_id">
+
+  <!-- Nome -->
+  <label for="name">Nome</label>
+  <input id="name" type="text" placeholder="Nome del personaggio">
+  <div class="small">Il nome del tuo personaggio</div>
+
+  <!-- Classe, Razza, Background -->
+  <div class="col-2">
+    <div>
+      <label for="class">Classe</label>
+      <select id="class"></select>
+      <div class="small">Determina i dadi vita, competenze e abilità di classe</div>
+    </div>
+    <div>
+      <label for="race">Razza</label>
+      <select id="race"></select>
+      <div class="small">Bonus alle caratteristiche, tratti razziali e abilità speciali</div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top:10px;">
+    <div style="flex:1">
+      <label for="background">Background</label>
+      <select id="background"></select>
+      <div class="small">Fornisce competenze extra e storia del personaggio</div>
+    </div>
+    <div style="width:110px; margin-left:8px;">
+      <label for="level">Livello</label>
+      <input id="level" type="number" min="1" value="1">
+      <div class="small">Influisce su PF, incantesimi e abilità</div>
+    </div>
+  </div>
+
+  <!-- Caratteristiche -->
+  <div style="margin-top:12px;">
+    <label>Caratteristiche</label>
+    <div class="stats">
+      <div class="stat-box">
+        <span class="stat-label">Forza</span>
+        <input id="strength" type="number" value="10" />
+        <div class="small">Attacchi corpo a corpo e test di forza</div>
       </div>
-      <div>
-        <label for="race">Razza</label>
-        <select id="race"></select>
-        <div class="small">Bonus e tratti razziali</div>
+      <div class="stat-box">
+        <span class="stat-label">Destrezza</span>
+        <input id="dexterity" type="number" value="10" />
+        <div class="small">CA, iniziativa e destrezza</div>
+      </div>
+      <div class="stat-box">
+        <span class="stat-label">Costituzione</span>
+        <input id="constitution" type="number" value="10" />
+        <div class="small">PF e resistenza agli effetti</div>
+      </div>
+
+      <div class="stat-box">
+        <span class="stat-label">Intelligenza</span>
+        <input id="intelligence" type="number" value="10" />
+        <div class="small">Conoscenze, magie e abilità intellettuali</div>
+      </div>
+      <div class="stat-box">
+        <span class="stat-label">Saggezza</span>
+        <input id="wisdom" type="number" value="10" />
+        <div class="small">Percezione, intuizione e saggezza magica</div>
+      </div>
+      <div class="stat-box">
+        <span class="stat-label">Carisma</span>
+        <input id="charisma" type="number" value="10" />
+        <div class="small">Influenza sociale e incantesimi basati sul carisma</div>
       </div>
     </div>
-
-    <div class="row" style="margin-top:10px;">
-      <div style="flex:1">
-        <label for="background">Background</label>
-        <select id="background"></select>
-        <div class="small">Storia e competenze aggiuntive</div>
-      </div>
-      <div style="width:110px; margin-left:8px;">
-        <label for="level">Livello</label>
-        <input id="level" type="number" min="1" value="1">
-      </div>
-    </div>
-
-    <div style="margin-top:12px;">
-      <label>Caratteristiche</label>
-      <div class="stats">
-        <div class="stat-box">
-          <span class="stat-label">Forza</span>
-          <input id="strength" type="number" value="10" />
-          <div class="small">Attacchi corpo a corpo</div>
-        </div>
-        <div class="stat-box">
-          <span class="stat-label">Destrezza</span>
-          <input id="dexterity" type="number" value="10" />
-          <div class="small">Iniziativa, CA</div>
-        </div>
-        <div class="stat-box">
-          <span class="stat-label">Costituzione</span>
-          <input id="constitution" type="number" value="10" />
-          <div class="small">PF e resistenza</div>
-        </div>
-        <div class="stat-box">
-          <span class="stat-label">Intelligenza</span>
-          <input id="intelligence" type="number" value="10" />
-          <div class="small">Conoscenze arcane</div>
-        </div>
-        <div class="stat-box">
-          <span class="stat-label">Saggezza</span>
-          <input id="wisdom" type="number" value="10" />
-          <div class="small">Percezione</div>
-        </div>
-        <div class="stat-box">
-          <span class="stat-label">Carisma</span>
-          <input id="charisma" type="number" value="10" />
-          <div class="small">Incantesimi e social</div>
-        </div>
-      </div>
-    </div>
-
-    <div id="advanced-area" style="margin-top:14px;"></div>
-
-    <div class="actions" style="margin-top:12px;">
-      <button id="saveBtn" class="btn btn-primary">💾 Salva Personaggio</button>
-      <button id="randomBtn" class="btn btn-ghost" type="button">🎲 Genera Random</button>
-      <button id="resetBtn" class="btn" type="button">🔄 Reset</button>
-    </div>
-
-    <div style="margin-top:10px;">
-      <small>Note: puoi modificare un personaggio dalla lista usando ✏️, cancellarlo con 🗑️</small>
-    </div>
-  </section>
-
+  </div>
+</section>
+  
   <aside>
     <div class="card" style="margin-bottom:var(--gap);">
       <h3 style="margin:0 0 8px 0;">Anteprima</h3>
